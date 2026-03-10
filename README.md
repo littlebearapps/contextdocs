@@ -1,4 +1,8 @@
 <p align="center">
+  <img src="docs/assets/contextdocs-logo-full.svg" height="200" alt="ContextDocs" />
+</p>
+
+<p align="center">
   <strong>Keep your AI coding assistants in sync with your codebase — generate, maintain, and audit context files for 7 AI tools.</strong>
 </p>
 
