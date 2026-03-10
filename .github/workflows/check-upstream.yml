@@ -1,0 +1,76 @@
+name: Check Upstream Spec Versions
+
+on:
+  schedule:
+    - cron: '0 9 1 * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  check-upstream:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check upstream versions
+        id: check
+        run: |
+          DRIFT_FOUND=false
+          DRIFT_REPORT=""
+
+          VERSIONS_FILE="upstream-versions.json"
+
+          # Check AGENTS.md spec
+          AGENTS_PINNED=$(jq -r '.sources["agents-md"].version' "$VERSIONS_FILE")
+          AGENTS_LATEST=$(curl -sf https://api.github.com/repos/agentsmd/agents.md/releases/latest | jq -r '.tag_name // empty' | sed 's/^v//')
+          if [ -n "$AGENTS_LATEST" ] && [ "$AGENTS_LATEST" != "$AGENTS_PINNED" ]; then
+            DRIFT_FOUND=true
+            DRIFT_REPORT="${DRIFT_REPORT}\n- **AGENTS.md Spec**: pinned \`${AGENTS_PINNED}\`, latest \`${AGENTS_LATEST}\`"
+          fi
+
+          echo "drift_found=$DRIFT_FOUND" >> "$GITHUB_OUTPUT"
+          {
+            echo "drift_report<<EOF"
+            echo -e "$DRIFT_REPORT"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Check for existing drift issue
+        if: steps.check.outputs.drift_found == 'true'
+        id: existing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          EXISTING=$(gh issue list --label "upstream-drift" --state open --json number --jq '.[0].number // empty')
+          echo "issue_number=$EXISTING" >> "$GITHUB_OUTPUT"
+
+      - name: Create drift issue
+        if: steps.check.outputs.drift_found == 'true' && steps.existing.outputs.issue_number == ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --title "Upstream spec version drift detected" \
+            --label "upstream-drift,maintenance" \
+            --body "## Upstream Specification Drift
+
+          The monthly upstream check detected version changes.
+
+          ### Changes Detected
+
+          ${{ steps.check.outputs.drift_report }}
+
+          ### Action Required
+
+          1. Review the upstream changelog
+          2. Update relevant skill files in \`.claude/skills/\`
+          3. Update \`upstream-versions.json\`
+
+          *Created automatically by the check-upstream workflow.*"
+
+      - name: No drift found
+        if: steps.check.outputs.drift_found == 'false'
+        run: echo "All upstream specs are up to date with pinned versions."

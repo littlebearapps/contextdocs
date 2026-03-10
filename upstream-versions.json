@@ -1,0 +1,13 @@
+{
+  "description": "Pinned upstream specification versions. The check-upstream GitHub Action compares these against live sources monthly.",
+  "sources": {
+    "agents-md": {
+      "version": "1.0",
+      "url": "https://github.com/agentsmd/agents.md",
+      "repo": "agentsmd/agents.md",
+      "check_url": "https://api.github.com/repos/agentsmd/agents.md/releases/latest",
+      "last_verified": "2026-03-10",
+      "stability": "evolving — v1.1 proposals in progress"
+    }
+  }
+}
