@@ -1,0 +1,1920 @@
+# ContextDocs
+
+> AI IDE context file management for Claude Code, OpenCode, Codex CLI, and Gemini CLI. A Claude Code plugin that generates, maintains, and audits AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, and GEMINI.md using the Signal Gate principle. Includes Context Guard hooks for freshness enforcement, context verification scoring, and MEMORY.md promotion. Pure Markdown, zero runtime dependencies.
+
+## Docs
+
+- [README](./README.md): Project overview, value proposition, quick start, commands, and features
+- [AGENTS.md](./AGENTS.md): Cross-tool AI context with skills reference and commands overview
+- [Claude.md](./CLAUDE.md): Claude Code project context — architecture, conventions, key files
+
+## Skills
+
+- [AI Context](./.claude/skills/ai-context/SKILL.md): AI IDE context file generation with Signal Gate principle — 7 context file types from codebase analysis, init/update/promote/audit lifecycle, line budgets, AGENTS.md spec tracking
+- [Context Guard](./.claude/skills/context-guard/SKILL.md): Context Guard hook installation — two-tier enforcement (nudge + guard), post-commit drift detection, structural change reminders, content filter protection, Untether compatibility (Claude Code only)
+- [Context Verify](./.claude/skills/context-verify/SKILL.md): Context file validation — line budget compliance, discoverable content detection, stale path scanning, cross-file consistency, MEMORY.md drift, 0–100 health scoring with CI integration
+
+## Commands
+
+- [/contextdocs:ai-context](./commands/ai-context.md): Generate lean AI IDE context files using Signal Gate — supports init, update, promote, audit, and per-tool generation
+- [/contextdocs:context-guard](./commands/context-guard.md): Install, uninstall, or check status of Context Guard hooks for AI context file freshness (Claude Code only)
+- [/contextdocs:context-verify](./commands/context-verify.md): Validate context file quality — line budgets, stale paths, consistency, health scoring
+
+## Optional
+
+- [Context Quality Rule](./.claude/rules/context-quality.md): Auto-loaded quality rule for AI context files — cross-file consistency, path verification, version accuracy, sync points (Claude Code only)
+- [Context Awareness Rule](./.claude/rules/context-awareness.md): Auto-loaded context trigger map — suggests ContextDocs commands when context-relevant work is detected (Claude Code only)
+- [Context Drift Check Hook](./hooks/context-drift-check.sh): PostToolUse hook that detects stale AI context files after git commits (Claude Code only)
+- [Context Structural Change Hook](./hooks/context-structural-change.sh): PostToolUse hook that reminds about context file updates after structural changes (Claude Code only)
+- [Content Filter Guard Hook](./hooks/content-filter-guard.sh): PreToolUse hook that blocks Write on high-risk OSS files (Claude Code only)
+- [Context Guard Stop Hook](./hooks/context-guard-stop.sh): Stop hook that nudges to update context docs before session end — Tier 1 (Claude Code only)
+- [Context Commit Guard Hook](./hooks/context-commit-guard.sh): PreToolUse hook that blocks commits with stale context — Tier 2 (Claude Code only)
+- [Upstream Versions](./upstream-versions.json): Pinned AGENTS.md spec version, checked monthly by GitHub Action
+- [Plugin Manifest](./.claude-plugin/plugin.json): Plugin metadata, version, keywords, and author info
+
+---
+
+# README
+
+<p align="center">
+  <img src="docs/assets/contextdocs-logo-full.svg" height="200" alt="ContextDocs" />
+</p>
+
+<p align="center">
+  <strong>Keep your AI coding assistants in sync with your codebase — generate, maintain, and audit context files for 7 AI tools.</strong>
+</p>
+
+<p align="center">
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/static/v1?label=version&message=1.0.0&color=blue" alt="Version" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/littlebearapps/contextdocs" alt="License" /></a>
+  <a href="https://code.claude.com/docs/en/plugins"><img src="https://img.shields.io/badge/Claude_Code-Plugin-D97757?logo=claude&logoColor=white" alt="Claude Code Plugin" /></a>
+  <a href="https://opencode.ai/"><img src="https://img.shields.io/badge/OpenCode-Compatible-22c55e" alt="OpenCode Compatible" /></a>
+</p>
+
+<p align="center">
+  <a href="#-get-started">Get Started</a> · <a href="#-features">Features</a> · <a href="#-commands">Commands</a> · <a href="CONTRIBUTING.md">Contributing</a>
+</p>
+
+---
+
+## ⚡ Get Started
+
+Get your first AI context files generated in under 60 seconds.
+
+### Prerequisites
+
+- [Claude Code](https://code.claude.com/) or [OpenCode](https://opencode.ai/) installed
+
+### Install
+
+```bash
+# 1. Add the LBA plugin marketplace (once)
+/plugin marketplace add littlebearapps/lba-plugins
+
+# 2. Install ContextDocs
+/plugin install contextdocs@lba-plugins
+
+# 3. Bootstrap AI context for your project
+/contextdocs:ai-context init
+```
+
+**Optional — install Context Guard hooks (Claude Code only):**
+
+```bash
+# 4. Keep context files in sync as your project evolves
+/contextdocs:context-guard install
+```
+
+---
+
+## 🚀 What ContextDocs Does
+
+AI coding assistants work better when they understand your project's conventions, but research shows that overstuffed context files **reduce** AI task success by ~3% and increase token costs by 20% (ETH Zurich, 2026).
+
+ContextDocs generates lean context files for 7 AI tools from a single codebase scan, using the **Signal Gate principle** — only what agents cannot discover on their own. It handles the full lifecycle: bootstrap new projects with `init`, patch drift with `update`, promote Claude's auto-learned patterns to CLAUDE.md with `promote`, verify health with `context-verify`, and enforce freshness with Context Guard hooks.
+
+Every context file stays within line budgets (CLAUDE.md <80, AGENTS.md <120, others <60) and excludes discoverable content like directory listings, file trees, and architecture overviews that agents find on their own.
+
+---
+
+## 🎯 Features
+
+- 🧠 **Signal Gate filtering** — includes only what AI tools cannot discover by reading source code, keeping context files lean and effective
+- 📋 **7 context file types** — AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, GEMINI.md from a single codebase scan
+- 🔄 **Full lifecycle management** — `init` bootstraps, `update` patches drift, `promote` moves MEMORY.md patterns to CLAUDE.md, `audit` checks staleness
+- ✅ **Context health scoring** — 0–100 score across 5 dimensions (line budget, signal quality, path accuracy, consistency, freshness) with CI integration
+- 🔒 **Context Guard** — two-tier enforcement: session-end nudge (Tier 1) and pre-commit blocking (Tier 2) keep context files in sync *(Claude Code only)*
+- 🛡️ **Content filter protection** — handles Claude Code's API filter for CODE_OF_CONDUCT, LICENSE, and SECURITY *(Claude Code only)*
+- 🔌 **Works with 7+ AI tools** — Claude Code, OpenCode, Codex CLI, Cursor, Windsurf, Cline, Gemini CLI
+
+---
+
+## 🤖 Commands
+
+| Command | What It Does |
+|---------|-------------|
+| `/contextdocs:ai-context` | Generate lean AI context files using Signal Gate — `init` bootstraps, `update` patches drift, `promote` moves MEMORY.md patterns to CLAUDE.md |
+| `/contextdocs:context-guard` | Install, uninstall, or check status of Context Guard hooks *(Claude Code only)* |
+| `/contextdocs:context-verify` | Validate context file quality — line budgets, stale paths, consistency, health scoring |
+
+### Quick Examples
+
+```bash
+/contextdocs:ai-context init          # Bootstrap context for a new project
+/contextdocs:ai-context update        # Patch only what drifted
+/contextdocs:ai-context promote       # Move MEMORY.md patterns to CLAUDE.md
+/contextdocs:ai-context audit         # Check for staleness and drift
+/contextdocs:context-verify           # Score context file health (0–100)
+/contextdocs:context-guard install    # Install freshness hooks (Tier 1)
+```
+
+---
+
+## 🔗 Related
+
+For public-facing repository documentation (README, CHANGELOG, ROADMAP, user guides, launch artifacts), see [PitchDocs](https://github.com/littlebearapps/pitchdocs).
+
+---
+
+## 🤝 Contributing
+
+See our [Contributing Guide](CONTRIBUTING.md) to get started.
+
+---
+
+## 📄 Licence
+
+[MIT](LICENSE) — Made by [Little Bear Apps](https://littlebearapps.com) 🐶
+
+---
+
+# AGENTS.md
+
+# ContextDocs
+
+Generate, maintain, and audit AI IDE context files (AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, GEMINI.md) using the Signal Gate principle — only what agents cannot discover on their own. Includes Context Guard hooks for freshness enforcement, context verification scoring, and MEMORY.md promotion.
+
+## Available Skills
+
+Skills are loaded on-demand to provide deep reference knowledge. Each lives at `.claude/skills/<name>/SKILL.md`. There are 3 skills in total.
+
+| Skill | What It Provides |
+|-------|-----------------|
+| `ai-context` | AI IDE context file generation with Signal Gate principle — AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, GEMINI.md from codebase analysis. Includes init (bootstrap), update (incremental drift patching), promote (MEMORY.md → CLAUDE.md), and audit with Context Guard status |
+| `context-guard` | Context Guard installation reference — hook architecture, settings.json configuration, two-tier enforcement, customisation, and troubleshooting *(Claude Code only)* |
+| `context-verify` | Context file validation — line budget compliance, discoverable content detection, stale path scanning, cross-file consistency, MEMORY.md drift, and 0–100 health scoring with CI integration |
+
+## Workflow Commands
+
+These commands are defined in `commands/*.md` and can be invoked as slash commands in Claude Code and OpenCode, or as prompts in Codex CLI. Claude Code users: invoke as `/contextdocs:command-name`.
+
+| Command | What It Does |
+|---------|-------------|
+| `ai-context` | Generate AI context files using Signal Gate — supports `all`, `claude`, `agents`, `cursor`, `copilot`, `windsurf`, `cline`, `gemini`, `init`, `update`, `promote`, `audit` |
+| `context-guard` | Install, uninstall, or check status of Context Guard hooks with tiered enforcement *(Claude Code only)* |
+| `context-verify` | Validate context file quality — line budgets, stale paths, consistency, health scoring, CI integration |
+
+## Rules and Hooks (Claude Code Only)
+
+- **Rules** (2): `.claude/rules/context-quality.md` (AI context file quality, auto-loaded), `.claude/rules/context-awareness.md` (context trigger map, auto-loaded)
+- **Hooks** (5): `hooks/context-drift-check.sh` (post-commit drift detection), `hooks/context-structural-change.sh` (structural change reminders), `hooks/content-filter-guard.sh` (Write guard for high-risk OSS files), `hooks/context-guard-stop.sh` (session-end context doc nudge — Tier 1), `hooks/context-commit-guard.sh` (pre-commit context doc enforcement — Tier 2) — opt-in via `/contextdocs:context-guard install`
+
+---
+
+# CLAUDE.md
+
+# ContextDocs
+
+Generate, maintain, and audit AI IDE context files using the Signal Gate principle. ContextDocs is a Claude Code plugin (pure Markdown, zero runtime dependencies) with 3 skills, 3 commands, 2 quality rules, and 5 opt-in hooks.
+
+## Project Architecture
+
+This is a **100% Markdown-based plugin** — no JavaScript, no Python, no build step. All knowledge lives in structured YAML+Markdown files:
+
+```
+.claude-plugin/plugin.json      → Plugin manifest (name, version, keywords)
+.claude/skills/*/SKILL.md       → 3 reference knowledge modules (loaded on-demand)
+.claude/rules/context-quality.md → AI context quality standards (auto-loaded every session)
+.claude/rules/context-awareness.md → Context trigger map (auto-loaded every session)
+commands/*.md                   → 3 slash command definitions
+hooks/*.sh                      → 5 opt-in hook scripts (Claude Code only)
+```
+
+## Conventions
+
+- **Australian English**: realise, colour, behaviour, licence (noun), license (verb)
+- **Conventional Commits**: `feat:`, `fix:`, `docs:`, `chore:` — release-please automates versioning
+
+## Key Files
+
+| File | Purpose |
+|------|---------|
+| `plugin.json` | Version, description, keywords — update on every release |
+| `context-quality.md` | Quality rule auto-loaded every session — cross-file consistency, path verification, sync points |
+| `context-awareness.md` | Trigger map rule — suggests ContextDocs commands when context-relevant work is detected |
+
+## When Modifying This Plugin
+
+1. **Adding a skill**: Create `.claude/skills/<name>/SKILL.md`, add a corresponding command in `commands/<name>.md`, update README.md, AGENTS.md, and llms.txt
+2. **Adding a command**: Create `commands/<name>.md` with YAML frontmatter, update commands tables in README.md, AGENTS.md, and llms.txt
+3. **Changing quality standards**: Edit `.claude/rules/context-quality.md` — propagates automatically
+4. **Bumping version**: Handled automatically by release-please from conventional commit messages
+
+## Relationship to PitchDocs
+
+ContextDocs was extracted from [PitchDocs](https://github.com/littlebearapps/pitchdocs) v1.19.3 to follow the LBA microtool philosophy. PitchDocs handles public-facing documentation (README, CHANGELOG, ROADMAP, user guides). ContextDocs handles AI IDE context files. Both work independently; both cross-link where relevant.
+
+---
+
+# AI Context Skill
+
+---
+name: ai-context
+description: Generates lean AI IDE context files (AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, GEMINI.md) from codebase analysis. Applies the Signal Gate principle — only includes what agents cannot discover on their own. Use when setting up, auditing, or updating AI tool context for a repository.
+version: "2.0.0"
+---
+
+# AI Context File Generator
+
+## Philosophy
+
+AI coding assistants work better when they understand a project's conventions, architecture, and constraints. Context files tell AI tools **how** to work with the codebase — the things they cannot discover on their own.
+
+This skill generates context files for multiple AI tools from a single codebase analysis. The same scan produces output for Claude Code, Codex CLI, Cursor, GitHub Copilot, and Gemini CLI.
+
+## The Signal Gate
+
+Research shows that auto-generated context files **reduce** AI task success by ~3% and increase token costs by 20% (ETH Zurich, Feb 2026). Overstuffed files cause agents to ignore the instructions that matter. Less is more.
+
+**The test for every line:** Would removing this cause the AI to make a mistake? If not, cut it.
+
+### What to Include (Non-Discoverable)
+
+Only include information the agent **cannot** figure out by reading source code:
+
+- **Non-obvious conventions** — import order that differs from defaults, naming patterns that break from language norms, spelling locale (e.g., Australian English)
+- **Hard constraints** — "never use `any`", "always use `direnv exec`", "no commits to main"
+- **Key commands** — test, build, deploy, lint (agents cannot guess these without running them)
+- **Security rules** — secret management, credential handling, input validation requirements
+- **Environment quirks** — required env vars, non-standard tooling (e.g., `uv` instead of `pip`, `bun` instead of `npm`)
+
+### What to Exclude (Discoverable)
+
+Agents discover these by reading files — including them wastes tokens and dilutes signal:
+
+- **Directory listings / file trees** — agents can `ls` and `find`
+- **Dependency lists** — agents read `package.json`, `pyproject.toml`, `go.mod`
+- **Architecture overviews** — agents read source code and infer structure
+- **Framework conventions** — agents already know React, Express, Django, etc.
+- **API patterns visible in source** — agents read the code directly
+- **Key file tables** — agents discover entry points and configs via manifest files
+
+### Framing
+
+Each line in a context file signals something confusing enough to trip an AI agent. Consider fixing the root cause rather than documenting the workaround (Osmani, 2026). Describe the **end state** you want, not step-by-step instructions (Spotify Honk, 2025).
+
+### Line Budgets
+
+| File | Target | Hard Max |
+|------|--------|----------|
+| CLAUDE.md | Under 80 lines | 120 lines |
+| AGENTS.md | Under 120 lines | 160 lines |
+| Other context files | Under 60 lines | 100 lines |
+
+## Supported Context Files
+
+| File | AI Tool | Purpose | Adoption |
+|------|---------|---------|----------|
+| `AGENTS.md` | Codex CLI, Cursor, Gemini CLI, Claude Code, OpenCode, Copilot, RooCode | Cross-tool agent context — identity, capabilities, conventions | 60,000+ repos |
+| `CLAUDE.md` | Claude Code | Project-specific instructions loaded on every session | Native to Claude Code |
+| `.cursorrules` | Cursor | Editor-specific rules for code generation | Native to Cursor |
+| `.github/copilot-instructions.md` | GitHub Copilot | Repository-level instructions for Copilot suggestions | Native to Copilot |
+| `.windsurfrules` | Windsurf | Project-specific rules for Windsurf's Cascade AI | Native to Windsurf |
+| `.clinerules` | Cline (VS Code extension) | Project context for autonomous Cline tasks | Native to Cline |
+| `GEMINI.md` | Gemini CLI | Project context loaded at the start of every Gemini CLI session | Native to Gemini CLI |
+
+### CLAUDE.md vs Auto-Memory (Claude Code)
+
+Claude Code maintains three knowledge layers. ContextDocs generates CLAUDE.md — never MEMORY.md.
+
+| Layer | File | Who Writes | Shared via Git? |
+|-------|------|-----------|-----------------|
+| Project instructions | `CLAUDE.md` | Developer / ContextDocs | Yes |
+| Auto-memory | `~/.claude/.../MEMORY.md` | Claude itself | No (local only) |
+| Session memory | (in-context) | Claude itself | No |
+
+**Boundary rule:** CLAUDE.md contains instructions *for* Claude. MEMORY.md contains notes *by* Claude. If the same insight keeps appearing in MEMORY.md across sessions, promote it to CLAUDE.md.
+
+## Codebase Analysis Workflow
+
+### Step 1: Detect Project Profile
+
+```bash
+# Language and runtime
+ls package.json pyproject.toml Cargo.toml go.mod pom.xml build.gradle 2>/dev/null
+
+# Framework detection
+cat package.json 2>/dev/null | grep -E '"(react|next|express|fastify|hono|astro|svelte)"'
+cat pyproject.toml 2>/dev/null | grep -E '(fastapi|django|flask|starlette)'
+
+# Test runner
+ls jest.config* vitest.config* pytest.ini pyproject.toml .mocharc* 2>/dev/null
+grep -l "test" package.json 2>/dev/null
+
+# Linter/formatter
+ls .eslintrc* eslint.config* .prettierrc* biome.json ruff.toml .flake8 2>/dev/null
+
+# TypeScript configuration
+ls tsconfig*.json 2>/dev/null
+
+# Monorepo detection
+ls pnpm-workspace.yaml lerna.json nx.json turbo.json 2>/dev/null
+
+# CI/CD
+ls .github/workflows/*.yml 2>/dev/null
+```
+
+### Step 2: Extract Conventions
+
+From the codebase analysis, extract:
+
+1. **Language version** — Node.js version from `.nvmrc`/`engines`, Python from `requires-python`, Go from `go.mod`
+2. **Import conventions** — ESM vs CommonJS, absolute vs relative imports, path aliases (`@/`)
+3. **Naming patterns** — camelCase/snake_case for variables, PascalCase for types, file naming
+4. **Directory structure** — where source, tests, config, and docs live
+5. **Test patterns** — test file location (`__tests__/`, `*.test.ts`, `tests/`), test runner, assertion style
+6. **Build/deploy** — build command, deploy target (Cloudflare, Vercel, AWS, etc.)
+7. **Error handling** — custom error classes, Result types, try-catch patterns
+8. **Security rules** — .gitignore patterns, secret management, input validation
+
+### Step 3: Generate Context Files
+
+#### AGENTS.md Structure
+
+Target: under 120 lines. Only include what agents cannot discover by reading source code.
+
+```markdown
+# AGENTS.md
+
+## Identity
+
+[Project name] is a [brief description]. Built with [language/framework].
+
+## Conventions
+
+- [Language]: [version]
+- Style: [naming conventions, import order]
+- Types: [strict mode, no any, explicit returns — if TypeScript]
+- Tests: [runner, location, naming pattern]
+- Commits: [conventional commits, branch naming]
+
+## Commands
+
+```bash
+[install command]
+[test command]
+[build command]
+[lint command]
+[deploy command]
+```
+
+## Rules
+
+- [Critical rule 1 — e.g., never commit secrets]
+- [Critical rule 2 — e.g., all public functions need tests]
+- [Critical rule 3 — e.g., use direnv exec for deploy commands]
+```
+
+**Omit** Project Structure, Architecture, and Important Files sections — agents discover these by reading the codebase. Only add them back if the project has non-obvious structure that would genuinely trip an agent.
+
+#### CLAUDE.md Structure
+
+Claude Code loads this file at the start of every session. Target: under 80 lines. For each line, ask: would removing this cause Claude to make a mistake?
+
+```markdown
+# [Project Name]
+
+[One sentence: what this project is]
+
+## Commands
+
+- **Test**: `[test command]`
+- **Build**: `[build command]`
+- **Deploy**: `[deploy command]`
+
+## Conventions
+
+[3-5 bullet points — only conventions that differ from language/framework defaults]
+
+## Rules
+
+[Critical do/don't rules that prevent common mistakes]
+```
+
+**Omit** Architecture, Key Paths, and directory listings — Claude reads the codebase directly. Only include paths if they are genuinely non-obvious (e.g., deploy scripts in an unusual location).
+
+#### .cursorrules Structure
+
+Cursor rules are plain text, loaded when editing files in the project. Target: under 60 lines.
+
+```
+You are working on [project name], a [description].
+
+Language: [X] with [framework]
+Style: [conventions that differ from defaults]
+
+Key rules:
+- [Rule 1]
+- [Rule 2]
+- [Rule 3]
+
+When writing code:
+- [Non-default pattern 1]
+- [Non-default pattern 2]
+
+When writing tests:
+- [Test pattern 1]
+- [Test pattern 2]
+```
+
+**Omit** file structure listings — Cursor can read the project tree.
+
+#### .github/copilot-instructions.md Structure
+
+```markdown
+# Copilot Instructions
+
+## Project Context
+
+This is a [description] built with [language/framework].
+
+## Coding Standards
+
+- [Convention 1]
+- [Convention 2]
+- [Convention 3]
+
+## Patterns to Follow
+
+- [Pattern 1]
+- [Pattern 2]
+
+## Patterns to Avoid
+
+- [Anti-pattern 1]
+- [Anti-pattern 2]
+```
+
+#### .windsurfrules Structure
+
+Windsurf's Cascade AI reads `.windsurfrules` from the project root. Format is plain text — similar to `.cursorrules`. Target: under 60 lines.
+
+```
+# [Project Name] — Windsurf Rules
+
+[Project name] is a [description]. Built with [language/framework].
+
+## Conventions
+
+- [Convention that differs from defaults 1]
+- [Convention that differs from defaults 2]
+- [Convention that differs from defaults 3]
+
+## Commands
+
+[test command]
+[build command]
+[deploy command]
+
+## Rules
+
+- [Critical rule 1]
+- [Critical rule 2]
+```
+
+**Omit** Key Files and Project Context sections — Windsurf reads the project tree directly.
+
+#### .clinerules Structure
+
+Cline reads `.clinerules` from the project root. Supports task checklists. Target: under 60 lines.
+
+```markdown
+# [Project Name]
+
+[1-2 sentence description of what the project is and does]
+
+## Conventions
+
+- [Non-default convention 1]
+- [Non-default convention 2]
+- [Non-default convention 3]
+
+## Commands
+
+- Test: `[test command]`
+- Build: `[build command]`
+- Lint: `[lint command]`
+
+## Before Committing
+
+- [ ] Tests pass (`[test command]`)
+- [ ] Linting passes (`[lint command]`)
+- [ ] No secrets or credentials in changed files
+```
+
+**Omit** Tech Stack and Important Paths sections — Cline reads manifests and the file tree directly.
+
+#### GEMINI.md Structure
+
+Gemini CLI reads `GEMINI.md` from the project root (or `.gemini/GEMINI.md`). Target: under 60 lines. Gemini CLI also supports Claude Code Skills (same SKILL.md format).
+
+```markdown
+# [Project Name]
+
+[One sentence: what is this project and who is it for]
+
+## Commands
+
+[test command]
+[build command]
+[deploy command]
+
+## Conventions
+
+- [Non-default convention 1]
+- [Non-default convention 2]
+- [Non-default convention 3]
+
+## Rules
+
+- [Critical rule 1]
+- [Critical rule 2]
+```
+
+**Omit** Tech Stack and Key Paths sections — Gemini CLI reads manifests and the file tree directly.
+
+## MEMORY.md Promotion
+
+When running with `promote` argument, scan Claude Code's auto-memory for stable patterns that belong in CLAUDE.md.
+
+### Workflow
+
+1. **Locate MEMORY.md** for the current project:
+
+```bash
+find ~/.claude/projects -name "MEMORY.md" -path "*$(basename $(pwd))*" 2>/dev/null
+```
+
+2. **Parse for convention patterns** — lines that look like project rules:
+   - Lines starting with "Always", "Never", "Use", "Don't", "Prefer"
+   - Lines mentioning commands, file paths, or naming conventions
+   - Lines that describe patterns or constraints
+
+3. **Cross-reference against CLAUDE.md** — skip any insights already present
+
+4. **Present candidates** with recommendation:
+
+```
+MEMORY.md Promotion Candidates:
+  → "Always use direnv exec for deploy commands" — not in CLAUDE.md (promote)
+  → "Import order: external → types → @/ → ./" — already in CLAUDE.md (skip)
+  → "Use Australian English (realise, colour)" — not in CLAUDE.md (promote)
+
+Promote 2 insights to CLAUDE.md? (Will append to ## Conventions section)
+```
+
+5. **Append promoted insights** to the appropriate CLAUDE.md section, deduplicating. Use Edit (not Write) to preserve existing content.
+
+**Boundary rule:** Only promote insights that pass the signal gate test — would removing this cause the AI to make a mistake? Workflow observations, debugging notes, and session-specific state stay in MEMORY.md.
+
+## Init Mode
+
+When running with `init` argument, bootstrap AI context for a new project in one step.
+
+### Workflow
+
+1. Run codebase analysis (Step 1 and Step 2 above)
+2. Detect which context files already exist — **skip existing files** (never overwrite)
+3. Generate missing context files using signal-gate-filtered templates
+4. Offer Context Guard hook installation (Claude Code only)
+5. Run a quick audit pass on generated files (verify paths and commands)
+6. Report summary:
+
+```
+AI Context Init:
+  Created:
+    ✓ AGENTS.md (48 lines)
+    ✓ CLAUDE.md (35 lines)
+    ✓ .cursorrules (28 lines)
+  Skipped (already exist):
+    · GEMINI.md
+  Context Guard:
+    ✓ Tier 1 hooks installed (Claude Code only)
+  Audit:
+    ✓ All paths valid
+    ✓ Commands verified
+```
+
+## Incremental Update
+
+When running with `update` argument, patch only what drifted — preserving human edits to context files.
+
+### Workflow
+
+1. **Detect changes** since context files were last modified:
+
+```bash
+# Find when each context file was last touched
+git log -1 --format=%H -- CLAUDE.md
+git log -1 --format=%H -- AGENTS.md
+
+# What source files changed since then
+git diff --name-only <last-context-commit>..HEAD
+```
+
+2. **Classify changes** by their impact on context files:
+   - `package.json` scripts changed → update Commands sections
+   - `tsconfig.json` / linter config changed → update Conventions sections
+   - Source files renamed/moved → fix path references
+   - New commands/skills/agents added → update relevant listings
+
+3. **Apply surgical edits** using Edit (not Write) — only touching affected sections
+
+4. **Report** what was patched:
+
+```
+AI Context Update:
+  CLAUDE.md:
+    → Updated "Commands" (package.json scripts changed)
+    → Fixed path: src/index.ts → src/main.ts
+  AGENTS.md:
+    → Updated "Commands" section
+  .cursorrules:
+    → No drift detected (skipped)
+```
+
+## Staleness Audit
+
+When running in `audit` mode, check existing context files for drift:
+
+1. **Version mismatch** — Does the context file reference the correct language/framework version?
+2. **Missing commands** — Are test/build/deploy commands still accurate? Run them to verify.
+3. **Stale paths** — Do referenced file paths still exist?
+4. **New conventions** — Has the project adopted new patterns (e.g., added ESLint, switched to Vitest) that aren't reflected?
+5. **Memory drift** — If a MEMORY.md exists for this project, check whether it records conventions or patterns that should be promoted to CLAUDE.md. Flag as `ℹ MEMORY.md contains project conventions that may belong in CLAUDE.md`.
+6. **Context Guard status** — Check if Context Guard hooks are installed and healthy:
+
+```bash
+# Check for hook scripts
+ls .claude/hooks/context-*.sh 2>/dev/null
+
+# Check settings.json for hook entries
+grep -l "context-" .claude/settings.json 2>/dev/null
+```
+
+Report format:
+```
+AI Context Audit:
+  ✓ AGENTS.md — up to date (last modified: 2 days ago)
+  ⚠ CLAUDE.md — references jest but vitest.config.ts detected
+  ✗ .cursorrules — references src/index.ts but file moved to src/main.ts
+  · .github/copilot-instructions.md — not present
+  · .windsurfrules — not present (recommend generating)
+  · .clinerules — not present (recommend generating)
+  · GEMINI.md — not present (recommend generating)
+
+  Context Guard:
+    ✓ Tier 1 active (Stop hook)
+    ✗ Tier 2 not installed (recommend /contextdocs:context-guard install strict)
+    ✓ 4/4 hook scripts executable
+```
+
+## AGENTS.md Spec Version Tracking
+
+The AGENTS.md format is defined by the [agents.md spec](https://github.com/agentsmd/agents.md). ContextDocs tracks the pinned version in `upstream-versions.json`.
+
+### Current Stable: v1.0
+
+The v1.0 spec defines these standard sections:
+
+| Section | Purpose |
+|---------|---------|
+| Identity | Project name, description, what it does |
+| Project Structure | Key directories and their purposes |
+| Conventions | Coding standards, naming, commit conventions |
+| Commands | Test, build, deploy, lint commands |
+| Architecture | System design, data flow, key abstractions |
+| Files | Important files and their roles |
+| Rules | Hard constraints (security, compatibility) |
+
+### Proposed v1.1 Features (Draft — Do Not Implement)
+
+These features are under discussion and may change before stabilisation:
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Sub-agents section | Draft | Nested agent definitions within AGENTS.md |
+| Tool permissions | Proposed | Declaring which tools an agent can use |
+| `.agent/` directory | Proposed | Directory-based agent definitions (alternative to single file) |
+| `when:` frontmatter | Draft | Trigger conditions for agent activation |
+
+**Guidance:** Do not generate these proposed sections until they reach stable status. Monitor the [agents.md releases](https://github.com/agentsmd/agents.md/releases) for v1.1 announcement. The `check-upstream` GitHub Action will flag when a new version is available. When v1.1 reaches stable, update the pinned version in `upstream-versions.json` and add the new sections to the generation templates above.
+
+## Anti-Patterns
+
+- **Don't include discoverable content** — directory listings, file trees, dependency lists, and architecture overviews waste tokens (see Signal Gate above)
+- **Don't include secrets** — no API keys, tokens, or credentials in context files
+- **Don't repeat framework docs** — agents already know React, Express, Django conventions
+- **Don't over-constrain** — provide patterns, not rigid rules that prevent creative problem-solving
+- **Don't include session-specific state** — context files should be durable across sessions
+- **Don't ship auto-generated files unedited** — generated context files reduce task success by ~3% (ETH Zurich, 2026). Always curate: remove lines that fail the "would removing this cause a mistake?" test
+
+---
+
+# Context Guard Skill
+
+---
+name: context-guard
+description: Installs opt-in Claude Code hooks with two-tier enforcement for AI context file freshness. Tier 1 (Nudge) uses a Stop hook to remind about context updates before session end. Tier 2 (Guard) uses a PreToolUse hook to block commits with stale context docs. Also includes post-commit drift detection, structural change reminders, content filter write guards, and a quality rule. Claude Code only — hooks do not work in OpenCode, Codex CLI, or other tools.
+version: "1.1.0"
+---
+
+# Context Guard
+
+## What It Does
+
+Context Guard adds hooks and a quality rule to keep AI context files (CLAUDE.md, AGENTS.md, GEMINI.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules) in sync with the codebase. It prevents content filter errors when generating standard OSS files, and provides two-tier enforcement for context doc freshness.
+
+**Claude Code only.** These hooks use Claude Code's hook system (PreToolUse, PostToolUse, and Stop events via `.claude/settings.json`). OpenCode, Codex CLI, Cursor, Windsurf, Cline, and Gemini CLI do not support Claude Code hooks. The quality rule (`.claude/rules/context-quality.md`) is also Claude Code-specific.
+
+Cross-tool features like skills (`.claude/skills/`) and AGENTS.md work in OpenCode and Codex CLI without Context Guard.
+
+## Enforcement Tiers
+
+| Tier | Name | Mechanism | Behaviour |
+|------|------|-----------|-----------|
+| 1 | Nudge | Stop hook | Advisory — suggests updating context docs before session ends. Claude can still stop if docs genuinely don't need changes. |
+| 2 | Guard | PreToolUse on `git commit` | Blocking — prevents commits when structural files are staged without context doc updates. Exit code 2 blocks the commit. |
+
+**Default install** (`/contextdocs:context-guard install`) activates Tier 1 only. Add Tier 2 with `/contextdocs:context-guard install strict`.
+
+## Components
+
+### Hook: context-drift-check.sh
+
+- **Event:** PostToolUse on `Bash` (filters for `git commit` commands)
+- **Fires:** After a successful git commit
+- **Checks:**
+  1. Compares each context file's last-modified commit vs the most recent source-code commit
+  2. Detects broken file-path references inside context files
+  3. Flags when `package.json` or `pyproject.toml` changed more recently than context files
+- **Output:** Lists stale files and recommends `/contextdocs:ai-context audit`, or stays silent if everything is current
+- **Throttle:** Max once per hour via `.git/.context-guard-last-check` timestamp
+
+### Hook: context-structural-change.sh
+
+- **Event:** PostToolUse on `Write|Edit`
+- **Fires:** After creating or editing structural files (commands, skills, agents, rules, manifests, config)
+- **Reminds:** Which context files may need updating based on the type of change
+- **File patterns:**
+  - `commands/*.md` → AGENTS.md, CLAUDE.md, llms.txt
+  - `.claude/skills/*/SKILL.md` → AGENTS.md, CLAUDE.md, llms.txt
+  - `.claude/agents/*.md` → AGENTS.md
+  - `.claude/rules/*.md` → CLAUDE.md, AGENTS.md
+  - `package.json`, `pyproject.toml`, config files → all context files
+
+### Hook: content-filter-guard.sh
+
+- **Event:** PreToolUse on `Write`
+- **Fires:** Before Claude Code writes a file
+- **HIGH-risk files** (CODE_OF_CONDUCT.md, LICENSE, SECURITY.md):
+  - Blocks the write (exit non-zero)
+  - Returns fetch commands for the canonical URL
+- **MEDIUM-risk files** (CHANGELOG.md, CONTRIBUTING.md):
+  - Allows the write
+  - Returns advisory about chunked writing (5–10 entries at a time)
+- **All other files:** Passes through silently
+
+### Hook: context-guard-stop.sh (Tier 1)
+
+- **Event:** Stop (no matcher — fires on every session end)
+- **Fires:** When Claude considers ending the conversation
+- **Checks:**
+  1. Whether structural files (commands, skills, rules, config) have uncommitted changes
+  2. Whether any context files (CLAUDE.md, AGENTS.md, llms.txt, etc.) were also modified
+- **Loop prevention:** Checks `stop_hook_active` flag — if `true`, exits immediately to allow Claude to stop (prevents infinite loops)
+- **Output:** Returns `{"decision": "block"}` with reason if structural changes exist without context updates, or stays silent
+
+### Hook: context-commit-guard.sh (Tier 2)
+
+- **Event:** PreToolUse on `Bash` (filters for `git commit` commands)
+- **Fires:** Before a git commit command executes
+- **Checks:**
+  1. Whether structural files are in the staging area (`git diff --cached`)
+  2. Whether any context files are also staged
+- **Output:** Exit code 2 with stderr message to block the commit, or exit 0 to allow
+
+### Rule: context-quality.md
+
+Auto-loaded every session. Establishes cross-file consistency, path verification, version accuracy, command accuracy, context doc size guidance, and a sync-points table mapping project changes to context files.
+
+## Installation
+
+The `/contextdocs:context-guard install` command (Tier 1):
+
+1. Copies 4 hook scripts to `.claude/hooks/` in the target project
+2. Merges hook configuration into `.claude/settings.json`
+3. Copies the quality rule to `.claude/rules/context-quality.md`
+4. Makes hook scripts executable
+
+The `/contextdocs:context-guard install strict` command (Tier 1 + Tier 2):
+
+1. Performs all steps from `install` above
+2. Additionally copies `context-commit-guard.sh` to `.claude/hooks/`
+3. Adds a PreToolUse Bash entry for the commit guard to `.claude/settings.json`
+
+### Settings.json Configuration (Tier 1 only)
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [{ "type": "command", "command": ".claude/hooks/content-filter-guard.sh" }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{ "type": "command", "command": ".claude/hooks/context-drift-check.sh" }]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [{ "type": "command", "command": ".claude/hooks/context-structural-change.sh" }]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [{ "type": "command", "command": ".claude/hooks/context-guard-stop.sh" }]
+      }
+    ]
+  }
+}
+```
+
+### Additional Settings.json Entry (Tier 2 — strict)
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{ "type": "command", "command": ".claude/hooks/context-commit-guard.sh" }]
+      }
+    ]
+  }
+}
+```
+
+## Uninstallation
+
+The `/contextdocs:context-guard uninstall` command removes all hook scripts (context-drift-check.sh, context-structural-change.sh, content-filter-guard.sh, context-guard-stop.sh, context-commit-guard.sh), settings.json entries (PreToolUse, PostToolUse, and Stop), and the quality rule.
+
+## Customisation
+
+### Throttle Interval
+
+Edit `context-drift-check.sh` line with `3600` (seconds) to change the check interval. Set to `0` to check on every commit.
+
+### File Patterns
+
+Edit `context-structural-change.sh` case statement to add or remove structural file patterns.
+
+## Troubleshooting
+
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| Hooks not firing | Scripts not executable | `chmod +x .claude/hooks/*.sh` |
+| No output after commit | Throttle active | Delete `.git/.context-guard-last-check` to reset |
+| "jq: command not found" | jq not installed | Install jq: `apt install jq` or `brew install jq` |
+| Hooks fail silently | jq receives malformed JSON | Run `.claude/hooks/context-drift-check.sh` manually and check for JSON parse errors — common when `settings.json` has trailing commas or comments |
+| Hook errors in logs | Wrong project directory | Check `CLAUDE_PROJECT_DIR` is set correctly |
+| Hook blocks legitimate writes | content-filter-guard too aggressive | Uninstall with `/contextdocs:context-guard uninstall`, or remove just the PreToolUse entry from `.claude/settings.json` |
+| Claude keeps running in a loop | Stop hook not checking `stop_hook_active` | Verify `context-guard-stop.sh` checks `stop_hook_active` flag on line 19; if broken, remove the Stop entry from `.claude/settings.json` |
+| Commit blocked but context docs don't need updating | Tier 2 false positive on config edits | Stage a context file with a minor update, or remove the PreToolUse Bash entry for `context-commit-guard.sh` from `.claude/settings.json` |
+| Stop hook doesn't fire in Untether sessions | By design — `UNTETHER_SESSION` env var is set by Untether | Stop hook blocks would displace user content in Telegram's single-message output. All other hooks (drift check, structural reminders, content filter guard, commit guard) still work normally. |
+
+## Untether / Headless Compatibility
+
+When Claude Code runs via [Untether](https://github.com/littlebearapps/untether) (a Telegram bridge for AI coding agents), Stop hook blocks cause content displacement — the hook's meta-commentary replaces the user's requested output in the final Telegram message.
+
+To prevent this, `context-guard-stop.sh` checks the `UNTETHER_SESSION` environment variable. When set, the Stop hook (Tier 1 session-end nudge) exits immediately without checking for structural changes.
+
+**What's affected:**
+
+| Hook | Behaviour in Untether |
+|------|-----------------------|
+| context-guard-stop.sh (Tier 1) | **Skipped** — exits immediately |
+| context-drift-check.sh | Works normally |
+| context-structural-change.sh | Works normally |
+| content-filter-guard.sh | Works normally |
+| context-commit-guard.sh (Tier 2) | Works normally |
+
+**If you don't use Untether, this has no effect.** The `UNTETHER_SESSION` env var is only set by Untether's runner environment. It is not present in standard Claude Code sessions and the check is a no-op.
+
+**Security:** The env var only affects the advisory session-end nudge. It cannot bypass the Tier 2 commit guard, disable content filter protection, or suppress structural change reminders. Setting it manually is equivalent to ignoring the nudge, which users can already do.
+
+---
+
+# Context Verify Skill
+
+---
+name: context-verify
+description: Validates AI context file quality — signal-to-noise ratio, line budgets, stale paths, cross-file consistency, discoverable content detection, and MEMORY.md drift. Scores context health and integrates with CI. Use to catch context file decay before it reaches your repo.
+version: "1.0.0"
+---
+
+# Context Verifier
+
+## Philosophy
+
+Generating context files is solved — the `ai-context` skill handles that. Preventing context file decay is not. This skill validates that AI context files remain accurate, lean, and consistent over time. Research shows overstuffed context files reduce AI task success by ~3% (ETH Zurich, 2026).
+
+## Verification Checks
+
+### 1. Line Budget Compliance
+
+Check line counts against Signal Gate budgets:
+
+```bash
+# Check line counts against budgets
+for f in CLAUDE.md AGENTS.md .cursorrules .github/copilot-instructions.md .windsurfrules .clinerules GEMINI.md; do
+  [ -f "$f" ] && echo "$f: $(wc -l < "$f") lines"
+done
+```
+
+| File | Warning | Over Budget |
+|------|---------|-------------|
+| CLAUDE.md | >80 lines | >120 lines |
+| AGENTS.md | >120 lines | >160 lines |
+| Other context files | >60 lines | >100 lines |
+
+### 2. Discoverable Content Detection
+
+Directory listings, file trees, and dependency lists waste tokens because agents discover these on their own:
+
+```bash
+# Grep for file tree characters and common discoverable patterns
+grep -c -E '(├──|└──|│   |src/.*—|tests/.*—)' CLAUDE.md AGENTS.md 2>/dev/null
+```
+
+Flag each instance with specific line numbers. Common discoverable patterns:
+- ASCII file trees (├──, └──, │)
+- "Project Structure" sections with directory listings
+- Dependency lists that mirror package.json/pyproject.toml
+- Architecture descriptions visible from reading source code
+
+### 3. Stale Path Detection
+
+Every backtick-quoted path in a context file must exist on disk:
+
+```bash
+# Extract backtick-quoted paths and verify
+grep -oE '`[^`]*\.[a-z]+`' CLAUDE.md AGENTS.md 2>/dev/null | tr -d '`' | while read -r p; do
+  [ -f "$p" ] || echo "STALE: $p"
+done
+```
+
+### 4. Cross-File Consistency
+
+Key commands (test, build, deploy) must match across all context files. Extract command strings from each file and compare. Flag any mismatches between CLAUDE.md, AGENTS.md, and other context files.
+
+### 5. MEMORY.md Drift
+
+If a MEMORY.md exists for this project, check whether it contains conventions not yet promoted to CLAUDE.md:
+
+```bash
+# Locate project MEMORY.md
+find ~/.claude -name "MEMORY.md" -path "*$(basename $(pwd))*" 2>/dev/null
+```
+
+Check for convention-like patterns (lines starting with "Always", "Never", "Use") that don't appear in CLAUDE.md.
+
+### 6. Context Guard Status
+
+Check if Context Guard hooks are installed and healthy:
+
+```bash
+# Check for hook scripts
+ls .claude/hooks/context-*.sh 2>/dev/null
+
+# Check settings.json for hook entries
+grep -l "context-" .claude/settings.json 2>/dev/null
+```
+
+## Scoring
+
+| Dimension | Max | Deductions |
+|-----------|-----|-----------|
+| Line Budget | 25 | -2 per file over warning, -5 per file over budget |
+| Signal Quality | 25 | -1 per discoverable content instance (max -5), -3 if "Project Structure" section present |
+| Path Accuracy | 20 | -2 per stale path (max -10) |
+| Consistency | 15 | -3 if test/build/deploy commands differ between context files |
+| Freshness | 15 | -2 if MEMORY.md conventions not promoted, -3 per context file not updated in 90+ days |
+
+### Score Calculation
+
+```
+score = 100
+for each check result:
+  apply deductions from the table above
+score = max(0, score)
+grade = lookup(score)
+```
+
+### Grade Bands
+
+| Score | Grade | Label |
+|-------|-------|-------|
+| 90–100 | A | Lean and current |
+| 80–89 | B | Minor tuning needed |
+| 70–79 | C | Needs attention |
+| 60–69 | D | Significant drift |
+| <60 | F | Overhaul recommended |
+
+### Report Format
+
+```
+AI Context Health: 82/100 (B — Minor tuning needed)
+
+Breakdown:
+  Line Budget:      23/25  (-2 AGENTS.md over 120-line warning)
+  Signal Quality:   22/25  (-3 CLAUDE.md has "Project Structure" section)
+  Path Accuracy:    18/20  (-2 .cursorrules references stale path)
+  Consistency:      15/15  ✓
+  Freshness:        4/15   (-2 MEMORY.md not promoted, -3 copilot-instructions.md stale 95 days, -3 .windsurfrules stale 110 days, -3 .clinerules stale 120 days)
+
+To reach grade A (90+): Remove "Project Structure" from CLAUDE.md (+3), fix stale path in .cursorrules (+2).
+```
+
+## CI Integration
+
+When run with `ci` argument, output machine-readable format and exit code 1 on failures:
+
+```bash
+# GitHub Actions
+echo "CONTEXTDOCS_SCORE=82" >> "$GITHUB_OUTPUT"
+echo "CONTEXTDOCS_GRADE=B" >> "$GITHUB_OUTPUT"
+```
+
+Accept `--min-score N` to fail the CI job if the score falls below a threshold.
+
+## Anti-Patterns
+
+- **Don't ignore line budget warnings** — overstuffed files actively harm AI performance
+- **Don't include discoverable content** — agents read source code, manifests, and file trees on their own
+- **Don't let context files drift silently** — run verification after every release or use Context Guard hooks
+- **Don't check context files in CI without also verifying paths** — stale path references cause silent confusion for AI tools
+
+---
+
+# /contextdocs:ai-context Command
+
+---
+description: "Generate lean AI IDE context files using the Signal Gate principle — only what agents cannot discover on their own: $ARGUMENTS"
+argument-hint: "[claude|agents|cursor|copilot|windsurf|cline|gemini|all|init|update|promote|audit] or no args for all"
+allowed-tools:
+  - Read
+  - Glob
+  - Grep
+  - Bash
+  - Write
+  - Edit
+---
+
+# /ai-context
+
+Generate lean context files that help AI coding assistants understand your project's non-obvious conventions and constraints. Applies the Signal Gate principle — excludes discoverable content (directory listings, file trees, architecture overviews) that research shows reduces AI task success.
+
+## Behaviour
+
+1. Load the `ai-context` skill for templates, the Signal Gate, and the codebase analysis workflow
+2. Load the `context-quality` rule for quality criteria
+3. Run the codebase analysis: detect language, framework, test runner, linter, conventions
+4. Generate the requested context file(s) from the analysis results, filtering through the Signal Gate
+
+## Arguments
+
+### Generate
+- **No arguments** / `all`: Generate all applicable context files (AGENTS.md, CLAUDE.md, .cursorrules, .github/copilot-instructions.md, .windsurfrules, .clinerules, GEMINI.md)
+- `claude`: Generate CLAUDE.md only
+- `agents`: Generate AGENTS.md only
+- `cursor`: Generate .cursorrules only
+- `copilot`: Generate .github/copilot-instructions.md only
+- `windsurf`: Generate .windsurfrules only
+- `cline`: Generate .clinerules only
+- `gemini`: Generate GEMINI.md only
+
+### Lifecycle
+- `init`: Bootstrap a new project — generate missing context files, offer Context Guard hooks, run audit. Skips existing files.
+- `update`: Patch only what drifted since the last context update, using git change detection. Preserves human edits.
+- `promote`: Scan Claude Code's auto-memory (MEMORY.md) for stable patterns and assist promoting them to CLAUDE.md.
+- `audit`: Check existing context files for staleness, drift, discoverable content, and Context Guard status.
+
+## Output
+
+Each generated file is written directly to disk. Line counts should stay within the Signal Gate budgets (CLAUDE.md <80, AGENTS.md <120, others <60).
+
+```
+AI Context Files:
+  ✓ AGENTS.md — generated (48 lines)
+  ✓ CLAUDE.md — generated (35 lines)
+  ✓ .cursorrules — generated (28 lines)
+  ✓ .github/copilot-instructions.md — generated (25 lines)
+  ✓ .windsurfrules — generated (22 lines)
+  ✓ .clinerules — generated (30 lines)
+  ✓ GEMINI.md — generated (24 lines)
+```
+
+Audit mode:
+```
+AI Context Audit:
+  ✓ AGENTS.md — up to date (48 lines, within budget)
+  ⚠ CLAUDE.md — references jest but vitest.config.ts detected
+  ✗ .cursorrules — references src/index.ts but file moved to src/main.ts
+  · GEMINI.md — not present (recommend generating)
+  ℹ MEMORY.md — contains 3 conventions that may belong in CLAUDE.md (run /contextdocs:ai-context promote)
+
+  Context Guard:
+    ✓ Tier 1 active (Stop hook)
+    ✗ Tier 2 not installed
+```
+
+---
+
+# /contextdocs:context-guard Command
+
+---
+description: "Install, uninstall, or check status of Context Guard hooks for AI context file freshness: $ARGUMENTS"
+argument-hint: "[install|install strict|uninstall|status] — Claude Code only"
+allowed-tools:
+  - Read
+  - Glob
+  - Grep
+  - Bash
+  - Write
+  - Edit
+---
+
+# /context-guard
+
+Install opt-in hooks that detect stale AI context files, remind you to update them, and prevent content filter errors when generating standard OSS files. **Claude Code only** — these hooks use Claude Code's PreToolUse, PostToolUse, and Stop hook system, which is not supported by OpenCode, Codex CLI, or other AI coding tools.
+
+Context Guard has two enforcement tiers:
+
+- **Tier 1 — Nudge** (default): Advisory. A Stop hook suggests updating context docs before the session ends. Claude can still stop if context docs genuinely don't need changes.
+- **Tier 2 — Guard** (opt-in): Blocking. A PreToolUse hook blocks `git commit` when structural files are staged without context doc updates.
+
+## Behaviour
+
+1. Load the `context-guard` skill for reference
+2. Execute the requested action: `install`, `install strict`, `uninstall`, or `status`
+
+## Arguments
+
+- **`install`**: Install Context Guard (Tier 1) into the current project:
+  1. Create `.claude/hooks/` directory if it does not exist
+  2. Copy `context-drift-check.sh`, `context-structural-change.sh`, `content-filter-guard.sh`, and `context-guard-stop.sh` from the plugin's `hooks/` directory to `.claude/hooks/`
+  3. Make the scripts executable (`chmod +x`)
+  4. Merge PreToolUse, PostToolUse, and Stop hook entries into `.claude/settings.json` (create the file if needed; if entries already exist, append without overwriting)
+  5. Copy `context-quality.md` to `.claude/rules/context-quality.md` (create directory if needed)
+  6. Report what was installed
+
+- **`install strict`**: Install Context Guard (Tier 1 + Tier 2) into the current project:
+  1. Perform all steps from `install` above
+  2. Additionally copy `context-commit-guard.sh` from the plugin's `hooks/` directory to `.claude/hooks/`
+  3. Add a PreToolUse Bash hook entry for `context-commit-guard.sh` to `.claude/settings.json`
+  4. Report what was installed, noting Tier 2 is active
+
+- **`uninstall`**: Remove all Context Guard hooks from the current project:
+  1. Remove `.claude/hooks/context-drift-check.sh`, `.claude/hooks/context-structural-change.sh`, `.claude/hooks/content-filter-guard.sh`, `.claude/hooks/context-guard-stop.sh`, and `.claude/hooks/context-commit-guard.sh`
+  2. Remove all Context Guard hook entries (PreToolUse, PostToolUse, and Stop) from `.claude/settings.json` (preserve other hooks)
+  3. Remove `.claude/rules/context-quality.md`
+  4. Report what was removed
+
+- **`status`**: Check installation state and current drift:
+  1. Check if hook scripts exist in `.claude/hooks/`
+  2. Check if hook entries are present in `.claude/settings.json`
+  3. Check if the quality rule exists in `.claude/rules/`
+  4. Determine which tier is active (Tier 1 if Stop hook present, Tier 2 if commit guard also present)
+  5. Run a quick drift check (same logic as `/contextdocs:ai-context audit`) to report current staleness
+  6. Report findings
+
+## Output
+
+### Install
+```
+Context Guard installed (Tier 1 — Nudge):
+  ✓ .claude/hooks/context-drift-check.sh — warns after commits if context files are stale
+  ✓ .claude/hooks/context-structural-change.sh — reminds after structural file changes
+  ✓ .claude/hooks/content-filter-guard.sh — blocks Write on high-risk OSS files, advises on medium-risk
+  ✓ .claude/hooks/context-guard-stop.sh — nudges to update context docs before session ends
+  ✓ .claude/rules/context-quality.md — auto-loaded quality standards for context files
+  ✓ .claude/settings.json — PreToolUse, PostToolUse, and Stop hooks registered
+
+Tier 2 (Guard) not installed. Run /contextdocs:context-guard install strict to also
+block commits when structural files change without context doc updates.
+
+Note: These hooks are Claude Code-specific. If your team also uses OpenCode or
+Codex CLI, the hooks will be ignored by those tools (no errors, just no effect).
+Add .claude/hooks/ to .gitignore if you prefer hooks to be per-developer.
+```
+
+### Install Strict
+```
+Context Guard installed (Tier 1 + Tier 2 — Nudge + Guard):
+  ✓ .claude/hooks/context-drift-check.sh — warns after commits if context files are stale
+  ✓ .claude/hooks/context-structural-change.sh — reminds after structural file changes
+  ✓ .claude/hooks/content-filter-guard.sh — blocks Write on high-risk OSS files, advises on medium-risk
+  ✓ .claude/hooks/context-guard-stop.sh — nudges to update context docs before session ends
+  ✓ .claude/hooks/context-commit-guard.sh — blocks commits with stale context docs
+  ✓ .claude/rules/context-quality.md — auto-loaded quality standards for context files
+  ✓ .claude/settings.json — PreToolUse, PostToolUse, and Stop hooks registered
+```
+
+### Status
+```
+Context Guard Status:
+  ✓ Tier 1 — Nudge (Stop hook active — reminds about context docs before session end)
+  ✓ Tier 2 — Guard (commit blocker active — blocks commits with stale context)
+  ✓ Base hooks installed (3/3 scripts in .claude/hooks/)
+  ✓ Settings configured (PreToolUse, PostToolUse, and Stop entries in .claude/settings.json)
+  ✓ Quality rule active (.claude/rules/context-quality.md)
+
+Drift check:
+  ✓ CLAUDE.md — up to date
+  ⚠ AGENTS.md — 12 source commits since last update
+  ✓ .cursorrules — up to date
+  · GEMINI.md — not present
+```
+
+---
+
+# /contextdocs:context-verify Command
+
+---
+description: "Validate AI context file quality — signal-to-noise ratio, line budgets, stale paths, cross-file consistency, and context health scoring: $ARGUMENTS"
+argument-hint: "[ci|ci --min-score N] or no args for interactive report"
+allowed-tools:
+  - Read
+  - Glob
+  - Grep
+  - Bash
+---
+
+# /context-verify
+
+Validate the quality and freshness of AI context files in the current project. Scores signal-to-noise ratio, checks line budgets, detects stale paths, verifies cross-file consistency, and flags MEMORY.md drift.
+
+## Behaviour
+
+1. Load the `context-verify` skill for the full verification framework and scoring rubric
+2. Run all verification checks against existing context files
+3. Calculate and report the context health score
+
+## Arguments
+
+- **No arguments**: Run full verification with interactive report
+- `ci`: Output machine-readable format for CI/CD pipelines (exit code 1 on failures)
+- `ci --min-score N`: Fail if score falls below threshold N
+
+## Output
+
+```
+AI Context Health: 85/100 (B — Minor tuning needed)
+
+Breakdown:
+  Line Budget:      25/25  ✓
+  Signal Quality:   20/25  (-3 AGENTS.md has file tree, -2 dependency listing)
+  Path Accuracy:    18/20  (-2 .cursorrules references src/old.ts)
+  Consistency:      15/15  ✓
+  Freshness:         7/15  (-2 MEMORY.md not promoted, -3 copilot-instructions.md stale, -3 .windsurfrules stale)
+
+To reach grade A (90+): Remove file tree from AGENTS.md (+3), fix stale path (+2).
+```
+
+---
+
+# Context Quality Rule
+
+# AI Context File Quality Standards
+
+When generating or updating AI context files (CLAUDE.md, AGENTS.md, GEMINI.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules), follow these standards.
+
+## Cross-File Consistency
+
+All context files for a project must agree on:
+
+- Language and framework version
+- Key commands (test, build, lint, deploy)
+- Directory structure and key file paths
+- Naming conventions and coding standards
+- Critical rules and constraints
+
+When updating one context file, check if the same information appears in others and update them too.
+
+## Path Verification
+
+Every file path mentioned in a context file must exist on disk. Before writing a context file, verify referenced paths:
+
+```bash
+test -f "path/to/file" || echo "WARN: path does not exist"
+```
+
+Never reference deleted files, renamed modules, or moved directories without checking first.
+
+## Version Accuracy
+
+Context files must reference the correct:
+
+- Language runtime version (from `.nvmrc`, `engines`, `requires-python`, `go.mod`)
+- Framework version (from `package.json`, `pyproject.toml`)
+- Test runner (jest vs vitest vs pytest vs go test)
+- Linter/formatter (eslint vs biome, ruff vs flake8)
+
+## Command Accuracy
+
+Every command listed in a context file (test, build, lint, deploy) must be runnable. Verify against `package.json` scripts, `Makefile` targets, or `pyproject.toml` scripts before writing.
+
+## Sync Points
+
+When project structure, dependencies, commands, or conventions change, update all context files that reference the affected content. Load the `ai-context` skill for the full sync matrix.
+
+## Tool Compatibility
+
+Not all context files work in all tools. Key distinctions: `AGENTS.md` works in Claude Code, OpenCode, Codex CLI, and Gemini CLI. `CLAUDE.md` works in Claude Code and OpenCode. `.cursorrules`, `.windsurfrules`, `.clinerules`, `GEMINI.md`, and `.github/copilot-instructions.md` are tool-specific. `.claude/rules/*.md` and hooks are Claude Code only. `MEMORY.md` is auto-written by Claude — not user-authored, not version-controlled. For GitLab/Bitbucket projects, generate only tool-agnostic context files.
+
+For context file size guidance and the Signal Gate principle, load the `ai-context` skill.
+
+---
+
+# Context Awareness Rule
+
+# Context Awareness
+
+When working on a project with ContextDocs installed, recognise moments when AI context files may need attention and suggest the appropriate command. This is advisory — never block work, just surface the right tool at the right time.
+
+## Context Trigger Map
+
+| You Notice | Suggest | Why |
+|-----------|---------|-----|
+| Structural files changed (skills, commands, agents, rules, config) | `/contextdocs:ai-context audit` | AI context files may reference stale paths or counts |
+| New dependency or framework added | `/contextdocs:ai-context` | Context files should reflect the current tech stack |
+| MEMORY.md contains repeated project conventions or stable patterns | `/contextdocs:ai-context promote` | Promote stable auto-memory insights to CLAUDE.md where the whole team benefits |
+| Test runner, linter, or formatter changed | `/contextdocs:ai-context update` | Commands in context files may reference outdated tooling |
+| Source files renamed or moved | `/contextdocs:context-verify` | Context files may reference stale paths |
+| Project going public or onboarding new contributors | `/contextdocs:ai-context init` | Bootstrap context files so every AI tool understands the project from day one |
+| Pre-release or version bump | `/contextdocs:context-verify` | Verify context files are current before shipping |
+
+## When NOT to Suggest
+
+- During debugging, testing, or CI troubleshooting — stay focused on the immediate problem
+- When the user is mid-flow on a complex coding task — wait for a natural pause
+- When the same suggestion was already made this session — don't repeat
+- For trivial code changes (typos, formatting) that don't affect context files
+
+---
+
+# Context Drift Check Hook
+
+```bash
+#!/bin/bash
+# context-drift-check.sh
+# Hook: PostToolUse (Bash, matching git commit)
+# Purpose: Detect stale AI context files after commits
+# Installed by: /contextdocs:context-guard install
+#
+# Claude Code only — OpenCode, Codex CLI, Cursor, and other tools
+# do not support Claude Code hooks.
+
+set -euo pipefail
+
+# Read hook input from stdin
+INPUT=$(cat)
+TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty' 2>/dev/null)
+COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)
+
+# Only process successful git commit commands
+[ "$TOOL_NAME" != "Bash" ] && echo '{}' && exit 0
+[[ "$COMMAND" != *"git commit"* ]] && echo '{}' && exit 0
+
+# Resolve project directory
+PROJECT_DIR="${CLAUDE_PROJECT_DIR:-.}"
+cd "$PROJECT_DIR" || { echo '{}'; exit 0; }
+
+# Must be inside a git repository
+git rev-parse --is-inside-work-tree &>/dev/null || { echo '{}'; exit 0; }
+
+# Throttle: skip if checked less than 1 hour ago
+THROTTLE_FILE=".git/.context-guard-last-check"
+if [ -f "$THROTTLE_FILE" ]; then
+  LAST_CHECK=$(cat "$THROTTLE_FILE" 2>/dev/null || echo "0")
+  NOW=$(date +%s)
+  ELAPSED=$((NOW - LAST_CHECK))
+  [ "$ELAPSED" -lt 3600 ] && echo '{}' && exit 0
+fi
+
+# Context files to check
+CONTEXT_FILES=("CLAUDE.md" "AGENTS.md" "GEMINI.md" ".cursorrules"
+               ".github/copilot-instructions.md" ".windsurfrules" ".clinerules")
+
+STALE=()
+BROKEN_PATHS=()
+
+for CTX in "${CONTEXT_FILES[@]}"; do
+  [ ! -f "$CTX" ] && continue
+
+  # Last commit that touched this context file
+  CTX_COMMIT_TIME=$(git log -1 --format=%ct -- "$CTX" 2>/dev/null || echo "0")
+
+  # Last commit that touched source files (excluding docs)
+  SRC_COMMIT_TIME=$(git log -1 --format=%ct -- \
+    '*.ts' '*.js' '*.py' '*.go' '*.rs' '*.json' '*.toml' '*.yaml' '*.yml' \
+    ':!*.md' ':!CHANGELOG.md' ':!README.md' ':!docs/*' 2>/dev/null || echo "0")
+
+  if [ "$SRC_COMMIT_TIME" -gt "$CTX_COMMIT_TIME" ] 2>/dev/null; then
+    CTX_HASH=$(git log -1 --format=%H -- "$CTX" 2>/dev/null || echo "HEAD")
+    COMMITS_BEHIND=$(git rev-list --count "$CTX_HASH"..HEAD -- \
+      '*.ts' '*.js' '*.py' '*.go' '*.rs' '*.json' '*.toml' '*.yaml' '*.yml' \
+      ':!*.md' 2>/dev/null || echo "?")
+    STALE+=("$CTX: $COMMITS_BEHIND source commits since last update")
+  fi
+
+  # Quick broken-path check: extract backtick-quoted file references
+  while IFS= read -r REF_PATH; do
+    if [ -n "$REF_PATH" ] && [ ! -e "$REF_PATH" ]; then
+      # Fallback: check if basename exists anywhere in repo (tracked or untracked)
+      BASENAME=$(basename "$REF_PATH")
+      if ! git ls-files "*/$BASENAME" "$BASENAME" 2>/dev/null | grep -q . \
+        && ! find . -name "$BASENAME" -not -path './.git/*' -print -quit 2>/dev/null | grep -q .; then
+        BROKEN_PATHS+=("$CTX references \`$REF_PATH\` (not found)")
+      fi
+    fi
+  done < <(grep -oE '`[a-zA-Z][a-zA-Z0-9._/-]+\.(ts|js|py|go|rs|md|json|toml|yaml|yml|sh)`' "$CTX" 2>/dev/null \
+    | tr -d '`' | sort -u | head -20)
+done
+
+# Update throttle timestamp
+date +%s > "$THROTTLE_FILE" 2>/dev/null
+
+# Build output
+ISSUES=()
+for S in "${STALE[@]}"; do ISSUES+=("  - $S"); done
+for B in "${BROKEN_PATHS[@]}"; do ISSUES+=("  - $B"); done
+
+if [ ${#ISSUES[@]} -gt 0 ]; then
+  # Build multiline message
+  MSG="AI CONTEXT DRIFT DETECTED:"
+  for I in "${ISSUES[@]}"; do
+    MSG="$MSG\n$I"
+  done
+  MSG="$MSG\nRun /contextdocs:ai-context audit to check, or /contextdocs:ai-context to regenerate."
+
+  # Escape for JSON
+  MSG_JSON=$(printf '%s' "$MSG" | sed 's/"/\\"/g')
+
+  cat << EOF
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PostToolUse",
+    "additionalContext": "$MSG_JSON"
+  }
+}
+EOF
+else
+  echo '{}'
+fi
+```
+
+---
+
+# Context Structural Change Hook
+
+```bash
+#!/bin/bash
+# context-structural-change.sh
+# Hook: PostToolUse (Write|Edit, matching structural files)
+# Purpose: Remind about context file updates after structural changes
+# Installed by: /contextdocs:context-guard install
+#
+# Claude Code only — OpenCode, Codex CLI, Cursor, and other tools
+# do not support Claude Code hooks.
+
+set -euo pipefail
+
+# Read hook input from stdin
+INPUT=$(cat)
+TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty' 2>/dev/null)
+FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty' 2>/dev/null)
+
+# Only process Write and Edit
+[[ "$TOOL_NAME" != "Write" && "$TOOL_NAME" != "Edit" ]] && echo '{}' && exit 0
+[ -z "$FILE_PATH" ] && echo '{}' && exit 0
+
+# Resolve project directory
+PROJECT_DIR="${CLAUDE_PROJECT_DIR:-.}"
+cd "$PROJECT_DIR" || { echo '{}'; exit 0; }
+
+# Check if any context files exist (no point reminding if none are tracked)
+HAS_CONTEXT=false
+for CTX in CLAUDE.md AGENTS.md GEMINI.md .cursorrules .windsurfrules .clinerules; do
+  [ -f "$CTX" ] && HAS_CONTEXT=true && break
+done
+[ "$HAS_CONTEXT" = false ] && echo '{}' && exit 0
+
+# Determine what type of structural change this is
+MSG=""
+# Extract just the filename/relative portion for matching
+# Claude Code may pass absolute or relative paths
+REL_PATH="${FILE_PATH##"$PROJECT_DIR"/}"
+REL_PATH="${REL_PATH#/}"
+
+case "$REL_PATH" in
+  commands/*.md)
+    MSG="You modified a command definition. AGENTS.md, CLAUDE.md, and llms.txt may need their command tables updated."
+    ;;
+  .claude/skills/*/SKILL.md|.agents/skills/*/SKILL.md)
+    MSG="You modified a skill. AGENTS.md, CLAUDE.md, and llms.txt may need their skill listings updated."
+    ;;
+  .claude/agents/*.md|.agents/agents/*.md)
+    MSG="You modified an agent definition. AGENTS.md may need updating."
+    ;;
+  .claude/rules/context-quality.md)
+    # Context Guard's own quality rule — not a project structural change
+    echo '{}'; exit 0
+    ;;
+  .claude/rules/*.md)
+    MSG="You modified a rule. CLAUDE.md and AGENTS.md may need updating if they list rules."
+    ;;
+  package.json|*/package.json|pyproject.toml|*/pyproject.toml|Cargo.toml|*/Cargo.toml|go.mod|*/go.mod)
+    MSG="Project manifest changed. AI context files may reference outdated dependencies or commands."
+    ;;
+  tsconfig*.json|*/tsconfig*.json|wrangler.toml|*/wrangler.toml|vitest.config*|*/vitest.config*|jest.config*|*/jest.config*|eslint.config*|*/eslint.config*|biome.json|*/biome.json)
+    MSG="Build/test/lint configuration changed. AI context files may reference outdated tooling."
+    ;;
+  *)
+    echo '{}'; exit 0
+    ;;
+esac
+
+if [ -n "$MSG" ]; then
+  MSG_JSON=$(printf '%s' "$MSG" | sed 's/"/\\"/g')
+  cat << EOF
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PostToolUse",
+    "additionalContext": "CONTEXT REMINDER: $MSG_JSON Run /contextdocs:ai-context audit to check."
+  }
+}
+EOF
+else
+  echo '{}'
+fi
+```
+
+---
+
+# Content Filter Guard Hook
+
+```bash
+#!/bin/bash
+# content-filter-guard.sh
+# Hook: PreToolUse (Write)
+# Purpose: Prevent content filter errors by intercepting Write operations
+#          on files known to trigger Claude Code's API content filter (HTTP 400).
+#          HIGH-risk files are blocked with a fetch-from-URL suggestion.
+#          MEDIUM-risk files pass through with a chunked-writing advisory.
+# Installed by: /context-guard install
+#
+# Claude Code only — OpenCode, Codex CLI, Cursor, and other tools
+# do not support Claude Code hooks.
+
+set -euo pipefail
+
+# Read hook input from stdin
+INPUT=$(cat)
+TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty' 2>/dev/null)
+FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty' 2>/dev/null)
+
+# Only process Write operations
+[ "$TOOL_NAME" != "Write" ] && echo '{}' && exit 0
+[ -z "$FILE_PATH" ] && echo '{}' && exit 0
+
+# Extract just the filename for matching
+FILENAME=$(basename "$FILE_PATH")
+
+# HIGH-risk files: BLOCK the write
+case "$FILENAME" in
+  CODE_OF_CONDUCT.md|CODE_OF_CONDUCT.MD)
+    cat << 'EOF'
+{
+  "decision": "block",
+  "reason": "CODE_OF_CONDUCT.md is HIGH risk for content filter errors (HTTP 400). Fetch from the canonical URL instead:\n\ncurl -sL \"https://www.contributor-covenant.org/version/3/0/code_of_conduct/code_of_conduct.md\" -o CODE_OF_CONDUCT.md\n\nThen use Edit to replace [INSERT CONTACT METHOD] with the project's contact details."
+}
+EOF
+    exit 1
+    ;;
+  LICENSE|LICENSE.md|LICENSE.txt|LICENCE|LICENCE.md|LICENCE.txt)
+    cat << 'EOF'
+{
+  "decision": "block",
+  "reason": "LICENSE is HIGH risk for content filter errors (HTTP 400). Fetch from SPDX instead:\n\ncurl -sL \"https://raw.githubusercontent.com/spdx/license-list-data/main/text/MIT.txt\" -o LICENSE\n\nReplace MIT with the appropriate SPDX identifier. Then use Edit to fill in [year] and [fullname]."
+}
+EOF
+    exit 1
+    ;;
+  SECURITY.md|SECURITY.MD)
+    cat << 'EOF'
+{
+  "decision": "block",
+  "reason": "SECURITY.md is MEDIUM-HIGH risk for content filter errors (HTTP 400). Fetch a template first:\n\ncurl -sL \"https://raw.githubusercontent.com/github/.github/main/SECURITY.md\" -o SECURITY.md\n\nNote: This fetches GitHub's own security policy. Use Edit to replace all GitHub-specific references with the project's details, including reporting method, response timeline, and supported versions."
+}
+EOF
+    exit 1
+    ;;
+esac
+
+# MEDIUM-risk files: ALLOW but advise
+case "$FILENAME" in
+  CHANGELOG.md|CHANGELOG.MD)
+    cat << 'EOF'
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PreToolUse",
+    "additionalContext": "CONTENT FILTER ADVISORY: CHANGELOG.md is MEDIUM risk. Keep this write under 15 lines of template-like content. For larger changelogs, write in chunks of 5-10 entries and use Edit to append subsequent sections."
+  }
+}
+EOF
+    exit 0
+    ;;
+  CONTRIBUTING.md|CONTRIBUTING.MD)
+    cat << 'EOF'
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PreToolUse",
+    "additionalContext": "CONTENT FILTER ADVISORY: CONTRIBUTING.md is LOW-MEDIUM risk. Start with project-specific content (development setup, actual commands) before generic sections (commit conventions, code review). Keep each write under 15 lines of template-like content."
+  }
+}
+EOF
+    exit 0
+    ;;
+esac
+
+# All other files: pass through
+echo '{}'
+```
+
+---
+
+# Context Guard Stop Hook
+
+```bash
+#!/bin/bash
+# context-guard-stop.sh
+# Hook: Stop
+# Purpose: Nudge Claude to update AI context files before ending a session
+#          when structural files (commands, skills, rules, config) were modified
+#          but context docs (CLAUDE.md, AGENTS.md, etc.) were not.
+# Tier: 1 (Nudge) — advisory, does not force; Claude can still stop
+# Installed by: /contextdocs:context-guard install
+#
+# Claude Code only — OpenCode, Codex CLI, Cursor, and other tools
+# do not support Claude Code hooks.
+
+set -euo pipefail
+
+# Read hook input from stdin
+INPUT=$(cat)
+
+# CRITICAL: Prevent infinite loops.
+# When stop_hook_active is true, Claude is already continuing due to a previous
+# Stop hook block. Allow it to stop this time.
+STOP_ACTIVE=$(echo "$INPUT" | jq -r '.stop_hook_active // false' 2>/dev/null)
+[ "$STOP_ACTIVE" = "true" ] && echo '{}' && exit 0
+
+# Skip in Untether sessions — Stop hook blocks displace user-requested
+# content in Telegram's single-message output model.
+[ -n "${UNTETHER_SESSION:-}" ] && echo '{}' && exit 0
+
+# Resolve project directory
+PROJECT_DIR="${CLAUDE_PROJECT_DIR:-.}"
+cd "$PROJECT_DIR" || { echo '{}'; exit 0; }
+
+# Must be inside a git repository
+git rev-parse --is-inside-work-tree &>/dev/null || { echo '{}'; exit 0; }
+
+# Check working tree + staged changes for structural file patterns
+CHANGED_FILES=$(git status --porcelain 2>/dev/null | awk '{print $NF}')
+[ -z "$CHANGED_FILES" ] && echo '{}' && exit 0
+
+# Structural file patterns that warrant context doc updates
+HAS_STRUCTURAL=false
+while IFS= read -r FILE; do
+  case "$FILE" in
+    # Skip Context Guard's own infrastructure — not project structural changes
+    .claude/hooks/*|.claude/rules/context-quality.md|.claude/settings.json) continue ;;
+    commands/*.md) HAS_STRUCTURAL=true; break ;;
+    .claude/skills/*/SKILL.md) HAS_STRUCTURAL=true; break ;;
+    .agents/skills/*/SKILL.md) HAS_STRUCTURAL=true; break ;;
+    .claude/agents/*.md) HAS_STRUCTURAL=true; break ;;
+    .agents/agents/*.md) HAS_STRUCTURAL=true; break ;;
+    .claude/rules/*.md) HAS_STRUCTURAL=true; break ;;
+    package.json) HAS_STRUCTURAL=true; break ;;
+    pyproject.toml) HAS_STRUCTURAL=true; break ;;
+    Cargo.toml) HAS_STRUCTURAL=true; break ;;
+    go.mod) HAS_STRUCTURAL=true; break ;;
+    tsconfig*.json) HAS_STRUCTURAL=true; break ;;
+    wrangler.toml) HAS_STRUCTURAL=true; break ;;
+    vitest.config*) HAS_STRUCTURAL=true; break ;;
+    jest.config*) HAS_STRUCTURAL=true; break ;;
+    eslint.config*) HAS_STRUCTURAL=true; break ;;
+    biome.json) HAS_STRUCTURAL=true; break ;;
+    .claude-plugin/plugin.json) HAS_STRUCTURAL=true; break ;;
+  esac
+done <<< "$CHANGED_FILES"
+
+# Fast exit if no structural files changed (most sessions)
+[ "$HAS_STRUCTURAL" = false ] && echo '{}' && exit 0
+
+# Check if any context files were also modified
+HAS_CONTEXT=false
+while IFS= read -r FILE; do
+  case "$FILE" in
+    CLAUDE.md|AGENTS.md|GEMINI.md) HAS_CONTEXT=true; break ;;
+    .cursorrules|.windsurfrules|.clinerules) HAS_CONTEXT=true; break ;;
+    .github/copilot-instructions.md) HAS_CONTEXT=true; break ;;
+    llms.txt) HAS_CONTEXT=true; break ;;
+  esac
+done <<< "$CHANGED_FILES"
+
+# If structural changes exist without context updates, nudge
+if [ "$HAS_CONTEXT" = false ]; then
+  cat << 'EOF'
+{
+  "decision": "block",
+  "reason": "CONTEXT DOC NUDGE: You modified structural files (commands, skills, rules, or config) but no AI context files (CLAUDE.md, AGENTS.md, llms.txt, etc.) were updated. Consider updating relevant context docs before finishing. Run /contextdocs:ai-context audit to check what needs updating, or /contextdocs:ai-context to regenerate. If context docs genuinely don't need changes, you can finish — this is advisory only."
+}
+EOF
+  exit 0
+fi
+
+echo '{}'
+```
+
+---
+
+# Context Commit Guard Hook
+
+```bash
+#!/bin/bash
+# context-commit-guard.sh
+# Hook: PreToolUse (Bash, matching git commit)
+# Purpose: Block git commit when structural files are staged without
+#          corresponding AI context file updates.
+# Tier: 2 (Guard) — blocks the commit until context docs are staged
+# Installed by: /contextdocs:context-guard install strict
+#
+# Claude Code only — OpenCode, Codex CLI, Cursor, and other tools
+# do not support Claude Code hooks.
+
+set -euo pipefail
+
+# Read hook input from stdin
+INPUT=$(cat)
+TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty' 2>/dev/null)
+COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)
+
+# Only process Bash tool
+[ "$TOOL_NAME" != "Bash" ] && echo '{}' && exit 0
+
+# Only process git commit commands (including --amend, -m, etc.)
+[[ "$COMMAND" != *"git commit"* ]] && echo '{}' && exit 0
+
+# Resolve project directory
+PROJECT_DIR="${CLAUDE_PROJECT_DIR:-.}"
+cd "$PROJECT_DIR" || { echo '{}'; exit 0; }
+
+# Must be inside a git repository
+git rev-parse --is-inside-work-tree &>/dev/null || { echo '{}'; exit 0; }
+
+# Get staged files
+STAGED_FILES=$(git diff --cached --name-only 2>/dev/null)
+[ -z "$STAGED_FILES" ] && echo '{}' && exit 0
+
+# Check for structural file patterns in staging area
+HAS_STRUCTURAL=false
+while IFS= read -r FILE; do
+  case "$FILE" in
+    # Skip Context Guard's own infrastructure — not project structural changes
+    .claude/hooks/*|.claude/rules/context-quality.md|.claude/settings.json) continue ;;
+    commands/*.md) HAS_STRUCTURAL=true; break ;;
+    .claude/skills/*/SKILL.md) HAS_STRUCTURAL=true; break ;;
+    .agents/skills/*/SKILL.md) HAS_STRUCTURAL=true; break ;;
+    .claude/agents/*.md) HAS_STRUCTURAL=true; break ;;
+    .agents/agents/*.md) HAS_STRUCTURAL=true; break ;;
+    .claude/rules/*.md) HAS_STRUCTURAL=true; break ;;
+    package.json) HAS_STRUCTURAL=true; break ;;
+    pyproject.toml) HAS_STRUCTURAL=true; break ;;
+    Cargo.toml) HAS_STRUCTURAL=true; break ;;
+    go.mod) HAS_STRUCTURAL=true; break ;;
+    tsconfig*.json) HAS_STRUCTURAL=true; break ;;
+    wrangler.toml) HAS_STRUCTURAL=true; break ;;
+    vitest.config*) HAS_STRUCTURAL=true; break ;;
+    jest.config*) HAS_STRUCTURAL=true; break ;;
+    eslint.config*) HAS_STRUCTURAL=true; break ;;
+    biome.json) HAS_STRUCTURAL=true; break ;;
+    .claude-plugin/plugin.json) HAS_STRUCTURAL=true; break ;;
+  esac
+done <<< "$STAGED_FILES"
+
+# No structural files staged — allow commit
+[ "$HAS_STRUCTURAL" = false ] && echo '{}' && exit 0
+
+# Check if any context files are also staged
+HAS_CONTEXT=false
+while IFS= read -r FILE; do
+  case "$FILE" in
+    CLAUDE.md|AGENTS.md|GEMINI.md) HAS_CONTEXT=true; break ;;
+    .cursorrules|.windsurfrules|.clinerules) HAS_CONTEXT=true; break ;;
+    .github/copilot-instructions.md) HAS_CONTEXT=true; break ;;
+    llms.txt) HAS_CONTEXT=true; break ;;
+  esac
+done <<< "$STAGED_FILES"
+
+# Block commit if structural changes without context updates
+if [ "$HAS_CONTEXT" = false ]; then
+  echo "COMMIT BLOCKED: Structural files (commands, skills, rules, or config) are staged but no AI context docs (CLAUDE.md, AGENTS.md, llms.txt, etc.) were updated. Update and stage the relevant context files before committing. Run /contextdocs:ai-context audit to check what needs updating, or /contextdocs:ai-context to regenerate." >&2
+  exit 2
+fi
+
+echo '{}'
+```
+
+---
+
+# Upstream Versions
+
+```json
+{
+  "description": "Pinned upstream specification versions. The check-upstream GitHub Action compares these against live sources monthly.",
+  "sources": {
+    "agents-md": {
+      "version": "1.0",
+      "url": "https://github.com/agentsmd/agents.md",
+      "repo": "agentsmd/agents.md",
+      "check_url": "https://api.github.com/repos/agentsmd/agents.md/releases/latest",
+      "last_verified": "2026-03-10",
+      "stability": "evolving — v1.1 proposals in progress"
+    }
+  }
+}
+```
+
+---
+
+# Plugin Manifest
+
+```json
+{
+  "name": "contextdocs",
+  "version": "1.0.0",
+  "description": "Generate, maintain, and audit AI IDE context files (AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, GEMINI.md) using the Signal Gate principle — only what agents cannot discover on their own. Includes Context Guard hooks for freshness enforcement, context verification scoring, and MEMORY.md promotion. Claude Code, OpenCode, Codex CLI, and Gemini CLI compatible.",
+  "author": {
+    "name": "Little Bear Apps",
+    "email": "hello@littlebearapps.com"
+  },
+  "homepage": "https://littlebearapps.com/builds/contextdocs",
+  "repository": "https://github.com/littlebearapps/contextdocs",
+  "license": "MIT",
+  "keywords": [
+    "ai-context",
+    "agents-md",
+    "claude-md",
+    "cursorrules",
+    "copilot-instructions",
+    "windsurfrules",
+    "clinerules",
+    "gemini-md",
+    "signal-gate",
+    "context-guard",
+    "context-freshness",
+    "context-drift",
+    "context-verification",
+    "memory-promotion",
+    "hooks",
+    "little-bear-apps"
+  ]
+}
+```
