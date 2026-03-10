@@ -11,10 +11,11 @@
   <a href="LICENSE"><img src="https://img.shields.io/github/license/littlebearapps/contextdocs" alt="License" /></a>
   <a href="https://code.claude.com/docs/en/plugins"><img src="https://img.shields.io/badge/Claude_Code-Plugin-D97757?logo=claude&logoColor=white" alt="Claude Code Plugin" /></a>
   <a href="https://opencode.ai/"><img src="https://img.shields.io/badge/OpenCode-Compatible-22c55e" alt="OpenCode Compatible" /></a>
+  <a href="https://github.com/littlebearapps/contextdocs/stargazers"><img src="https://img.shields.io/github/stars/littlebearapps/contextdocs?style=flat&color=yellow" alt="GitHub Stars" /></a>
 </p>
 
 <p align="center">
-  <a href="#-get-started">Get Started</a> · <a href="#-features">Features</a> · <a href="#-commands">Commands</a> · <a href="CONTRIBUTING.md">Contributing</a>
+  <a href="#-get-started">Get Started</a> · <a href="#-features">Features</a> · <a href="#-commands">Commands</a> · <a href="#-documentation">Docs</a> · <a href="CONTRIBUTING.md">Contributing</a>
 </p>
 
 ---
@@ -89,6 +90,15 @@ Every context file stays within line budgets (CLAUDE.md <80, AGENTS.md <120, oth
 /contextdocs:context-verify           # Score context file health (0–100)
 /contextdocs:context-guard install    # Install freshness hooks (Tier 1)
 ```
+
+---
+
+## 📚 Documentation
+
+- [Getting Started Guide](docs/guides/getting-started.md) — Installation, first context file generation, and Context Guard setup
+- [Troubleshooting](docs/guides/troubleshooting.md) — Signal Gate issues, hook problems, content filter errors, and FAQ
+- [Documentation Hub](docs/README.md) — All guides and reference links
+- [Support](SUPPORT.md) — Getting help and common questions
 
 ---
 

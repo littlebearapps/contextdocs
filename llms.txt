@@ -2,11 +2,19 @@
 
 > AI IDE context file management for Claude Code, OpenCode, Codex CLI, and Gemini CLI. A Claude Code plugin that generates, maintains, and audits AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, and GEMINI.md using the Signal Gate principle. Includes Context Guard hooks for freshness enforcement, context verification scoring, and MEMORY.md promotion. Pure Markdown, zero runtime dependencies.
 
+- [SKILL.md](./SKILL.md): Root-level skill manifest for directory submissions — plugin overview, installation, all commands, and output format
+
 ## Docs
 
 - [README](./README.md): Project overview, value proposition, quick start, commands, and features
+- [Contributing](./CONTRIBUTING.md): Development setup, how to improve skills, modify hooks, and submit PRs
+- [Changelog](./CHANGELOG.md): Version history with user-facing change descriptions
 - [AGENTS.md](./AGENTS.md): Cross-tool AI context with skills reference and commands overview
 - [Claude.md](./CLAUDE.md): Claude Code project context — architecture, conventions, key files
+- [Support](./SUPPORT.md): Getting help, common questions, contact details, and response times
+- [Docs Hub](./docs/README.md): Documentation index with guides and reference links
+- [Getting Started Guide](./docs/guides/getting-started.md): Step-by-step installation, first context file generation, and Context Guard setup
+- [Troubleshooting Guide](./docs/guides/troubleshooting.md): Signal Gate issues, hook problems, content filter errors, cross-tool compatibility, FAQ
 
 ## Skills
 
@@ -31,3 +39,7 @@
 - [Context Commit Guard Hook](./hooks/context-commit-guard.sh): PreToolUse hook that blocks commits with stale context — Tier 2 (Claude Code only)
 - [Upstream Versions](./upstream-versions.json): Pinned AGENTS.md spec version, checked monthly by GitHub Action
 - [Plugin Manifest](./.claude-plugin/plugin.json): Plugin metadata, version, keywords, and author info
+- [Security](./SECURITY.md): Vulnerability reporting process and response timeline
+- [Code of Conduct](./CODE_OF_CONDUCT.md): Community behaviour standards (Contributor Covenant v3.0)
+- [License](./LICENSE): MIT licence terms
+- [Evaluation Scenarios](./tests/evaluations.json): 16 test scenarios for command routing verification — maps commands and natural language triggers to expected skills, includes negative cases

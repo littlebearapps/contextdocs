@@ -1,0 +1,111 @@
+[
+  {
+    "id": "cmd-ai-context-init",
+    "input": "/contextdocs:ai-context init",
+    "expected_skill": "ai-context",
+    "should_respond": true,
+    "description": "AI context init command routes to ai-context skill"
+  },
+  {
+    "id": "cmd-ai-context-update",
+    "input": "/contextdocs:ai-context update",
+    "expected_skill": "ai-context",
+    "should_respond": true,
+    "description": "AI context update command routes to ai-context skill"
+  },
+  {
+    "id": "cmd-ai-context-promote",
+    "input": "/contextdocs:ai-context promote",
+    "expected_skill": "ai-context",
+    "should_respond": true,
+    "description": "AI context promote command routes to ai-context skill"
+  },
+  {
+    "id": "cmd-ai-context-audit",
+    "input": "/contextdocs:ai-context audit",
+    "expected_skill": "ai-context",
+    "should_respond": true,
+    "description": "AI context audit command routes to ai-context skill"
+  },
+  {
+    "id": "cmd-ai-context-claude",
+    "input": "/contextdocs:ai-context claude",
+    "expected_skill": "ai-context",
+    "should_respond": true,
+    "description": "Single-tool generation routes to ai-context skill"
+  },
+  {
+    "id": "cmd-context-guard-install",
+    "input": "/contextdocs:context-guard install",
+    "expected_skill": "context-guard",
+    "should_respond": true,
+    "description": "Context Guard install command routes to context-guard skill"
+  },
+  {
+    "id": "cmd-context-guard-status",
+    "input": "/contextdocs:context-guard status",
+    "expected_skill": "context-guard",
+    "should_respond": true,
+    "description": "Context Guard status command routes to context-guard skill"
+  },
+  {
+    "id": "cmd-context-verify",
+    "input": "/contextdocs:context-verify",
+    "expected_skill": "context-verify",
+    "should_respond": true,
+    "description": "Context verify command routes to context-verify skill"
+  },
+  {
+    "id": "cmd-context-verify-ci",
+    "input": "/contextdocs:context-verify ci --min-score 80",
+    "expected_skill": "context-verify",
+    "should_respond": true,
+    "description": "Context verify with CI argument routes correctly"
+  },
+  {
+    "id": "nl-stale-context",
+    "input": "My CLAUDE.md is out of date, can you update it?",
+    "expected_skill": "ai-context",
+    "should_respond": true,
+    "description": "Natural language about stale context triggers ai-context skill"
+  },
+  {
+    "id": "nl-context-hooks",
+    "input": "Set up hooks to keep my AI context files fresh",
+    "expected_skill": "context-guard",
+    "should_respond": true,
+    "description": "Natural language about context hooks triggers context-guard skill"
+  },
+  {
+    "id": "nl-context-quality",
+    "input": "Score my context files and tell me what to fix",
+    "expected_skill": "context-verify",
+    "should_respond": true,
+    "description": "Natural language about context quality triggers context-verify skill"
+  },
+  {
+    "id": "nl-memory-promote",
+    "input": "Move my MEMORY.md patterns into CLAUDE.md",
+    "expected_skill": "ai-context",
+    "should_respond": true,
+    "description": "Natural language about MEMORY.md promotion triggers ai-context skill"
+  },
+  {
+    "id": "negative-readme",
+    "input": "Generate a README for this project",
+    "should_respond": false,
+    "reason": "README generation is a PitchDocs task, not ContextDocs"
+  },
+  {
+    "id": "negative-changelog",
+    "input": "/pitchdocs:changelog",
+    "should_respond": false,
+    "reason": "PitchDocs commands are not ContextDocs commands"
+  },
+  {
+    "id": "negative-test",
+    "input": "run the test suite",
+    "should_respond": false,
+    "reason": "Test execution is not a context management task"
+  }
+]

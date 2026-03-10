@@ -2,11 +2,19 @@
 
 > AI IDE context file management for Claude Code, OpenCode, Codex CLI, and Gemini CLI. A Claude Code plugin that generates, maintains, and audits AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, and GEMINI.md using the Signal Gate principle. Includes Context Guard hooks for freshness enforcement, context verification scoring, and MEMORY.md promotion. Pure Markdown, zero runtime dependencies.
 
+- [SKILL.md](./SKILL.md): Root-level skill manifest for directory submissions — plugin overview, installation, all commands, and output format
+
 ## Docs
 
 - [README](./README.md): Project overview, value proposition, quick start, commands, and features
+- [Contributing](./CONTRIBUTING.md): Development setup, how to improve skills, modify hooks, and submit PRs
+- [Changelog](./CHANGELOG.md): Version history with user-facing change descriptions
 - [AGENTS.md](./AGENTS.md): Cross-tool AI context with skills reference and commands overview
 - [Claude.md](./CLAUDE.md): Claude Code project context — architecture, conventions, key files
+- [Support](./SUPPORT.md): Getting help, common questions, contact details, and response times
+- [Docs Hub](./docs/README.md): Documentation index with guides and reference links
+- [Getting Started Guide](./docs/guides/getting-started.md): Step-by-step installation, first context file generation, and Context Guard setup
+- [Troubleshooting Guide](./docs/guides/troubleshooting.md): Signal Gate issues, hook problems, content filter errors, cross-tool compatibility, FAQ
 
 ## Skills
 
@@ -31,10 +39,91 @@
 - [Context Commit Guard Hook](./hooks/context-commit-guard.sh): PreToolUse hook that blocks commits with stale context — Tier 2 (Claude Code only)
 - [Upstream Versions](./upstream-versions.json): Pinned AGENTS.md spec version, checked monthly by GitHub Action
 - [Plugin Manifest](./.claude-plugin/plugin.json): Plugin metadata, version, keywords, and author info
+- [Security](./SECURITY.md): Vulnerability reporting process and response timeline
+- [Code of Conduct](./CODE_OF_CONDUCT.md): Community behaviour standards (Contributor Covenant v3.0)
+- [License](./LICENSE): MIT licence terms
+- [Evaluation Scenarios](./tests/evaluations.json): 16 test scenarios for command routing verification — maps commands and natural language triggers to expected skills, includes negative cases
 
 ---
 
-# README
+## SKILL.md
+
+Source: ./SKILL.md
+
+---
+name: contextdocs
+description: AI IDE context file management — generate, maintain, and audit AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, and GEMINI.md using the Signal Gate principle. Includes Context Guard hooks and context health scoring. Zero runtime dependencies.
+version: "1.0.0"
+author: Little Bear Apps
+tags:
+  - ai-context
+  - agents-md
+  - claude-md
+  - context-guard
+  - signal-gate
+  - claude-code-plugin
+---
+
+# ContextDocs — AI Context File Management
+
+## Overview
+
+ContextDocs is a pure Markdown Claude Code plugin that generates, maintains, and audits AI IDE context files for 7 tools. Every generated file follows the Signal Gate principle — only what agents cannot discover on their own — keeping context lean and effective.
+
+3 skills, 3 slash commands, 2 quality rules, 5 opt-in hooks. 100% Markdown, zero runtime dependencies, MIT licensed.
+
+## When to Use
+
+- Starting a new project and need AI context files for multiple tools
+- Existing context files have drifted out of date with your codebase
+- CLAUDE.md or AGENTS.md is overstuffed with discoverable content
+- You want to promote patterns from MEMORY.md into CLAUDE.md
+- Need to score context file quality for CI/CD enforcement
+
+## Instructions
+
+1. Install the plugin:
+   ```
+   /plugin marketplace add littlebearapps/lba-plugins
+   /plugin install contextdocs@lba-plugins
+   ```
+
+2. Navigate to any project repository
+
+3. Run commands:
+   - `/contextdocs:ai-context init` — Bootstrap all 7 context file types
+   - `/contextdocs:ai-context update` — Patch only what drifted
+   - `/contextdocs:ai-context promote` — Move MEMORY.md patterns to CLAUDE.md
+   - `/contextdocs:ai-context audit` — Check for staleness and drift
+   - `/contextdocs:context-guard install` — Install freshness hooks (Claude Code only)
+   - `/contextdocs:context-verify` — Score context file health (0–100)
+
+## Output Format
+
+Each command produces Markdown files written directly to the repository. Context files follow strict line budgets:
+
+| File | Budget | Tool |
+|------|--------|------|
+| CLAUDE.md | <80 lines | Claude Code |
+| AGENTS.md | <120 lines | Codex CLI, OpenCode, Gemini CLI |
+| .cursorrules | <60 lines | Cursor |
+| copilot-instructions.md | <60 lines | GitHub Copilot |
+| .windsurfrules | <60 lines | Windsurf |
+| .clinerules | <60 lines | Cline |
+| GEMINI.md | <60 lines | Gemini CLI |
+
+## Notes
+
+- Works with Claude Code and OpenCode natively; generated files work with 7 AI tools total
+- Signal Gate filtering excludes directory listings, file trees, and architecture overviews
+- Context Guard hooks are Claude Code only (opt-in)
+- For public-facing documentation (README, CHANGELOG, ROADMAP), see [PitchDocs](https://github.com/littlebearapps/pitchdocs)
+
+---
+
+## README
+
+Source: ./README.md
 
 <p align="center">
   <img src="docs/assets/contextdocs-logo-full.svg" height="200" alt="ContextDocs" />
@@ -49,10 +138,11 @@
   <a href="LICENSE"><img src="https://img.shields.io/github/license/littlebearapps/contextdocs" alt="License" /></a>
   <a href="https://code.claude.com/docs/en/plugins"><img src="https://img.shields.io/badge/Claude_Code-Plugin-D97757?logo=claude&logoColor=white" alt="Claude Code Plugin" /></a>
   <a href="https://opencode.ai/"><img src="https://img.shields.io/badge/OpenCode-Compatible-22c55e" alt="OpenCode Compatible" /></a>
+  <a href="https://github.com/littlebearapps/contextdocs/stargazers"><img src="https://img.shields.io/github/stars/littlebearapps/contextdocs?style=flat&color=yellow" alt="GitHub Stars" /></a>
 </p>
 
 <p align="center">
-  <a href="#-get-started">Get Started</a> · <a href="#-features">Features</a> · <a href="#-commands">Commands</a> · <a href="CONTRIBUTING.md">Contributing</a>
+  <a href="#-get-started">Get Started</a> · <a href="#-features">Features</a> · <a href="#-commands">Commands</a> · <a href="#-documentation">Docs</a> · <a href="CONTRIBUTING.md">Contributing</a>
 </p>
 
 ---
@@ -130,6 +220,15 @@ Every context file stays within line budgets (CLAUDE.md <80, AGENTS.md <120, oth
 
 ---
 
+## 📚 Documentation
+
+- [Getting Started Guide](docs/guides/getting-started.md) — Installation, first context file generation, and Context Guard setup
+- [Troubleshooting](docs/guides/troubleshooting.md) — Signal Gate issues, hook problems, content filter errors, and FAQ
+- [Documentation Hub](docs/README.md) — All guides and reference links
+- [Support](SUPPORT.md) — Getting help and common questions
+
+---
+
 ## 🔗 Related
 
 For public-facing repository documentation (README, CHANGELOG, ROADMAP, user guides, launch artifacts), see [PitchDocs](https://github.com/littlebearapps/pitchdocs).
@@ -148,7 +247,157 @@ See our [Contributing Guide](CONTRIBUTING.md) to get started.
 
 ---
 
-# AGENTS.md
+## Contributing
+
+Source: ./CONTRIBUTING.md
+
+# Contributing to ContextDocs
+
+Thank you for your interest in contributing! This plugin helps manage AI IDE context files, and we'd love your help making it even better.
+
+## Quick Links
+
+- [Open Issues](https://github.com/littlebearapps/contextdocs/issues) — Find something to work on
+- [Feature Requests](https://github.com/littlebearapps/contextdocs/issues/new) — Suggest improvements
+
+**Note:** Claude Code's API may return HTTP 400 ("Output blocked by content filtering policy") when generating `CODE_OF_CONDUCT.md`, `SECURITY.md`, or `LICENSE` files. This is a known Claude Code limitation, not a ContextDocs bug. The plugin includes a content filter guard hook that warns before attempting these writes.
+
+---
+
+## How the Plugin Works
+
+This is a Claude Code plugin — a collection of Markdown files and shell scripts that extend Claude's capabilities. There is no compiled code, no build step, and no runtime dependencies.
+
+```
+contextdocs/
+├── .claude-plugin/plugin.json     # Plugin manifest
+├── .claude/
+│   ├── rules/context-quality.md   # Context file quality standards
+│   ├── rules/context-awareness.md # Context trigger map
+│   └── skills/                    # Reference knowledge (loaded on-demand)
+│       ├── ai-context/SKILL.md    # Signal Gate generation
+│       ├── context-guard/SKILL.md # Hook installation
+│       └── context-verify/SKILL.md # Health scoring
+├── commands/                      # Slash commands
+├── hooks/                         # 5 opt-in shell scripts (Claude Code only)
+└── upstream-versions.json         # Pinned AGENTS.md spec version
+```
+
+---
+
+## Development Setup
+
+```bash
+git clone https://github.com/littlebearapps/contextdocs.git
+cd contextdocs
+# That's it — no dependencies to install
+```
+
+To test changes locally, install from your local path:
+```bash
+/plugin install /path/to/contextdocs
+```
+
+---
+
+## How to Contribute
+
+### Improving Context File Generation
+
+The most impactful contributions improve the quality of generated context files. Look at the skills in `.claude/skills/` — each contains Signal Gate rules, line budgets, and generation templates.
+
+When improving a skill:
+1. Show a before/after example of the generated context file
+2. Explain why the new version is better for the AI tool consuming it
+3. Check that line budgets are still respected
+
+### Improving Hook Scripts
+
+Hook scripts live in `hooks/`. When modifying:
+1. Test in a real Claude Code session with `/contextdocs:context-guard install`
+2. Verify the hook doesn't break on repos without context files
+3. Keep shell scripts POSIX-compatible where possible
+
+### Commit Messages
+
+We use [Conventional Commits](https://www.conventionalcommits.org/):
+
+- `feat: add new skill` — New functionality
+- `fix: correct path detection` — Bug fix
+- `docs: update readme` — Documentation only
+- `chore: update upstream versions` — Maintenance
+
+### Pull Requests
+
+1. Fork the repo and create a branch: `git checkout -b feature/your-feature`
+2. Make your changes
+3. Commit using conventional commits
+4. Push and open a pull request
+
+---
+
+## Testing Your Changes
+
+Since this plugin is primarily Markdown, verify changes by:
+
+1. Install your local copy: `/plugin install /path/to/contextdocs`
+2. Run the relevant command against a test repository
+3. Check that generated context files respect line budgets
+4. Verify hook scripts trigger correctly (if modified)
+
+---
+
+## Code of Conduct
+
+This project follows the [Contributor Covenant v3.0 Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to uphold this code.
+
+---
+
+## Questions?
+
+[Open an issue](https://github.com/littlebearapps/contextdocs/issues/new) — we're happy to help.
+
+Thank you for making ContextDocs better!
+
+---
+
+## Changelog
+
+Source: ./CHANGELOG.md
+
+# Changelog
+
+All notable changes to ContextDocs will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.1/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.0.0](https://github.com/littlebearapps/contextdocs/releases/tag/v1.0.0) (2026-03-10)
+
+### Added
+
+- **AI context file generation** — generate AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, and GEMINI.md from codebase analysis using the Signal Gate principle (moved from PitchDocs v1.19.3)
+- **Context Guard hooks** — two-tier enforcement for AI context file freshness: session-end nudge (Tier 1) and pre-commit blocking (Tier 2), plus post-commit drift detection, structural change reminders, and content filter protection (moved from PitchDocs v1.19.3)
+- **Context verification scoring** — 0–100 health score across 5 dimensions (line budget, signal quality, path accuracy, consistency, freshness) with CI integration (new, extracted from PitchDocs docs-verify Check 11)
+- **Lifecycle commands** — `init` (bootstrap), `update` (incremental drift patching), `promote` (MEMORY.md → CLAUDE.md), `audit` (staleness check)
+- **Context awareness rule** — auto-loaded trigger map suggesting ContextDocs commands when context-relevant work is detected
+- **AGENTS.md spec tracking** — pinned version in upstream-versions.json, monthly GitHub Action check for drift
+
+### Migration from PitchDocs
+
+If you previously used `/pitchdocs:ai-context` or `/pitchdocs:context-guard`, install ContextDocs and use the new prefixed commands:
+
+- `/pitchdocs:ai-context` → `/contextdocs:ai-context`
+- `/pitchdocs:context-guard` → `/contextdocs:context-guard`
+- NEW: `/contextdocs:context-verify` (context health scoring)
+
+Context Guard hooks already installed in projects continue to work — they are per-project files, not plugin-dependent.
+
+---
+
+## AGENTS.md
+
+Source: ./AGENTS.md
 
 # ContextDocs
 
@@ -181,7 +430,9 @@ These commands are defined in `commands/*.md` and can be invoked as slash comman
 
 ---
 
-# CLAUDE.md
+## Claude.md
+
+Source: ./CLAUDE.md
 
 # ContextDocs
 
@@ -226,7 +477,365 @@ ContextDocs was extracted from [PitchDocs](https://github.com/littlebearapps/pit
 
 ---
 
-# AI Context Skill
+## Support
+
+Source: ./SUPPORT.md
+
+# Support
+
+Need help with ContextDocs? Here's how to get it.
+
+## Getting Help
+
+- **GitHub Issues** — [Open an issue](https://github.com/littlebearapps/contextdocs/issues/new/choose) for bugs, feature requests, or questions about generated context files
+- **Existing Issues** — Browse [existing issues](https://github.com/littlebearapps/contextdocs/issues) — your question may already be resolved
+- **Contributing Guide** — See [CONTRIBUTING.md](CONTRIBUTING.md) to improve skills, fix hook scripts, or add new context file types
+
+## Common Questions
+
+### Context files are too long or contain discoverable content
+
+ContextDocs uses the Signal Gate principle — only include what agents cannot discover on their own. If generated files contain directory listings, file trees, or architecture overviews, run:
+
+```bash
+/contextdocs:context-verify
+```
+
+This scores your context files 0–100 and flags discoverable content that should be removed.
+
+### Context Guard hooks aren't triggering
+
+1. Check hook status: `/contextdocs:context-guard status`
+2. Verify hooks are in `.claude/settings.json` — they need explicit entries
+3. Context Guard hooks are Claude Code only — they don't work in OpenCode, Cursor, or other tools
+
+### Content filter blocks generation
+
+Claude Code's API may return HTTP 400 when generating `CODE_OF_CONDUCT.md`, `SECURITY.md`, or `LICENSE` files. This is a [known upstream issue](https://github.com/anthropics/claude-code/issues/2111). ContextDocs includes a content filter guard hook that warns before attempting to write these files.
+
+### Using with other AI tools
+
+ContextDocs works with Claude Code and OpenCode natively. The generated context files (.cursorrules, .windsurfrules, etc.) work with their respective tools automatically. See the [Getting Started guide](docs/guides/getting-started.md) for setup.
+
+## Contact
+
+- **Email**: [hello@littlebearapps.com](mailto:hello@littlebearapps.com)
+- **Security issues**: See [SECURITY.md](SECURITY.md) for responsible disclosure
+
+## Response Times
+
+- Bug reports: triaged within 48 hours
+- Feature requests: reviewed within 1 week
+- Security issues: acknowledged within 48 hours, resolved within 7 days
+
+---
+
+## Docs Hub
+
+Source: ./docs/README.md
+
+# ContextDocs Documentation
+
+## Getting Started
+
+New to ContextDocs? Start here:
+
+- [Getting Started Guide](guides/getting-started.md) — Installation, first context file generation, and exploring all 3 commands
+
+## Guides
+
+| Guide | What You'll Do |
+|-------|---------------|
+| [Getting Started](guides/getting-started.md) | Install ContextDocs, generate your first context files, and set up Context Guard |
+| [Troubleshooting](guides/troubleshooting.md) | Signal Gate issues, hook problems, content filter errors, and FAQ |
+
+## Quick Links
+
+- [README](../README.md) — Project overview, features, and commands
+- [Contributing](../CONTRIBUTING.md) — How to improve skills, fix hooks, and submit PRs
+- [Changelog](../CHANGELOG.md) — Version history and what changed
+- [Support](../SUPPORT.md) — Getting help and common questions
+
+## Skills Reference
+
+ContextDocs includes 3 reference skills loaded on-demand. See the [Available Skills](../AGENTS.md#available-skills) table in AGENTS.md for the full inventory.
+
+---
+
+## Getting Started Guide
+
+Source: ./docs/guides/getting-started.md
+
+---
+title: "Getting Started with ContextDocs"
+description: "Install ContextDocs, generate your first AI context files, and set up Context Guard hooks."
+type: how-to
+difficulty: beginner
+time_to_complete: "5 minutes"
+last_verified: "1.0.0"
+related:
+  - guides/troubleshooting.md
+order: 1
+---
+
+# Getting Started with ContextDocs
+
+> **Summary**: Install ContextDocs, generate AI context files for 7 tools, and optionally set up Context Guard hooks for freshness enforcement.
+
+**Time to Hello World:** Under 60 seconds for your first context files. Full walkthrough below: ~5 minutes.
+
+## Prerequisites
+
+- [Claude Code](https://code.claude.com/) or [OpenCode](https://opencode.ai/) installed
+- A project repository you want to add AI context files to
+
+---
+
+## 1. Install ContextDocs
+
+Open Claude Code in your terminal and run:
+
+```bash
+# Add the LBA plugin marketplace (once per machine)
+/plugin marketplace add littlebearapps/lba-plugins
+
+# Install ContextDocs
+/plugin install contextdocs@lba-plugins
+```
+
+**Note:** When installed as a plugin, all commands use the `contextdocs:` prefix (e.g., `/contextdocs:ai-context`).
+
+---
+
+## 2. Bootstrap Context Files
+
+Navigate to the project you want to add context files to, then run:
+
+```bash
+/contextdocs:ai-context init
+```
+
+ContextDocs will:
+1. Scan your codebase (manifest files, project structure, conventions)
+2. Apply the Signal Gate filter — only include what agents cannot discover on their own
+3. Generate up to 7 context files, each within its line budget:
+
+| File | Tool | Budget |
+|------|------|--------|
+| CLAUDE.md | Claude Code | <80 lines |
+| AGENTS.md | Codex CLI, OpenCode, Gemini CLI | <120 lines |
+| .cursorrules | Cursor | <60 lines |
+| .github/copilot-instructions.md | GitHub Copilot | <60 lines |
+| .windsurfrules | Windsurf | <60 lines |
+| .clinerules | Cline | <60 lines |
+| GEMINI.md | Gemini CLI | <60 lines |
+
+**Tip:** To generate a single file, specify the tool: `/contextdocs:ai-context claude` or `/contextdocs:ai-context cursor`.
+
+---
+
+## 3. Verify Context Quality
+
+Check that your generated files are healthy:
+
+```bash
+/contextdocs:context-verify
+```
+
+This scores your context files 0–100 across 5 dimensions:
+- **Line budget** — are files within their size targets?
+- **Signal quality** — does the content pass Signal Gate (no discoverable content)?
+- **Path accuracy** — do referenced file paths actually exist?
+- **Consistency** — do files agree on conventions, tech stack, and key paths?
+- **Freshness** — have files been updated since the last significant code change?
+
+---
+
+## 4. Set Up Context Guard (Optional, Claude Code Only)
+
+Context Guard hooks keep your context files in sync as your project evolves:
+
+```bash
+/contextdocs:context-guard install
+```
+
+This installs hooks with two tiers of enforcement:
+
+- **Tier 1 (Nudge)** — at session end, reminds you if context files may be stale
+- **Tier 2 (Guard)** — blocks commits when context files haven't been updated after structural changes
+
+To check hook status or uninstall:
+
+```bash
+/contextdocs:context-guard status
+/contextdocs:context-guard uninstall
+```
+
+---
+
+## 5. Keep Context Fresh
+
+As your project evolves, context files drift. Use these commands to maintain them:
+
+```bash
+# Patch only what drifted (incremental update)
+/contextdocs:ai-context update
+
+# Move patterns from MEMORY.md into CLAUDE.md
+/contextdocs:ai-context promote
+
+# Check for staleness without changing anything
+/contextdocs:ai-context audit
+```
+
+---
+
+## What's Next?
+
+- **Generate public-facing docs** — Install [PitchDocs](https://github.com/littlebearapps/pitchdocs) for README, CHANGELOG, ROADMAP, user guides, and launch artifacts
+- **Improve context quality** — Run `/contextdocs:context-verify` after changes to track your score over time
+- **Explore the skills** — Each command loads specialised reference knowledge. See the [Available Skills](../../AGENTS.md#available-skills) table for details.
+
+---
+
+**Need help?** See [SUPPORT.md](../../SUPPORT.md) for getting help, common questions, and contact details.
+
+---
+
+## Troubleshooting Guide
+
+Source: ./docs/guides/troubleshooting.md
+
+---
+title: "Troubleshooting & FAQ"
+description: "Common ContextDocs issues and solutions — Signal Gate, Context Guard hooks, content filter errors, and cross-tool limitations."
+type: how-to
+difficulty: intermediate
+last_verified: "1.0.0"
+related:
+  - guides/getting-started.md
+order: 2
+---
+
+# Troubleshooting & FAQ
+
+> **Summary**: Common issues when using ContextDocs and how to resolve them.
+
+---
+
+## Content Filter Errors (HTTP 400)
+
+Claude Code's API content filter blocks output when generating certain standard open-source files. This is a known upstream issue, not a ContextDocs bug.
+
+**High-risk files** (will almost always trigger): `CODE_OF_CONDUCT.md`, `LICENSE`, `SECURITY.md`
+
+**Solution:** Fetch from canonical URLs:
+
+```bash
+# Contributor Covenant v3.0
+curl -sL "https://www.contributor-covenant.org/version/3/0/code_of_conduct/code_of_conduct.md" -o CODE_OF_CONDUCT.md
+
+# MIT License
+curl -sL "https://raw.githubusercontent.com/spdx/license-list-data/main/text/MIT.txt" -o LICENSE
+```
+
+ContextDocs includes a content filter guard hook that warns before Write operations on high-risk files.
+
+---
+
+## Context Files Are Too Long
+
+If generated context files exceed their line budgets, the Signal Gate filter may not be working correctly.
+
+**Check:** Run `/contextdocs:context-verify` — it flags files over budget and identifies discoverable content that should be removed.
+
+**Common causes:**
+- Directory listings or file trees (agents find these on their own)
+- Architecture overviews that describe what's visible in the code
+- Repeated information across multiple context files
+
+**Fix:** Run `/contextdocs:ai-context update` to regenerate with stricter Signal Gate filtering.
+
+---
+
+## Context Guard Hooks Not Triggering
+
+1. Check status: `/contextdocs:context-guard status`
+2. Verify entries exist in `.claude/settings.json`
+3. Context Guard hooks are **Claude Code only** — they don't work in OpenCode, Cursor, or other tools
+4. Tier 1 (nudge) triggers at session end; Tier 2 (guard) triggers at commit time
+
+**If hooks were installed but aren't in settings.json:** Run `/contextdocs:context-guard install` again — it's idempotent.
+
+---
+
+## Context Files Out of Sync
+
+If context files reference stale paths or outdated conventions:
+
+```bash
+# Check what drifted
+/contextdocs:ai-context audit
+
+# Patch only what changed
+/contextdocs:ai-context update
+```
+
+The `update` command is incremental — it reads existing files and patches only the sections that drifted, preserving manual customisations.
+
+---
+
+## MEMORY.md Patterns Not Promoted
+
+The `promote` command moves confirmed patterns from MEMORY.md into CLAUDE.md:
+
+```bash
+/contextdocs:ai-context promote
+```
+
+**Requirements:**
+- MEMORY.md must exist (Claude Code creates this automatically)
+- Patterns should be stable (confirmed across multiple interactions)
+- CLAUDE.md must not already contain the same information
+
+---
+
+## Cross-Tool Compatibility
+
+| Feature | Claude Code | OpenCode | Codex CLI | Cursor | Windsurf | Cline | Gemini CLI |
+|---------|------------|----------|-----------|--------|----------|-------|------------|
+| Plugin install | Yes | Yes | No | No | No | No | No |
+| Context file generation | Yes | Yes | Manual | Manual | Manual | Manual | Manual |
+| Context Guard hooks | Yes | No | No | No | No | No | No |
+| Context verification | Yes | Yes | Manual | Manual | Manual | Manual | Manual |
+
+For tools without plugin support, copy the relevant context file into your project manually. The generated files (.cursorrules, .windsurfrules, etc.) work with their respective tools automatically.
+
+---
+
+## FAQ
+
+### Where did this come from?
+
+ContextDocs was extracted from [PitchDocs](https://github.com/littlebearapps/pitchdocs) v1.19.3 to follow the microtool philosophy — each tool does one thing well. PitchDocs handles public-facing documentation; ContextDocs handles AI IDE context files.
+
+### Can I use both PitchDocs and ContextDocs?
+
+Yes. They work independently and complement each other. PitchDocs generates README, CHANGELOG, and user guides. ContextDocs generates CLAUDE.md, AGENTS.md, and other AI context files.
+
+### What is the Signal Gate principle?
+
+Only include in context files what AI agents cannot discover by reading source code on their own. This keeps files lean and effective. Research shows overstuffed context files reduce AI task success by ~3% and increase token costs by 20%.
+
+---
+
+**Need help?** See [SUPPORT.md](../../SUPPORT.md) or [open an issue](https://github.com/littlebearapps/contextdocs/issues/new).
+
+---
+
+## AI Context
+
+Source: ./.claude/skills/ai-context/SKILL.md
 
 ---
 name: ai-context
@@ -731,7 +1340,9 @@ These features are under discussion and may change before stabilisation:
 
 ---
 
-# Context Guard Skill
+## Context Guard
+
+Source: ./.claude/skills/context-guard/SKILL.md
 
 ---
 name: context-guard
@@ -928,7 +1539,9 @@ To prevent this, `context-guard-stop.sh` checks the `UNTETHER_SESSION` environme
 
 ---
 
-# Context Verify Skill
+## Context Verify
+
+Source: ./.claude/skills/context-verify/SKILL.md
 
 ---
 name: context-verify
@@ -1080,7 +1693,9 @@ Accept `--min-score N` to fail the CI job if the score falls below a threshold.
 
 ---
 
-# /contextdocs:ai-context Command
+## /contextdocs:ai-context
+
+Source: ./commands/ai-context.md
 
 ---
 description: "Generate lean AI IDE context files using the Signal Gate principle — only what agents cannot discover on their own: $ARGUMENTS"
@@ -1154,7 +1769,9 @@ AI Context Audit:
 
 ---
 
-# /contextdocs:context-guard Command
+## /contextdocs:context-guard
+
+Source: ./commands/context-guard.md
 
 ---
 description: "Install, uninstall, or check status of Context Guard hooks for AI context file freshness: $ARGUMENTS"
@@ -1262,7 +1879,9 @@ Drift check:
 
 ---
 
-# /contextdocs:context-verify Command
+## /contextdocs:context-verify
+
+Source: ./commands/context-verify.md
 
 ---
 description: "Validate AI context file quality — signal-to-noise ratio, line budgets, stale paths, cross-file consistency, and context health scoring: $ARGUMENTS"
@@ -1307,7 +1926,9 @@ To reach grade A (90+): Remove file tree from AGENTS.md (+3), fix stale path (+2
 
 ---
 
-# Context Quality Rule
+## Context Quality Rule
+
+Source: ./.claude/rules/context-quality.md
 
 # AI Context File Quality Standards
 
@@ -1360,7 +1981,9 @@ For context file size guidance and the Signal Gate principle, load the `ai-conte
 
 ---
 
-# Context Awareness Rule
+## Context Awareness Rule
+
+Source: ./.claude/rules/context-awareness.md
 
 # Context Awareness
 
@@ -1387,9 +2010,10 @@ When working on a project with ContextDocs installed, recognise moments when AI 
 
 ---
 
-# Context Drift Check Hook
+## Context Drift Check Hook
 
-```bash
+Source: ./hooks/context-drift-check.sh
+
 #!/bin/bash
 # context-drift-check.sh
 # Hook: PostToolUse (Bash, matching git commit)
@@ -1496,13 +2120,13 @@ EOF
 else
   echo '{}'
 fi
-```
 
 ---
 
-# Context Structural Change Hook
+## Context Structural Change Hook
 
-```bash
+Source: ./hooks/context-structural-change.sh
+
 #!/bin/bash
 # context-structural-change.sh
 # Hook: PostToolUse (Write|Edit, matching structural files)
@@ -1582,13 +2206,13 @@ EOF
 else
   echo '{}'
 fi
-```
 
 ---
 
-# Content Filter Guard Hook
+## Content Filter Guard Hook
 
-```bash
+Source: ./hooks/content-filter-guard.sh
+
 #!/bin/bash
 # content-filter-guard.sh
 # Hook: PreToolUse (Write)
@@ -1674,13 +2298,13 @@ esac
 
 # All other files: pass through
 echo '{}'
-```
 
 ---
 
-# Context Guard Stop Hook
+## Context Guard Stop Hook
 
-```bash
+Source: ./hooks/context-guard-stop.sh
+
 #!/bin/bash
 # context-guard-stop.sh
 # Hook: Stop
@@ -1771,13 +2395,13 @@ EOF
 fi
 
 echo '{}'
-```
 
 ---
 
-# Context Commit Guard Hook
+## Context Commit Guard Hook
 
-```bash
+Source: ./hooks/context-commit-guard.sh
+
 #!/bin/bash
 # context-commit-guard.sh
 # Hook: PreToolUse (Bash, matching git commit)
@@ -1860,13 +2484,13 @@ if [ "$HAS_CONTEXT" = false ]; then
 fi
 
 echo '{}'
-```
 
 ---
 
-# Upstream Versions
+## Upstream Versions
 
-```json
+Source: ./upstream-versions.json
+
 {
   "description": "Pinned upstream specification versions. The check-upstream GitHub Action compares these against live sources monthly.",
   "sources": {
@@ -1880,13 +2504,13 @@ echo '{}'
     }
   }
 }
-```
 
 ---
 
-# Plugin Manifest
+## Plugin Manifest
 
-```json
+Source: ./.claude-plugin/plugin.json
+
 {
   "name": "contextdocs",
   "version": "1.0.0",
@@ -1917,4 +2541,275 @@ echo '{}'
     "little-bear-apps"
   ]
 }
-```
+
+---
+
+## Security
+
+Source: ./SECURITY.md
+
+# Security Policy
+
+## Supported Versions
+
+| Version | Supported |
+|---------|-----------|
+| 1.x     | :white_check_mark: |
+| < 1.0   | :x: |
+
+## Scope
+
+This is a Claude Code plugin consisting of Markdown files and shell scripts (hooks). It contains no compiled code, no npm/pip dependencies, and processes no user data directly. The security surface is limited to hook scripts that check git status and file timestamps, and generated context files that may contain project-specific paths.
+
+## Reporting a Concern
+
+If you find a security issue (e.g., a hook script vulnerability, a context file template that encourages unsafe patterns, or an information leak risk):
+
+- [Open an issue](https://github.com/littlebearapps/contextdocs/issues/new)
+- Or email: hello@littlebearapps.com
+
+We aim to acknowledge reports within 48 hours and provide a resolution or update within 7 days.
+
+## Upstream Specifications
+
+This plugin references the AGENTS.md specification. If the upstream spec introduces a security-relevant change, the monthly [upstream drift check](.github/workflows/check-upstream.yml) will detect it and open an issue for review.
+
+---
+
+## Code of Conduct
+
+Source: ./CODE_OF_CONDUCT.md
+
+
+# Contributor Covenant 3.0 Code of Conduct
+
+## Our Pledge
+
+We pledge to make our community welcoming, safe, and equitable for all.
+
+We are committed to fostering an environment that respects and promotes the dignity, rights, and contributions of all individuals, regardless of characteristics including race, ethnicity, caste, color, age, physical characteristics, neurodiversity, disability, sex or gender, gender identity or expression, sexual orientation, language, philosophy or religion, national or social origin, socio-economic position, level of education, or other status. The same privileges of participation are extended to everyone who participates in good faith and in accordance with this Covenant.
+
+
+## Encouraged Behaviors
+
+While acknowledging differences in social norms, we all strive to meet our community's expectations for positive behavior. We also understand that our words and actions may be interpreted differently than we intend based on culture, background, or native language.
+
+With these considerations in mind, we agree to behave mindfully toward each other and act in ways that center our shared values, including:
+
+1. Respecting the **purpose of our community**, our activities, and our ways of gathering.
+2. Engaging **kindly and honestly** with others.
+3. Respecting **different viewpoints** and experiences.
+4. **Taking responsibility** for our actions and contributions.
+5. Gracefully giving and accepting **constructive feedback**.
+6. Committing to **repairing harm** when it occurs.
+7. Behaving in other ways that promote and sustain the **well-being of our community**.
+
+
+## Restricted Behaviors
+
+We agree to restrict the following behaviors in our community. Instances, threats, and promotion of these behaviors are violations of this Code of Conduct.
+
+1. **Harassment.** Violating explicitly expressed boundaries or engaging in unnecessary personal attention after any clear request to stop.
+2. **Character attacks.** Making insulting, demeaning, or pejorative comments directed at a community member or group of people.
+3. **Stereotyping or discrimination.** Characterizing anyone’s personality or behavior on the basis of immutable identities or traits.
+4. **Sexualization.** Behaving in a way that would generally be considered inappropriately intimate in the context or purpose of the community.
+5. **Violating confidentiality**. Sharing or acting on someone's personal or private information without their permission.
+6. **Endangerment.** Causing, encouraging, or threatening violence or other harm toward any person or group.
+7. Behaving in other ways that **threaten the well-being** of our community.
+
+### Other Restrictions
+
+1. **Misleading identity.** Impersonating someone else for any reason, or pretending to be someone else to evade enforcement actions.
+2. **Failing to credit sources.** Not properly crediting the sources of content you contribute.
+3. **Promotional materials**. Sharing marketing or other commercial content in a way that is outside the norms of the community.
+4. **Irresponsible communication.** Failing to responsibly present content which includes, links or describes any other restricted behaviors.
+
+
+## Reporting an Issue
+
+Tensions can occur between community members even when they are trying their best to collaborate. Not every conflict represents a code of conduct violation, and this Code of Conduct reinforces encouraged behaviors and norms that can help avoid conflicts and minimize harm.
+
+When an incident does occur, it is important to report it promptly. To report a possible violation, email [hello@littlebearapps.com](mailto:hello@littlebearapps.com) or [open a GitHub issue](https://github.com/littlebearapps/contextdocs/issues/new).
+
+Community Moderators take reports of violations seriously and will make every effort to respond in a timely manner. They will investigate all reports of code of conduct violations, reviewing messages, logs, and recordings, or interviewing witnesses and other participants. Community Moderators will keep investigation and enforcement actions as transparent as possible while prioritizing safety and confidentiality. In order to honor these values, enforcement actions are carried out in private with the involved parties, but communicating to the whole community may be part of a mutually agreed upon resolution.
+
+
+## Addressing and Repairing Harm
+
+If an investigation by the Community Moderators finds that this Code of Conduct has been violated, the following enforcement ladder may be used to determine how best to repair harm, based on the incident's impact on the individuals involved and the community as a whole. Depending on the severity of a violation, lower rungs on the ladder may be skipped.
+
+1) Warning
+   1) Event: A violation involving a single incident or series of incidents.
+   2) Consequence: A private, written warning from the Community Moderators.
+   3) Repair: Examples of repair include a private written apology, acknowledgement of responsibility, and seeking clarification on expectations.
+2) Temporarily Limited Activities
+   1) Event: A repeated incidence of a violation that previously resulted in a warning, or the first incidence of a more serious violation.
+   2) Consequence: A private, written warning with a time-limited cooldown period designed to underscore the seriousness of the situation and give the community members involved time to process the incident. The cooldown period may be limited to particular communication channels or interactions with particular community members.
+   3) Repair: Examples of repair may include making an apology, using the cooldown period to reflect on actions and impact, and being thoughtful about re-entering community spaces after the period is over.
+3) Temporary Suspension
+   1) Event: A pattern of repeated violation which the Community Moderators have tried to address with warnings, or a single serious violation.
+   2) Consequence: A private written warning with conditions for return from suspension. In general, temporary suspensions give the person being suspended time to reflect upon their behavior and possible corrective actions.
+   3) Repair: Examples of repair include respecting the spirit of the suspension, meeting the specified conditions for return, and being thoughtful about how to reintegrate with the community when the suspension is lifted.
+4) Permanent Ban
+   1) Event: A pattern of repeated code of conduct violations that other steps on the ladder have failed to resolve, or a violation so serious that the Community Moderators determine there is no way to keep the community safe with this person as a member.
+   2) Consequence: Access to all community spaces, tools, and communication channels is removed. In general, permanent bans should be rarely used, should have strong reasoning behind them, and should only be resorted to if working through other remedies has failed to change the behavior.
+   3) Repair: There is no possible repair in cases of this severity.
+
+This enforcement ladder is intended as a guideline. It does not limit the ability of Community Managers to use their discretion and judgment, in keeping with the best interests of our community.
+
+
+## Scope
+
+This Code of Conduct applies within all community spaces, and also applies when an individual is officially representing the community in public or other spaces. Examples of representing our community include using an official email address, posting via an official social media account, or acting as an appointed representative at an online or offline event.
+
+
+## Attribution
+
+This Code of Conduct is adapted from the Contributor Covenant, version 3.0, permanently available at [https://www.contributor-covenant.org/version/3/0/](https://www.contributor-covenant.org/version/3/0/).
+
+Contributor Covenant is stewarded by the Organization for Ethical Source and licensed under CC BY-SA 4.0. To view a copy of this license, visit [https://creativecommons.org/licenses/by-sa/4.0/](https://creativecommons.org/licenses/by-sa/4.0/)
+
+For answers to common questions about Contributor Covenant, see the FAQ at [https://www.contributor-covenant.org/faq](https://www.contributor-covenant.org/faq). Translations are provided at [https://www.contributor-covenant.org/translations](https://www.contributor-covenant.org/translations). Additional enforcement and community guideline resources can be found at [https://www.contributor-covenant.org/resources](https://www.contributor-covenant.org/resources). The enforcement ladder was inspired by the work of [Mozilla’s code of conduct team](https://github.com/mozilla/inclusion).
+
+---
+
+## License
+
+Source: ./LICENSE
+
+MIT License
+
+Copyright (c) 2026 Little Bear Apps
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+associated documentation files (the "Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial
+portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---
+
+## Evaluation Scenarios
+
+Source: ./tests/evaluations.json
+
+[
+  {
+    "id": "cmd-ai-context-init",
+    "input": "/contextdocs:ai-context init",
+    "expected_skill": "ai-context",
+    "should_respond": true,
+    "description": "AI context init command routes to ai-context skill"
+  },
+  {
+    "id": "cmd-ai-context-update",
+    "input": "/contextdocs:ai-context update",
+    "expected_skill": "ai-context",
+    "should_respond": true,
+    "description": "AI context update command routes to ai-context skill"
+  },
+  {
+    "id": "cmd-ai-context-promote",
+    "input": "/contextdocs:ai-context promote",
+    "expected_skill": "ai-context",
+    "should_respond": true,
+    "description": "AI context promote command routes to ai-context skill"
+  },
+  {
+    "id": "cmd-ai-context-audit",
+    "input": "/contextdocs:ai-context audit",
+    "expected_skill": "ai-context",
+    "should_respond": true,
+    "description": "AI context audit command routes to ai-context skill"
+  },
+  {
+    "id": "cmd-ai-context-claude",
+    "input": "/contextdocs:ai-context claude",
+    "expected_skill": "ai-context",
+    "should_respond": true,
+    "description": "Single-tool generation routes to ai-context skill"
+  },
+  {
+    "id": "cmd-context-guard-install",
+    "input": "/contextdocs:context-guard install",
+    "expected_skill": "context-guard",
+    "should_respond": true,
+    "description": "Context Guard install command routes to context-guard skill"
+  },
+  {
+    "id": "cmd-context-guard-status",
+    "input": "/contextdocs:context-guard status",
+    "expected_skill": "context-guard",
+    "should_respond": true,
+    "description": "Context Guard status command routes to context-guard skill"
+  },
+  {
+    "id": "cmd-context-verify",
+    "input": "/contextdocs:context-verify",
+    "expected_skill": "context-verify",
+    "should_respond": true,
+    "description": "Context verify command routes to context-verify skill"
+  },
+  {
+    "id": "cmd-context-verify-ci",
+    "input": "/contextdocs:context-verify ci --min-score 80",
+    "expected_skill": "context-verify",
+    "should_respond": true,
+    "description": "Context verify with CI argument routes correctly"
+  },
+  {
+    "id": "nl-stale-context",
+    "input": "My CLAUDE.md is out of date, can you update it?",
+    "expected_skill": "ai-context",
+    "should_respond": true,
+    "description": "Natural language about stale context triggers ai-context skill"
+  },
+  {
+    "id": "nl-context-hooks",
+    "input": "Set up hooks to keep my AI context files fresh",
+    "expected_skill": "context-guard",
+    "should_respond": true,
+    "description": "Natural language about context hooks triggers context-guard skill"
+  },
+  {
+    "id": "nl-context-quality",
+    "input": "Score my context files and tell me what to fix",
+    "expected_skill": "context-verify",
+    "should_respond": true,
+    "description": "Natural language about context quality triggers context-verify skill"
+  },
+  {
+    "id": "nl-memory-promote",
+    "input": "Move my MEMORY.md patterns into CLAUDE.md",
+    "expected_skill": "ai-context",
+    "should_respond": true,
+    "description": "Natural language about MEMORY.md promotion triggers ai-context skill"
+  },
+  {
+    "id": "negative-readme",
+    "input": "Generate a README for this project",
+    "should_respond": false,
+    "reason": "README generation is a PitchDocs task, not ContextDocs"
+  },
+  {
+    "id": "negative-changelog",
+    "input": "/pitchdocs:changelog",
+    "should_respond": false,
+    "reason": "PitchDocs commands are not ContextDocs commands"
+  },
+  {
+    "id": "negative-test",
+    "input": "run the test suite",
+    "should_respond": false,
+    "reason": "Test execution is not a context management task"
+  }
+]
