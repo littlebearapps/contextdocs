@@ -6,7 +6,7 @@ Pure Markdown Claude Code plugin — no JavaScript, no Python, no build step, no
 
 - **Token budget test**: `bash tests/check-token-budgets.sh`
 - **llms.txt validation**: `bash tests/validate-llms-txt.sh`
-- **Spell check**: `npx cspell "**/*.md" --no-progress`
+- **Spell check**: `npx typos` (config: `_typos.toml`, Australian English)
 - **Frontmatter lint**: `python3 tests/validate-frontmatter.py`
 
 ## Conventions

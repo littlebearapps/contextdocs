@@ -44,6 +44,9 @@ prioritised = "prioritised"
 initialise = "initialise"
 initialised = "initialised"
 
+# HTML attribute values (must be US English)
+center = "center"
+
 # Technical terms
 contextdocs = "contextdocs"
 pitchdocs = "pitchdocs"
