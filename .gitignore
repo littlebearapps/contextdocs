@@ -1,5 +1,15 @@
 .DS_Store
+._.DS_Store
 *.swp
 *.swo
 *~
+.idea/
+.vscode/
+
+# Dev environment (local to each developer)
+.claude/hooks/
+.claude/settings.json
 .claude/settings.local.json
+
+# Promotion drafts (local only)
+docs/promotion/
