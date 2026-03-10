@@ -5,6 +5,21 @@ All notable changes to ContextDocs will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.1/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0](https://github.com/littlebearapps/contextdocs/compare/v1.0.0...v1.1.0) (2026-03-10)
+
+
+### Added
+
+* initial ContextDocs v1.0.0 — AI context file management plugin ([2aad25e](https://github.com/littlebearapps/contextdocs/commit/2aad25eacc3563e33b51c47c69d0fcc3513329db))
+
+
+### Documentation
+
+* add full documentation suite — guides, CONTRIBUTING, SECURITY, SUPPORT, SKILL.md ([04b41a8](https://github.com/littlebearapps/contextdocs/commit/04b41a8e0fb30e427587f6c1362b61ccba110044))
+* add logo and hero image to README ([8405d4a](https://github.com/littlebearapps/contextdocs/commit/8405d4a83613d9d8bfc1056d2bd395eb053d8228))
+* generate llms-full.txt for LLM content consumption ([c5e01b9](https://github.com/littlebearapps/contextdocs/commit/c5e01b98e0061ed1486b87369af4f48bd2780e89))
+* upgrade README to PitchDocs standard, add CI workflows and GEO patterns ([c4287a7](https://github.com/littlebearapps/contextdocs/commit/c4287a72155affd40ee804802012ad83ce320a85))
+
 ## [1.0.0](https://github.com/littlebearapps/contextdocs/releases/tag/v1.0.0) (2026-03-10)
 
 ### Added
