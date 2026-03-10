@@ -13,3 +13,7 @@
 
 # Promotion drafts (local only)
 docs/promotion/
+
+# === Direnv ===
+.envrc.local
+.direnv/

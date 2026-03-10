@@ -1,7 +1,6 @@
 ---
 name: ai-context
 description: Generates lean AI IDE context files (AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, GEMINI.md) from codebase analysis. Applies the Signal Gate principle — only includes what agents cannot discover on their own. Use when setting up, auditing, or updating AI tool context for a repository.
-version: "2.0.0"
 ---
 
 # AI Context File Generator
@@ -183,31 +182,41 @@ Claude Code loads this file at the start of every session. Target: under 80 line
 
 **Omit** Architecture, Key Paths, and directory listings — Claude reads the codebase directly. Only include paths if they are genuinely non-obvious (e.g., deploy scripts in an unusual location).
 
-#### .cursorrules Structure
+#### .cursorrules / .windsurfrules / .clinerules / GEMINI.md Structure
 
-Cursor rules are plain text, loaded when editing files in the project. Target: under 60 lines.
+These 4 files share the same core structure. Target: under 60 lines each.
 
+| Tool | File | Format Notes |
+|------|------|-------------|
+| Cursor | `.cursorrules` | Plain text, no YAML frontmatter |
+| Windsurf | `.windsurfrules` | Plain text, add `# Project Name — Windsurf Rules` header |
+| Cline | `.clinerules` | Markdown, add `## Before Committing` checklist with `- [ ]` items |
+| Gemini CLI | `GEMINI.md` | Markdown, also supports `.gemini/GEMINI.md` path |
+
+```markdown
+# [Project Name]
+
+[One sentence: what this project is and who it's for]
+
+## Conventions
+
+- [Non-default convention 1]
+- [Non-default convention 2]
+- [Non-default convention 3]
+
+## Commands
+
+- Test: `[test command]`
+- Build: `[build command]`
+- Deploy: `[deploy command]`
+
+## Rules
+
+- [Critical rule 1]
+- [Critical rule 2]
 ```
-You are working on [project name], a [description].
 
-Language: [X] with [framework]
-Style: [conventions that differ from defaults]
-
-Key rules:
-- [Rule 1]
-- [Rule 2]
-- [Rule 3]
-
-When writing code:
-- [Non-default pattern 1]
-- [Non-default pattern 2]
-
-When writing tests:
-- [Test pattern 1]
-- [Test pattern 2]
-```
-
-**Omit** file structure listings — Cursor can read the project tree.
+**Omit** directory listings, file trees, dependency lists, and architecture overviews — all 4 tools read the codebase directly.
 
 #### .github/copilot-instructions.md Structure
 
@@ -234,94 +243,6 @@ This is a [description] built with [language/framework].
 - [Anti-pattern 1]
 - [Anti-pattern 2]
 ```
-
-#### .windsurfrules Structure
-
-Windsurf's Cascade AI reads `.windsurfrules` from the project root. Format is plain text — similar to `.cursorrules`. Target: under 60 lines.
-
-```
-# [Project Name] — Windsurf Rules
-
-[Project name] is a [description]. Built with [language/framework].
-
-## Conventions
-
-- [Convention that differs from defaults 1]
-- [Convention that differs from defaults 2]
-- [Convention that differs from defaults 3]
-
-## Commands
-
-[test command]
-[build command]
-[deploy command]
-
-## Rules
-
-- [Critical rule 1]
-- [Critical rule 2]
-```
-
-**Omit** Key Files and Project Context sections — Windsurf reads the project tree directly.
-
-#### .clinerules Structure
-
-Cline reads `.clinerules` from the project root. Supports task checklists. Target: under 60 lines.
-
-```markdown
-# [Project Name]
-
-[1-2 sentence description of what the project is and does]
-
-## Conventions
-
-- [Non-default convention 1]
-- [Non-default convention 2]
-- [Non-default convention 3]
-
-## Commands
-
-- Test: `[test command]`
-- Build: `[build command]`
-- Lint: `[lint command]`
-
-## Before Committing
-
-- [ ] Tests pass (`[test command]`)
-- [ ] Linting passes (`[lint command]`)
-- [ ] No secrets or credentials in changed files
-```
-
-**Omit** Tech Stack and Important Paths sections — Cline reads manifests and the file tree directly.
-
-#### GEMINI.md Structure
-
-Gemini CLI reads `GEMINI.md` from the project root (or `.gemini/GEMINI.md`). Target: under 60 lines. Gemini CLI also supports Claude Code Skills (same SKILL.md format).
-
-```markdown
-# [Project Name]
-
-[One sentence: what is this project and who is it for]
-
-## Commands
-
-[test command]
-[build command]
-[deploy command]
-
-## Conventions
-
-- [Non-default convention 1]
-- [Non-default convention 2]
-- [Non-default convention 3]
-
-## Rules
-
-- [Critical rule 1]
-- [Critical rule 2]
-```
-
-**Omit** Tech Stack and Key Paths sections — Gemini CLI reads manifests and the file tree directly.
 
 ## MEMORY.md Promotion
 
@@ -479,16 +400,7 @@ The v1.0 spec defines these standard sections:
 
 ### Proposed v1.1 Features (Draft — Do Not Implement)
 
-These features are under discussion and may change before stabilisation:
-
-| Feature | Status | Notes |
-|---------|--------|-------|
-| Sub-agents section | Draft | Nested agent definitions within AGENTS.md |
-| Tool permissions | Proposed | Declaring which tools an agent can use |
-| `.agent/` directory | Proposed | Directory-based agent definitions (alternative to single file) |
-| `when:` frontmatter | Draft | Trigger conditions for agent activation |
-
-**Guidance:** Do not generate these proposed sections until they reach stable status. Monitor the [agents.md releases](https://github.com/agentsmd/agents.md/releases) for v1.1 announcement. The `check-upstream` GitHub Action will flag when a new version is available. When v1.1 reaches stable, update the pinned version in `upstream-versions.json` and add the new sections to the generation templates above.
+Sub-agents section, tool permissions, `.agent/` directory, and `when:` frontmatter are under discussion. Do not generate these sections until they reach stable status. The `check-upstream` GitHub Action flags when a new spec version is released.
 
 ## Anti-Patterns
 

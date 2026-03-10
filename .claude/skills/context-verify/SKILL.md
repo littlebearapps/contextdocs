@@ -1,7 +1,6 @@
 ---
 name: context-verify
 description: Validates AI context file quality — signal-to-noise ratio, line budgets, stale paths, cross-file consistency, discoverable content detection, and MEMORY.md drift. Scores context health and integrates with CI. Use to catch context file decay before it reaches your repo.
-version: "1.0.0"
 ---
 
 # Context Verifier
@@ -14,12 +13,12 @@ Generating context files is solved — the `ai-context` skill handles that. Prev
 
 ### 1. Line Budget Compliance
 
-Check line counts against Signal Gate budgets:
+Check line counts against Signal Gate budgets. Estimate tokens alongside: lines × 4 (average tokens per line of Markdown).
 
 ```bash
-# Check line counts against budgets
+# Check line counts and estimate tokens against budgets
 for f in CLAUDE.md AGENTS.md .cursorrules .github/copilot-instructions.md .windsurfrules .clinerules GEMINI.md; do
-  [ -f "$f" ] && echo "$f: $(wc -l < "$f") lines"
+  [ -f "$f" ] && lines=$(wc -l < "$f") && echo "$f: $lines lines (~$((lines * 4)) tokens)"
 done
 ```
 
@@ -118,7 +117,7 @@ grade = lookup(score)
 AI Context Health: 82/100 (B — Minor tuning needed)
 
 Breakdown:
-  Line Budget:      23/25  (-2 AGENTS.md over 120-line warning)
+  Line Budget:      23/25  (-2 AGENTS.md: 135 lines ~540 tokens, over 120-line warning)
   Signal Quality:   22/25  (-3 CLAUDE.md has "Project Structure" section)
   Path Accuracy:    18/20  (-2 .cursorrules references stale path)
   Consistency:      15/15  ✓

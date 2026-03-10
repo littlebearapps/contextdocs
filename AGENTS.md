@@ -1,20 +1,22 @@
 # ContextDocs
 
-Generate, maintain, and audit AI IDE context files (AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, GEMINI.md) using the Signal Gate principle — only what agents cannot discover on their own. Includes Context Guard hooks for freshness enforcement, context verification scoring, and MEMORY.md promotion.
+## Identity
+
+ContextDocs is a Claude Code plugin for generating, maintaining, and auditing AI IDE context files. Pure Markdown, zero runtime dependencies. Applies the Signal Gate principle — only includes what agents cannot discover on their own.
 
 ## Available Skills
 
-Skills are loaded on-demand to provide deep reference knowledge. Each lives at `.claude/skills/<name>/SKILL.md`. There are 3 skills in total.
+Skills are loaded on-demand. Each lives at `.claude/skills/<name>/SKILL.md`. There are 3 skills in total.
 
 | Skill | What It Provides |
 |-------|-----------------|
-| `ai-context` | AI IDE context file generation with Signal Gate principle — AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, GEMINI.md from codebase analysis. Includes init (bootstrap), update (incremental drift patching), promote (MEMORY.md → CLAUDE.md), and audit with Context Guard status |
-| `context-guard` | Context Guard installation reference — hook architecture, settings.json configuration, two-tier enforcement, customisation, and troubleshooting *(Claude Code only)* |
-| `context-verify` | Context file validation — line budget compliance, discoverable content detection, stale path scanning, cross-file consistency, MEMORY.md drift, and 0–100 health scoring with CI integration |
+| `ai-context` | AI IDE context file generation with Signal Gate principle — 7 context file types from codebase analysis, init/update/promote/audit lifecycle |
+| `context-guard` | Context Guard hook installation — two-tier enforcement, settings.json configuration, troubleshooting *(Claude Code only)* |
+| `context-verify` | Context file validation — line budgets, discoverable content detection, stale paths, cross-file consistency, 0–100 health scoring with CI integration |
 
 ## Workflow Commands
 
-These commands are defined in `commands/*.md` and can be invoked as slash commands in Claude Code and OpenCode, or as prompts in Codex CLI. Claude Code users: invoke as `/contextdocs:command-name`.
+Invoke as `/contextdocs:command-name` in Claude Code, or as prompts in Codex CLI and OpenCode.
 
 | Command | What It Does |
 |---------|-------------|
@@ -22,7 +24,17 @@ These commands are defined in `commands/*.md` and can be invoked as slash comman
 | `context-guard` | Install, uninstall, or check status of Context Guard hooks with tiered enforcement *(Claude Code only)* |
 | `context-verify` | Validate context file quality — line budgets, stale paths, consistency, health scoring, CI integration |
 
-## Rules and Hooks (Claude Code Only)
+## Rules (Claude Code Only)
 
-- **Rules** (2): `.claude/rules/context-quality.md` (AI context file quality, auto-loaded), `.claude/rules/context-awareness.md` (context trigger map, auto-loaded)
-- **Hooks** (5): `hooks/context-drift-check.sh` (post-commit drift detection), `hooks/context-structural-change.sh` (structural change reminders), `hooks/content-filter-guard.sh` (Write guard for high-risk OSS files), `hooks/context-guard-stop.sh` (session-end context doc nudge — Tier 1), `hooks/context-commit-guard.sh` (pre-commit context doc enforcement — Tier 2) — opt-in via `/contextdocs:context-guard install`
+- `context-quality.md` — cross-file consistency, path verification, version accuracy, sync points (auto-loaded)
+- `context-awareness.md` — context trigger map, suggests ContextDocs commands when relevant (auto-loaded)
+
+## Hooks (Claude Code Only)
+
+5 opt-in hooks, installed via `/contextdocs:context-guard install`:
+
+- `context-drift-check.sh` — post-commit drift detection
+- `context-structural-change.sh` — structural change reminders
+- `content-filter-guard.sh` — Write guard for high-risk OSS files
+- `context-guard-stop.sh` — session-end context doc nudge (Tier 1)
+- `context-commit-guard.sh` — pre-commit context doc enforcement (Tier 2)

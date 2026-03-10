@@ -2,7 +2,7 @@
 
 > AI IDE context file management for Claude Code, OpenCode, Codex CLI, and Gemini CLI. A Claude Code plugin that generates, maintains, and audits AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, and GEMINI.md using the Signal Gate principle — only what agents cannot discover on their own. Research shows overstuffed context files reduce AI task success by ~3% and increase token costs by 20% (ETH Zurich, 2026). ContextDocs keeps files lean with automatic line budgets (CLAUDE.md <80, AGENTS.md <120, others <60), enforces freshness with Context Guard hooks, scores health 0–100, and promotes MEMORY.md patterns into CLAUDE.md. Pure Markdown, zero runtime dependencies. For public-facing documentation (README, CHANGELOG, ROADMAP), see [PitchDocs](https://github.com/littlebearapps/pitchdocs).
 
-- [SKILL.md](./SKILL.md): Root-level skill manifest for directory submissions — plugin overview, installation, all 6 commands, output format with line budgets per tool
+- [SKILL.md](./SKILL.md): Root-level skill manifest for directory submissions — plugin overview, installation, 3 commands, output format with line budgets per tool
 
 ## Docs
 
@@ -31,7 +31,7 @@
 ## Optional
 
 - [Contributing](./CONTRIBUTING.md): Development setup, how to improve skills, modify hooks, submit PRs using conventional commits, content filter warning for high-risk files
-- [Changelog](./CHANGELOG.md): Version history — v1.0.0 release with migration guide from PitchDocs commands
+- [Changelog](./CHANGELOG.md): Version history — v1.1.0 (current) and v1.0.0 release with migration guide from PitchDocs commands
 - [Support](./SUPPORT.md): Getting help, Signal Gate and Context Guard troubleshooting, content filter known issue, contact details, response times
 - [Context Quality Rule](./.claude/rules/context-quality.md): Auto-loaded quality rule for AI context files — cross-file consistency, path verification, version accuracy, sync points (Claude Code only)
 - [Context Awareness Rule](./.claude/rules/context-awareness.md): Auto-loaded context trigger map — suggests ContextDocs commands when context-relevant work is detected (Claude Code only)
