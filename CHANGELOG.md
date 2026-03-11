@@ -5,6 +5,32 @@ All notable changes to ContextDocs will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0](https://github.com/littlebearapps/contextdocs/compare/v1.1.0...v1.2.0) (2026-03-11)
+
+
+### Added
+
+* add 6 CI checks — spell check, actionlint, frontmatter validation, llms.txt consistency, orphan detection, token budgets ([bec24ab](https://github.com/littlebearapps/contextdocs/commit/bec24abf5f9c6e07db5c11d57460e55f686a41f9))
+* add activation eval runner and updated test cases ([08aac68](https://github.com/littlebearapps/contextdocs/commit/08aac689a7ad40b6195f971e16b2a061c2aeb55a))
+* add CI integration for hook tests, banned phrases, and activation evals ([4863054](https://github.com/littlebearapps/contextdocs/commit/4863054c4778b543c370ff71fa28a7b97ea54dbb))
+* add hook unit tests and banned phrase checker ([55c6906](https://github.com/littlebearapps/contextdocs/commit/55c690699833fbda51d4f70e0c42ea48303dd466))
+* context-updater agent, token budget compliance, headless mode docs ([#6](https://github.com/littlebearapps/contextdocs/issues/6)) ([a4b6159](https://github.com/littlebearapps/contextdocs/commit/a4b61597b119e138da948a600c7e24f5e7acf9f8))
+
+
+### Fixed
+
+* add robust stream-json parsing strategies for skill detection ([0da56cc](https://github.com/littlebearapps/contextdocs/commit/0da56cc220d1871bc8c06ae75ecc10da7b688906))
+* correct spell check command in CLAUDE.md and allow HTML center in typos config ([19af130](https://github.com/littlebearapps/contextdocs/commit/19af130e5eddc0efc74f55c92c9824b50b8bef6b))
+* eval runner only flags ContextDocs skill activations as failures ([d96899d](https://github.com/littlebearapps/contextdocs/commit/d96899d04b9f6963405e6c69ebd58fc5d7232098)), closes [#5](https://github.com/littlebearapps/contextdocs/issues/5)
+* strengthen ai-context skill NL trigger descriptions ([bd2503f](https://github.com/littlebearapps/contextdocs/commit/bd2503f13eb4745247dca01b079a259a7b158f3f)), closes [#4](https://github.com/littlebearapps/contextdocs/issues/4)
+* use unprefixed slash commands in activation evals ([9028dcf](https://github.com/littlebearapps/contextdocs/commit/9028dcfd23beb32e14012e3ea40415952b4e5b18)), closes [#3](https://github.com/littlebearapps/contextdocs/issues/3)
+
+
+### Documentation
+
+* optimise plugin for Anthropic best practices — trim skills, strengthen context files ([b6ca593](https://github.com/littlebearapps/contextdocs/commit/b6ca5930c590f762f296b14ec24da7cf4b977e63))
+* update RESULTS.md with activation eval findings (30% pass rate) ([71a6177](https://github.com/littlebearapps/contextdocs/commit/71a6177c3cc97a12227f67e6a6e75b9b32c0b431))
+
 ## [Unreleased]
 
 ### Added

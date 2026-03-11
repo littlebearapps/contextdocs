@@ -1,6 +1,6 @@
 {
   "name": "contextdocs",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Generate, maintain, and audit AI IDE context files (AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, GEMINI.md) using the Signal Gate principle — only what agents cannot discover on their own. Includes Context Guard hooks for freshness enforcement, context verification scoring, and MEMORY.md promotion. Claude Code, OpenCode, Codex CLI, and Gemini CLI compatible.",
   "author": {
     "name": "Little Bear Apps",
