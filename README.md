@@ -51,7 +51,8 @@ Get your first AI context files generated in under 60 seconds.
 
 ```bash
 # 4. Keep context files in sync as your project evolves
-/contextdocs:context-guard install
+/contextdocs:context-guard install              # Tier 1 (Nudge) — reminds at session end
+/contextdocs:context-guard install --tier enforce  # Tier 2 (Enforce) — also blocks commits
 ```
 
 **Optional — public-facing documentation:**
