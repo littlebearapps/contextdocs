@@ -43,42 +43,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * optimise plugin for Anthropic best practices — trim skills, strengthen context files ([b6ca593](https://github.com/littlebearapps/contextdocs/commit/b6ca5930c590f762f296b14ec24da7cf4b977e63))
 * update RESULTS.md with activation eval findings (30% pass rate) ([71a6177](https://github.com/littlebearapps/contextdocs/commit/71a6177c3cc97a12227f67e6a6e75b9b32c0b431))
 
-## [Unreleased]
-
-### Added
-
-* **context-guard bundles context-updater agent** — `/context-guard install` now copies `context-updater.md` to `.claude/agents/` in the target project so hooks can launch it; uninstall and status also handle the agent file
-* **context-updater agent** — autonomous agent that updates stale AI context files after structural project changes, launched by hooks without user intervention (Claude Code only)
-* **autonomous actions rule** — context-awareness rule now instructs Claude Code to launch the context-updater agent automatically on hook triggers, closing the detection-to-action loop
-* **6 comprehensive CI checks** — spell check, actionlint, frontmatter validation, llms.txt consistency, orphan detection, and token budget verification ([bec24ab](https://github.com/littlebearapps/contextdocs/commit/bec24ab))
-* **activation eval runner** — new test suite for plugin activation and trigger detection to validate skill triggering accuracy ([08aac68](https://github.com/littlebearapps/contextdocs/commit/08aac68))
-* **hook unit tests** — comprehensive test coverage for all context-guard hooks with CI integration ([55c6906](https://github.com/littlebearapps/contextdocs/commit/55c6906))
-* **banned phrases checker** — CI check to enforce consistent language and terminology across AI context files ([55c6906](https://github.com/littlebearapps/contextdocs/commit/55c6906))
-
-### Changed
-
-* **context-verify: aggregate context load check** — new 6th scoring dimension estimates per-tool token usage across all loaded context files, flags when combined static context exceeds 5K (warning) or 10K (over budget) tokens per tool
-* hooks now reference the context-updater agent instead of suggesting manual slash commands — Stop hook, commit guard, structural change reminder, and drift check all direct Claude to launch the agent
-* context-guard skill documents the new agent component and updated installation steps
-* context-quality rule now includes per-tool load paths table and aggregate token thresholds
-* **plugin optimisation** — trimmed skills and strengthened context files for Anthropic best practices ([b6ca593](https://github.com/littlebearapps/contextdocs/commit/b6ca593))
-* **improved skill NL trigger descriptions** — stronger natural language patterns for ai-context skill activation ([bd2503f](https://github.com/littlebearapps/contextdocs/commit/bd2503f))
-* **enhanced activation evaluation** — eval runner now specifically flags ContextDocs skill activations for more accurate trigger testing ([d96899d](https://github.com/littlebearapps/contextdocs/commit/d96899d))
-
-### Fixed
-
-* spell check command in CLAUDE.md and allow HTML center tag in typos config ([19af130](https://github.com/littlebearapps/contextdocs/commit/19af130))
-* **robust stream-json parsing** — improved skill detection using multiple parsing strategies to handle edge cases in streaming JSON responses ([0da56cc](https://github.com/littlebearapps/contextdocs/commit/0da56cc))
-* **unprefixed slash commands in activation evals** — activation evaluation now uses unprefixed commands to accurately test skill triggering in Claude Code context ([9028dcf](https://github.com/littlebearapps/contextdocs/commit/9028dcf))
-
-### Known Issues
-
-* **Headless mode skill activation** — skills may not auto-trigger via `claude -p` (non-interactive mode). This is a [Claude Code platform limitation](https://github.com/anthropics/claude-code/issues/32184) affecting project-local plugins, not a ContextDocs bug. Interactive mode works correctly.
-
-### Documentation
-
-* updated RESULTS.md with activation eval findings and upstream issue tracking ([71a6177](https://github.com/littlebearapps/contextdocs/commit/71a6177))
-
 ## [1.1.0](https://github.com/littlebearapps/contextdocs/compare/v1.0.0...v1.1.0) (2026-03-10)
 
 
