@@ -105,6 +105,26 @@ For tools without plugin support, copy the relevant context file into your proje
 
 ---
 
+## Headless Mode (`claude -p`) Limitations
+
+ContextDocs skills may not auto-trigger when invoked via `claude -p` (headless/non-interactive mode). This is a [known Claude Code platform issue](https://github.com/anthropics/claude-code/issues/32184) affecting project-local plugins — not a ContextDocs bug.
+
+**Unaffected (all normal usage):**
+- Interactive Claude Code terminal sessions
+- IDE extensions (VS Code, JetBrains) — use interactive protocol
+- Untether / remote control bridges — use interactive stdin JSON RPC, not `-p`
+- Context Guard hooks, rules, and agents — plain shell scripts, no skill triggering needed
+- Generated context files — plain Markdown, tool-independent
+
+**Affected (automation/scripting only):**
+- Shell scripts calling `claude -p "prompt"` expecting skill auto-activation
+- CI pipelines invoking skills via `claude -p`
+- Automated eval testing of skill trigger rates
+
+**Workaround:** If you need headless mode (e.g., CI pipelines), install ContextDocs globally rather than project-locally, or use explicit slash commands rather than relying on NL skill triggering.
+
+---
+
 ## FAQ
 
 ### Where did this come from?

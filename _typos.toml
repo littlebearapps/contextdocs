@@ -70,4 +70,5 @@ extend-exclude = [
     "*.svg",
     "*.json",
     "llms-full.txt",
+    "tests/check-banned-phrases.sh",
 ]

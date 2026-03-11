@@ -88,7 +88,7 @@ if [ ${#ISSUES[@]} -gt 0 ]; then
   for I in "${ISSUES[@]}"; do
     MSG="$MSG\n$I"
   done
-  MSG="$MSG\nRun /contextdocs:ai-context audit to check, or /contextdocs:ai-context to regenerate."
+  MSG="$MSG\nLaunch the context-updater agent to fix these issues, or run /contextdocs:ai-context audit for a full check."
 
   # Escape for JSON
   MSG_JSON=$(printf '%s' "$MSG" | sed 's/"/\\"/g')

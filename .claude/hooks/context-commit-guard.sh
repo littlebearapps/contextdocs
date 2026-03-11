@@ -75,7 +75,7 @@ done <<< "$STAGED_FILES"
 
 # Block commit if structural changes without context updates
 if [ "$HAS_CONTEXT" = false ]; then
-  echo "COMMIT BLOCKED: Structural files (commands, skills, rules, or config) are staged but no AI context docs (CLAUDE.md, AGENTS.md, llms.txt, etc.) were updated. Update and stage the relevant context files before committing. Run /contextdocs:ai-context audit to check what needs updating, or /contextdocs:ai-context to regenerate." >&2
+  echo "COMMIT BLOCKED: Structural files (commands, skills, rules, or config) are staged but no AI context docs (CLAUDE.md, AGENTS.md, llms.txt, etc.) were updated. Launch the context-updater agent (defined in .claude/agents/context-updater.md) to update context files, then stage them and retry the commit." >&2
   exit 2
 fi
 

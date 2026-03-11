@@ -74,12 +74,13 @@ Check that your generated files are healthy:
 /contextdocs:context-verify
 ```
 
-This scores your context files 0–100 across 5 dimensions:
+This scores your context files 0–100 across 6 dimensions:
 - **Line budget** — are files within their size targets?
 - **Signal quality** — does the content pass Signal Gate (no discoverable content)?
 - **Path accuracy** — do referenced file paths actually exist?
 - **Consistency** — do files agree on conventions, tech stack, and key paths?
 - **Freshness** — have files been updated since the last significant code change?
+- **Context load** — is the aggregate token usage across all context files within healthy limits per tool?
 
 ---
 
@@ -95,6 +96,8 @@ This installs hooks with two tiers of enforcement:
 
 - **Tier 1 (Nudge)** — at session end, reminds you if context files may be stale
 - **Tier 2 (Guard)** — blocks commits when context files haven't been updated after structural changes
+
+Hooks automatically launch the **context-updater agent** to apply updates — no manual intervention needed. The agent applies surgical edits to only the affected sections, respecting line budgets and the Signal Gate principle.
 
 To check hook status or uninstall:
 

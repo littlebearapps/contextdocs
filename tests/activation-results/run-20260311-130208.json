@@ -1,0 +1,182 @@
+[
+  {
+    "id": "cmd-ai-context-init",
+    "run": 1,
+    "input": "/contextdocs:ai-context init",
+    "expected_skill": "ai-context",
+    "activated_skill": "none",
+    "should_respond": true,
+    "result": "fail"
+  },
+  {
+    "id": "cmd-ai-context-update",
+    "run": 1,
+    "input": "/contextdocs:ai-context update",
+    "expected_skill": "ai-context",
+    "activated_skill": "none",
+    "should_respond": true,
+    "result": "fail"
+  },
+  {
+    "id": "cmd-ai-context-promote",
+    "run": 1,
+    "input": "/contextdocs:ai-context promote",
+    "expected_skill": "ai-context",
+    "activated_skill": "none",
+    "should_respond": true,
+    "result": "fail"
+  },
+  {
+    "id": "cmd-ai-context-audit",
+    "run": 1,
+    "input": "/contextdocs:ai-context audit",
+    "expected_skill": "ai-context",
+    "activated_skill": "none",
+    "should_respond": true,
+    "result": "fail"
+  },
+  {
+    "id": "cmd-ai-context-claude",
+    "run": 1,
+    "input": "/contextdocs:ai-context claude",
+    "expected_skill": "ai-context",
+    "activated_skill": "none",
+    "should_respond": true,
+    "result": "fail"
+  },
+  {
+    "id": "cmd-context-guard-install",
+    "run": 1,
+    "input": "/contextdocs:context-guard install",
+    "expected_skill": "context-guard",
+    "activated_skill": "none",
+    "should_respond": true,
+    "result": "fail"
+  },
+  {
+    "id": "cmd-context-guard-status",
+    "run": 1,
+    "input": "/contextdocs:context-guard status",
+    "expected_skill": "context-guard",
+    "activated_skill": "none",
+    "should_respond": true,
+    "result": "fail"
+  },
+  {
+    "id": "cmd-context-verify",
+    "run": 1,
+    "input": "/contextdocs:context-verify",
+    "expected_skill": "context-verify",
+    "activated_skill": "none",
+    "should_respond": true,
+    "result": "fail"
+  },
+  {
+    "id": "cmd-context-verify-ci",
+    "run": 1,
+    "input": "/contextdocs:context-verify ci --min-score 80",
+    "expected_skill": "context-verify",
+    "activated_skill": "none",
+    "should_respond": true,
+    "result": "fail"
+  },
+  {
+    "id": "nl-stale-context",
+    "run": 1,
+    "input": "My CLAUDE.md is out of date, can you update it?",
+    "expected_skill": "ai-context",
+    "activated_skill": "none",
+    "should_respond": true,
+    "result": "fail"
+  },
+  {
+    "id": "nl-context-hooks",
+    "run": 1,
+    "input": "Set up hooks to keep my AI context files fresh",
+    "expected_skill": "context-guard",
+    "activated_skill": "context-guard",
+    "should_respond": true,
+    "result": "pass"
+  },
+  {
+    "id": "nl-context-quality",
+    "run": 1,
+    "input": "Score my context files and tell me what to fix",
+    "expected_skill": "context-verify",
+    "activated_skill": "context-verify",
+    "should_respond": true,
+    "result": "pass"
+  },
+  {
+    "id": "nl-memory-promote",
+    "run": 1,
+    "input": "Move my MEMORY.md patterns into CLAUDE.md",
+    "expected_skill": "ai-context",
+    "activated_skill": "none",
+    "should_respond": true,
+    "result": "fail"
+  },
+  {
+    "id": "cmd-context-guard-uninstall",
+    "run": 1,
+    "input": "/contextdocs:context-guard uninstall",
+    "expected_skill": "context-guard",
+    "activated_skill": "none",
+    "should_respond": true,
+    "result": "fail"
+  },
+  {
+    "id": "nl-install-hooks",
+    "run": 1,
+    "input": "Install context hooks for this project",
+    "expected_skill": "context-guard",
+    "activated_skill": "context-guard",
+    "should_respond": true,
+    "result": "pass"
+  },
+  {
+    "id": "negative-readme",
+    "run": 1,
+    "input": "Generate a README for this project",
+    "expected_skill": "none",
+    "activated_skill": "pitchdocs:readme",
+    "should_respond": false,
+    "result": "fail"
+  },
+  {
+    "id": "negative-changelog",
+    "run": 1,
+    "input": "/pitchdocs:changelog",
+    "expected_skill": "none",
+    "activated_skill": "pitchdocs:changelog",
+    "should_respond": false,
+    "result": "fail"
+  },
+  {
+    "id": "negative-test",
+    "run": 1,
+    "input": "run the test suite",
+    "expected_skill": "none",
+    "activated_skill": "none",
+    "should_respond": false,
+    "result": "pass"
+  },
+  {
+    "id": "negative-refactor",
+    "run": 1,
+    "input": "Refactor this function to use async/await",
+    "expected_skill": "none",
+    "activated_skill": "none",
+    "should_respond": false,
+    "result": "pass"
+  },
+  {
+    "id": "negative-deploy",
+    "run": 1,
+    "input": "Deploy this to production",
+    "expected_skill": "none",
+    "activated_skill": "none",
+    "should_respond": false,
+    "result": "pass"
+  }
+]
