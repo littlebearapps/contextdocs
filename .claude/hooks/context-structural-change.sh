@@ -70,7 +70,7 @@ if [ -n "$MSG" ]; then
 {
   "hookSpecificOutput": {
     "hookEventName": "PostToolUse",
-    "additionalContext": "CONTEXT REMINDER: $MSG_JSON Run /contextdocs:ai-context audit to check."
+    "additionalContext": "CONTEXT REMINDER: $MSG_JSON When your current task is complete, launch the context-updater agent to apply these updates automatically."
   }
 }
 EOF

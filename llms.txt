@@ -7,26 +7,30 @@
 ## Docs
 
 - [README](./README.md): Project overview, Signal Gate value proposition, quick start (under 60 seconds), comparison table (vs manual vs generic AI), commands with "Why It Matters", cross-tool discovery table for 7 AI tools
-- [AGENTS.md](./AGENTS.md): Cross-tool AI context — 3 skills inventory, 3 commands, 2 rules, 5 hooks with descriptions (Codex CLI, OpenCode, Gemini CLI format)
+- [AGENTS.md](./AGENTS.md): Cross-tool AI context — 1 agent, 3 skills inventory, 3 commands, 2 rules, 5 hooks with descriptions (Codex CLI, OpenCode, Gemini CLI format)
 - [CLAUDE.md](./CLAUDE.md): Claude Code project context — plugin architecture, Australian English conventions, key files, modification guide, PitchDocs relationship
 - [Docs Hub](./docs/README.md): Documentation index linking all guides, quick links to README/Contributing/Changelog/Support, and skills reference
 
 ## Guides
 
-- [Getting Started](./docs/guides/getting-started.md): Install ContextDocs, bootstrap 7 context file types with line budgets, verify health (0–100 across 5 dimensions), set up Context Guard hooks, keep context fresh with update/promote/audit
+- [Getting Started](./docs/guides/getting-started.md): Install ContextDocs, bootstrap 7 context file types with line budgets, verify health (0–100 across 6 dimensions), set up Context Guard hooks, keep context fresh with update/promote/audit
 - [Troubleshooting](./docs/guides/troubleshooting.md): Content filter errors (HTTP 400) with fetch commands, Signal Gate filtering issues, Context Guard hooks not triggering, stale context files, MEMORY.md promotion, cross-tool compatibility matrix, FAQ (origin, PitchDocs relationship, Signal Gate explained)
+
+## Agent
+
+- [Context Updater](./.claude/agents/context-updater.md): Autonomous agent that updates stale AI context files after structural project changes — launched by hooks, applies surgical edits using Signal Gate principle, verifies quality (Claude Code only)
 
 ## Skills
 
 - [AI Context](./.claude/skills/ai-context/SKILL.md): AI IDE context file generation with Signal Gate principle — 7 context file types from codebase analysis, init/update/promote/audit lifecycle, automatic line budgets, AGENTS.md spec tracking
 - [Context Guard](./.claude/skills/context-guard/SKILL.md): Context Guard hook installation — two-tier enforcement (session-end nudge + pre-commit guard), post-commit drift detection, structural change reminders, content filter protection, Untether compatibility (Claude Code only)
-- [Context Verify](./.claude/skills/context-verify/SKILL.md): Context file validation — line budget compliance, discoverable content detection, stale path scanning, cross-file consistency, MEMORY.md drift, 0–100 health scoring with CI integration (`--min-score` enforcement)
+- [Context Verify](./.claude/skills/context-verify/SKILL.md): Context file validation — line budget compliance, discoverable content detection, stale path scanning, cross-file consistency, MEMORY.md drift, aggregate context load monitoring (per-tool token estimates), 0–100 health scoring (6 dimensions) with CI integration (`--min-score` enforcement)
 
 ## Commands
 
 - [/contextdocs:ai-context](./commands/ai-context.md): Generate lean AI IDE context files using Signal Gate — supports init (bootstrap), update (incremental drift patching), promote (MEMORY.md → CLAUDE.md), audit (staleness check), and per-tool generation (claude, agents, cursor, copilot, windsurf, cline, gemini)
 - [/contextdocs:context-guard](./commands/context-guard.md): Install, uninstall, or check status of Context Guard hooks — two-tier freshness enforcement so stale context files get caught before they waste tokens (Claude Code only)
-- [/contextdocs:context-verify](./commands/context-verify.md): Score context file health 0–100 across 5 dimensions (line budget, signal quality, path accuracy, consistency, freshness) — CI integration with `--min-score` threshold
+- [/contextdocs:context-verify](./commands/context-verify.md): Score context file health 0–100 across 6 dimensions (line budget, signal quality, path accuracy, consistency, freshness, context load) — CI integration with `--min-score` threshold
 
 ## Optional
 

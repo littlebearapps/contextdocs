@@ -76,12 +76,23 @@ while IFS= read -r FILE; do
   esac
 done <<< "$CHANGED_FILES"
 
-# If structural changes exist without context updates, nudge
+# Collect which structural files changed for the agent
+STRUCTURAL_LIST=""
+while IFS= read -r FILE; do
+  case "$FILE" in
+    .claude/hooks/*|.claude/rules/context-quality.md|.claude/settings.json) continue ;;
+    commands/*.md|.claude/skills/*/SKILL.md|.agents/skills/*/SKILL.md|.claude/agents/*.md|.agents/agents/*.md|.claude/rules/*.md|package.json|pyproject.toml|Cargo.toml|go.mod|tsconfig*.json|wrangler.toml|vitest.config*|jest.config*|eslint.config*|biome.json|.claude-plugin/plugin.json)
+      STRUCTURAL_LIST="$STRUCTURAL_LIST\n  - $FILE"
+      ;;
+  esac
+done <<< "$CHANGED_FILES"
+
+# If structural changes exist without context updates, instruct agent launch
 if [ "$HAS_CONTEXT" = false ]; then
-  cat << 'EOF'
+  cat << EOF
 {
   "decision": "block",
-  "reason": "CONTEXT DOC NUDGE: You modified structural files (commands, skills, rules, or config) but no AI context files (CLAUDE.md, AGENTS.md, llms.txt, etc.) were updated. Consider updating relevant context docs before finishing. Run /contextdocs:ai-context audit to check what needs updating, or /contextdocs:ai-context to regenerate. If context docs genuinely don't need changes, you can finish — this is advisory only."
+  "reason": "CONTEXT DRIFT DETECTED — structural files changed this session without context file updates:\\n$STRUCTURAL_LIST\\n\\nAffected context files likely include: AGENTS.md, CLAUDE.md, llms.txt\\n\\nACTION REQUIRED: Launch the context-updater agent (defined in .claude/agents/context-updater.md) to update these files before ending the session. The agent will apply surgical edits to only the affected sections. If context docs genuinely don't need changes, you can finish — this is advisory only."
 }
 EOF
   exit 0

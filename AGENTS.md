@@ -4,6 +4,12 @@
 
 ContextDocs is a Claude Code plugin for generating, maintaining, and auditing AI IDE context files. Pure Markdown, zero runtime dependencies. Applies the Signal Gate principle — only includes what agents cannot discover on their own.
 
+## Agent
+
+| Agent | What It Does |
+|-------|-------------|
+| `context-updater` | Autonomously updates stale AI context files after structural project changes — launched by hooks, applies surgical edits, verifies quality *(Claude Code only)* |
+
 ## Available Skills
 
 Skills are loaded on-demand. Each lives at `.claude/skills/<name>/SKILL.md`. There are 3 skills in total.
@@ -12,7 +18,7 @@ Skills are loaded on-demand. Each lives at `.claude/skills/<name>/SKILL.md`. The
 |-------|-----------------|
 | `ai-context` | AI IDE context file generation with Signal Gate principle — 7 context file types from codebase analysis, init/update/promote/audit lifecycle |
 | `context-guard` | Context Guard hook installation — two-tier enforcement, settings.json configuration, troubleshooting *(Claude Code only)* |
-| `context-verify` | Context file validation — line budgets, discoverable content detection, stale paths, cross-file consistency, 0–100 health scoring with CI integration |
+| `context-verify` | Context file validation — line budgets, discoverable content detection, stale paths, cross-file consistency, aggregate context load, 0–100 health scoring (6 dimensions) with CI integration |
 
 ## Workflow Commands
 
@@ -31,7 +37,7 @@ Invoke as `/contextdocs:command-name` in Claude Code, or as prompts in Codex CLI
 
 ## Hooks (Claude Code Only)
 
-5 opt-in hooks, installed via `/contextdocs:context-guard install`:
+5 opt-in hooks, installed via `/contextdocs:context-guard install`. Hooks reference the context-updater agent for autonomous action:
 
 - `context-drift-check.sh` — post-commit drift detection
 - `context-structural-change.sh` — structural change reminders

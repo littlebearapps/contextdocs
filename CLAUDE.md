@@ -19,6 +19,7 @@ Pure Markdown Claude Code plugin — no JavaScript, no Python, no build step, no
 
 - **Add a skill**: Create `.claude/skills/<name>/SKILL.md` + `commands/<name>.md`, update README.md, AGENTS.md, llms.txt
 - **Add a command**: Create `commands/<name>.md` with YAML frontmatter, update README.md, AGENTS.md, llms.txt
+- **Add an agent**: Create `.claude/agents/<name>.md` with frontmatter, update AGENTS.md, llms.txt, context-guard SKILL.md
 - **Change quality standards**: Edit `.claude/rules/context-quality.md` — propagates automatically
 - **Bump version**: Handled by release-please from conventional commit messages
 
@@ -28,7 +29,12 @@ Pure Markdown Claude Code plugin — no JavaScript, no Python, no build step, no
 |------|---------|
 | `.claude-plugin/plugin.json` | Plugin manifest — name, version, keywords |
 | `.claude/rules/context-quality.md` | Auto-loaded quality rule — cross-file consistency, path verification, sync points |
-| `.claude/rules/context-awareness.md` | Auto-loaded trigger map — suggests ContextDocs commands when relevant |
+| `.claude/rules/context-awareness.md` | Auto-loaded trigger map — suggests ContextDocs commands when relevant, includes autonomous action triggers |
+| `.claude/agents/context-updater.md` | Autonomous agent — launched by hooks to update stale context files |
+
+## Known Limitations
+
+- **Headless mode skill activation**: Skills don't reliably auto-trigger via `claude -p`. This is a Claude Code platform issue ([anthropics/claude-code#32184](https://github.com/anthropics/claude-code/issues/32184)), not a ContextDocs bug. Interactive mode works correctly. Activation evals using `claude -p` will show artificially low pass rates.
 
 ## Relationship to PitchDocs
 

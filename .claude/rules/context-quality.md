@@ -4,38 +4,15 @@ When generating or updating AI context files (CLAUDE.md, AGENTS.md, GEMINI.md, .
 
 ## Cross-File Consistency
 
-All context files for a project must agree on:
+All context files must agree on: language/framework version, key commands (test, build, lint, deploy), directory structure, naming conventions, and critical rules. When updating one, check and update others.
 
-- Language and framework version
-- Key commands (test, build, lint, deploy)
-- Directory structure and key file paths
-- Naming conventions and coding standards
-- Critical rules and constraints
+## Path and Command Verification
 
-When updating one context file, check if the same information appears in others and update them too.
-
-## Path Verification
-
-Every file path mentioned in a context file must exist on disk. Before writing a context file, verify referenced paths:
-
-```bash
-test -f "path/to/file" || echo "WARN: path does not exist"
-```
-
-Never reference deleted files, renamed modules, or moved directories without checking first.
+Every file path in a context file must exist on disk. Every command must be runnable — verify against `package.json` scripts, `Makefile` targets, or `pyproject.toml` scripts before writing.
 
 ## Version Accuracy
 
-Context files must reference the correct:
-
-- Language runtime version (from `.nvmrc`, `engines`, `requires-python`, `go.mod`)
-- Framework version (from `package.json`, `pyproject.toml`)
-- Test runner (jest vs vitest vs pytest vs go test)
-- Linter/formatter (eslint vs biome, ruff vs flake8)
-
-## Command Accuracy
-
-Every command listed in a context file (test, build, lint, deploy) must be runnable. Verify against `package.json` scripts, `Makefile` targets, or `pyproject.toml` scripts before writing.
+Reference correct language runtime (from `.nvmrc`, `engines`, `requires-python`, `go.mod`), framework version (from manifests), test runner, and linter/formatter.
 
 ## Sync Points
 
@@ -43,6 +20,8 @@ When project structure, dependencies, commands, or conventions change, update al
 
 ## Tool Compatibility
 
-Not all context files work in all tools. Key distinctions: `AGENTS.md` works in Claude Code, OpenCode, Codex CLI, and Gemini CLI. `CLAUDE.md` works in Claude Code and OpenCode. `.cursorrules`, `.windsurfrules`, `.clinerules`, `GEMINI.md`, and `.github/copilot-instructions.md` are tool-specific. `.claude/rules/*.md` and hooks are Claude Code only. `MEMORY.md` is auto-written by Claude — not user-authored, not version-controlled. For GitLab/Bitbucket projects, generate only tool-agnostic context files.
+`AGENTS.md`: Claude Code, OpenCode, Codex CLI, Gemini CLI. `CLAUDE.md`: Claude Code, OpenCode. `.cursorrules`, `.windsurfrules`, `.clinerules`, `GEMINI.md`, `copilot-instructions.md`: tool-specific. `.claude/rules/*.md` and hooks: Claude Code only. `MEMORY.md`: auto-written by Claude, not version-controlled.
 
-For context file size guidance and the Signal Gate principle, load the `ai-context` skill.
+## Aggregate Context Load
+
+Thresholds per tool: <5,000 tokens healthy, 5,000–10,000 warning, >10,000 needs refactoring. Use `context-verify` to check. See context-verify skill for per-tool load paths and detailed reporting.
