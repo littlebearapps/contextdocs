@@ -91,6 +91,20 @@
     "description": "Natural language about MEMORY.md promotion triggers ai-context skill"
   },
   {
+    "id": "cmd-context-guard-uninstall",
+    "input": "/contextdocs:context-guard uninstall",
+    "expected_skill": "context-guard",
+    "should_respond": true,
+    "description": "Context Guard uninstall command routes to context-guard skill"
+  },
+  {
+    "id": "nl-install-hooks",
+    "input": "Install context hooks for this project",
+    "expected_skill": "context-guard",
+    "should_respond": true,
+    "description": "Natural language about installing hooks triggers context-guard skill"
+  },
+  {
     "id": "negative-readme",
     "input": "Generate a README for this project",
     "should_respond": false,
@@ -107,5 +121,17 @@
     "input": "run the test suite",
     "should_respond": false,
     "reason": "Test execution is not a context management task"
+  },
+  {
+    "id": "negative-refactor",
+    "input": "Refactor this function to use async/await",
+    "should_respond": false,
+    "reason": "Code refactoring is not a context management task"
+  },
+  {
+    "id": "negative-deploy",
+    "input": "Deploy this to production",
+    "should_respond": false,
+    "reason": "Deployment is not a context management task"
   }
 ]
