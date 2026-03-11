@@ -55,6 +55,7 @@ jobs:
             --exclude "https://codex.openai.com"
             --exclude "https://www.npmjs.com"
             --exclude "https://github.com/littlebearapps/contextdocs/compare/"
+            --exclude "https://github.com/littlebearapps/contextdocs/releases/tag/"
             docs/
             README.md
             CONTRIBUTING.md
@@ -103,7 +104,7 @@ jobs:
               errors=$((errors + 1))
             fi
           done
-          echo "Checked $(ls hooks/*.sh | wc -l) hook scripts"
+          echo "Checked $(find hooks -name '*.sh' | wc -l) hook scripts"
           [ "$errors" -eq 0 ] && echo "All hooks valid" || exit 1
 
       - name: Run hook unit tests
