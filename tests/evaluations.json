@@ -1,63 +1,63 @@
 [
   {
     "id": "cmd-ai-context-init",
-    "input": "/contextdocs:ai-context init",
+    "input": "/ai-context init",
     "expected_skill": "ai-context",
     "should_respond": true,
-    "description": "AI context init command routes to ai-context skill"
+    "description": "AI context init command routes to ai-context skill (unprefixed — project-local plugin)"
   },
   {
     "id": "cmd-ai-context-update",
-    "input": "/contextdocs:ai-context update",
+    "input": "/ai-context update",
     "expected_skill": "ai-context",
     "should_respond": true,
     "description": "AI context update command routes to ai-context skill"
   },
   {
     "id": "cmd-ai-context-promote",
-    "input": "/contextdocs:ai-context promote",
+    "input": "/ai-context promote",
     "expected_skill": "ai-context",
     "should_respond": true,
     "description": "AI context promote command routes to ai-context skill"
   },
   {
     "id": "cmd-ai-context-audit",
-    "input": "/contextdocs:ai-context audit",
+    "input": "/ai-context audit",
     "expected_skill": "ai-context",
     "should_respond": true,
     "description": "AI context audit command routes to ai-context skill"
   },
   {
     "id": "cmd-ai-context-claude",
-    "input": "/contextdocs:ai-context claude",
+    "input": "/ai-context claude",
     "expected_skill": "ai-context",
     "should_respond": true,
     "description": "Single-tool generation routes to ai-context skill"
   },
   {
     "id": "cmd-context-guard-install",
-    "input": "/contextdocs:context-guard install",
+    "input": "/context-guard install",
     "expected_skill": "context-guard",
     "should_respond": true,
     "description": "Context Guard install command routes to context-guard skill"
   },
   {
     "id": "cmd-context-guard-status",
-    "input": "/contextdocs:context-guard status",
+    "input": "/context-guard status",
     "expected_skill": "context-guard",
     "should_respond": true,
     "description": "Context Guard status command routes to context-guard skill"
   },
   {
     "id": "cmd-context-verify",
-    "input": "/contextdocs:context-verify",
+    "input": "/context-verify",
     "expected_skill": "context-verify",
     "should_respond": true,
     "description": "Context verify command routes to context-verify skill"
   },
   {
     "id": "cmd-context-verify-ci",
-    "input": "/contextdocs:context-verify ci --min-score 80",
+    "input": "/context-verify ci --min-score 80",
     "expected_skill": "context-verify",
     "should_respond": true,
     "description": "Context verify with CI argument routes correctly"
@@ -92,7 +92,7 @@
   },
   {
     "id": "cmd-context-guard-uninstall",
-    "input": "/contextdocs:context-guard uninstall",
+    "input": "/context-guard uninstall",
     "expected_skill": "context-guard",
     "should_respond": true,
     "description": "Context Guard uninstall command routes to context-guard skill"
