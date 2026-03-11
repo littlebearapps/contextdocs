@@ -1,6 +1,6 @@
 ---
 name: ai-context
-description: Generates lean AI IDE context files (AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, GEMINI.md) from codebase analysis. Applies the Signal Gate principle — only includes what agents cannot discover on their own. Use when setting up, auditing, or updating AI tool context for a repository.
+description: Generates, updates, and maintains AI IDE context files (AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, GEMINI.md). Updates stale or out-of-date context files, promotes stable MEMORY.md patterns into CLAUDE.md, bootstraps new projects, and audits existing files for drift. Applies the Signal Gate principle — only includes what agents cannot discover on their own.
 ---
 
 # AI Context File Generator

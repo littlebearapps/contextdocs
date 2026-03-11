@@ -1,5 +1,5 @@
 ---
-description: "Generate lean AI IDE context files using the Signal Gate principle — only what agents cannot discover on their own: $ARGUMENTS"
+description: "Generate, update, or audit AI IDE context files (CLAUDE.md, AGENTS.md, etc.). Updates stale context, promotes MEMORY.md patterns, bootstraps new projects. Signal Gate principle — only what agents cannot discover: $ARGUMENTS"
 argument-hint: "[claude|agents|cursor|copilot|windsurf|cline|gemini|all|init|update|promote|audit] or no args for all"
 allowed-tools:
   - Read
