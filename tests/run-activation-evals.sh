@@ -204,6 +204,21 @@ for run in $(seq 1 "$RUNS"); do
         sed 's/.*"skill_name"[[:space:]]*:[[:space:]]*"//;s/"//' 2>/dev/null || echo "")
     fi
 
+    # Strategy 4: Look for tool_use with name "Skill" in stream-json event format
+    # Some claude versions emit {"type":"tool_use","name":"Skill","input":{"skill":"..."}}
+    if [ -z "$ACTIVATED_SKILL" ]; then
+      ACTIVATED_SKILL=$(echo "$OUTPUT" | \
+        jq -r 'select(.type == "tool_use" and .name == "Skill") | .input.skill // empty' 2>/dev/null | \
+        head -1 || echo "")
+    fi
+
+    # Strategy 5: Look for skill invocation in content_block_delta text
+    if [ -z "$ACTIVATED_SKILL" ]; then
+      ACTIVATED_SKILL=$(echo "$OUTPUT" | \
+        grep -oE '"skill"[[:space:]]*:[[:space:]]*"(contextdocs:)?[a-z_-]+"' | head -1 | \
+        sed 's/.*"skill"[[:space:]]*:[[:space:]]*"//;s/"//' 2>/dev/null || echo "")
+    fi
+
     # Default to "none" if nothing found
     [ -z "$ACTIVATED_SKILL" ] && ACTIVATED_SKILL="none"
 
