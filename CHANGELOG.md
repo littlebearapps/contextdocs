@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+* **context-guard bundles context-updater agent** — `/context-guard install` now copies `context-updater.md` to `.claude/agents/` in the target project so hooks can launch it; uninstall and status also handle the agent file
 * **context-updater agent** — autonomous agent that updates stale AI context files after structural project changes, launched by hooks without user intervention (Claude Code only)
 * **autonomous actions rule** — context-awareness rule now instructs Claude Code to launch the context-updater agent automatically on hook triggers, closing the detection-to-action loop
 * **6 comprehensive CI checks** — spell check, actionlint, frontmatter validation, llms.txt consistency, orphan detection, and token budget verification ([bec24ab](https://github.com/littlebearapps/contextdocs/commit/bec24ab))

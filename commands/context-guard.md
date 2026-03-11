@@ -30,9 +30,11 @@ Context Guard has two enforcement tiers:
   1. Create `.claude/hooks/` directory if it does not exist
   2. Copy `context-drift-check.sh`, `context-structural-change.sh`, `content-filter-guard.sh`, and `context-guard-stop.sh` from the plugin's `hooks/` directory to `.claude/hooks/`
   3. Make the scripts executable (`chmod +x`)
-  4. Merge PreToolUse, PostToolUse, and Stop hook entries into `.claude/settings.json` (create the file if needed; if entries already exist, append without overwriting)
-  5. Copy `context-quality.md` to `.claude/rules/context-quality.md` (create directory if needed)
-  6. Report what was installed
+  4. Create `.claude/agents/` directory if it does not exist
+  5. Copy `context-updater.md` from the plugin's `.claude/agents/` directory to `.claude/agents/context-updater.md`
+  6. Merge PreToolUse, PostToolUse, and Stop hook entries into `.claude/settings.json` (create the file if needed; if entries already exist, append without overwriting)
+  7. Copy `context-quality.md` to `.claude/rules/context-quality.md` (create directory if needed)
+  8. Report what was installed
 
 - **`install strict`**: Install Context Guard (Tier 1 + Tier 2) into the current project:
   1. Perform all steps from `install` above
@@ -44,15 +46,17 @@ Context Guard has two enforcement tiers:
   1. Remove `.claude/hooks/context-drift-check.sh`, `.claude/hooks/context-structural-change.sh`, `.claude/hooks/content-filter-guard.sh`, `.claude/hooks/context-guard-stop.sh`, and `.claude/hooks/context-commit-guard.sh`
   2. Remove all Context Guard hook entries (PreToolUse, PostToolUse, and Stop) from `.claude/settings.json` (preserve other hooks)
   3. Remove `.claude/rules/context-quality.md`
-  4. Report what was removed
+  4. Remove `.claude/agents/context-updater.md`
+  5. Report what was removed
 
 - **`status`**: Check installation state and current drift:
   1. Check if hook scripts exist in `.claude/hooks/`
   2. Check if hook entries are present in `.claude/settings.json`
   3. Check if the quality rule exists in `.claude/rules/`
-  4. Determine which tier is active (Tier 1 if Stop hook present, Tier 2 if commit guard also present)
-  5. Run a quick drift check (same logic as `/contextdocs:ai-context audit`) to report current staleness
-  6. Report findings
+  4. Check if the context-updater agent exists in `.claude/agents/`
+  5. Determine which tier is active (Tier 1 if Stop hook present, Tier 2 if commit guard also present)
+  6. Run a quick drift check (same logic as `/contextdocs:ai-context audit`) to report current staleness
+  7. Report findings
 
 ## Output
 
@@ -63,6 +67,7 @@ Context Guard installed (Tier 1 — Nudge):
   ✓ .claude/hooks/context-structural-change.sh — reminds after structural file changes
   ✓ .claude/hooks/content-filter-guard.sh — blocks Write on high-risk OSS files, advises on medium-risk
   ✓ .claude/hooks/context-guard-stop.sh — nudges to update context docs before session ends
+  ✓ .claude/agents/context-updater.md — autonomous agent for surgical context file updates
   ✓ .claude/rules/context-quality.md — auto-loaded quality standards for context files
   ✓ .claude/settings.json — PreToolUse, PostToolUse, and Stop hooks registered
 
@@ -82,6 +87,7 @@ Context Guard installed (Tier 1 + Tier 2 — Nudge + Guard):
   ✓ .claude/hooks/content-filter-guard.sh — blocks Write on high-risk OSS files, advises on medium-risk
   ✓ .claude/hooks/context-guard-stop.sh — nudges to update context docs before session ends
   ✓ .claude/hooks/context-commit-guard.sh — blocks commits with stale context docs
+  ✓ .claude/agents/context-updater.md — autonomous agent for surgical context file updates
   ✓ .claude/rules/context-quality.md — auto-loaded quality standards for context files
   ✓ .claude/settings.json — PreToolUse, PostToolUse, and Stop hooks registered
 ```
@@ -93,6 +99,7 @@ Context Guard Status:
   ✓ Tier 2 — Guard (commit blocker active — blocks commits with stale context)
   ✓ Base hooks installed (3/3 scripts in .claude/hooks/)
   ✓ Settings configured (PreToolUse, PostToolUse, and Stop entries in .claude/settings.json)
+  ✓ Context-updater agent installed (.claude/agents/context-updater.md)
   ✓ Quality rule active (.claude/rules/context-quality.md)
 
 Drift check:

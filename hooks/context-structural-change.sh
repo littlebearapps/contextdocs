@@ -43,6 +43,10 @@ case "$REL_PATH" in
   .claude/skills/*/SKILL.md|.agents/skills/*/SKILL.md)
     MSG="You modified a skill. AGENTS.md, CLAUDE.md, and llms.txt may need their skill listings updated."
     ;;
+  .claude/agents/context-updater.md)
+    # Context Guard's own agent — not a project structural change
+    echo '{}'; exit 0
+    ;;
   .claude/agents/*.md|.agents/agents/*.md)
     MSG="You modified an agent definition. AGENTS.md may need updating."
     ;;

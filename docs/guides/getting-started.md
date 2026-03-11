@@ -4,7 +4,7 @@ description: "Install ContextDocs, generate your first AI context files, and set
 type: how-to
 difficulty: beginner
 time_to_complete: "5 minutes"
-last_verified: "1.1.0"
+last_verified: "1.2.0"
 related:
   - guides/troubleshooting.md
 order: 1

@@ -82,7 +82,7 @@ The PreToolUse Bash entry for `context-commit-guard.sh` is only added with `inst
 
 ## Uninstallation
 
-`/contextdocs:context-guard uninstall` removes all hook scripts, settings.json entries, and the quality rule.
+`/contextdocs:context-guard uninstall` removes all hook scripts, the context-updater agent, settings.json entries, and the quality rule.
 
 ## Troubleshooting
 

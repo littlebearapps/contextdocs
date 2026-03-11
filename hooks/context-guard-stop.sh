@@ -41,7 +41,7 @@ HAS_STRUCTURAL=false
 while IFS= read -r FILE; do
   case "$FILE" in
     # Skip Context Guard's own infrastructure — not project structural changes
-    .claude/hooks/*|.claude/rules/context-quality.md|.claude/settings.json) continue ;;
+    .claude/hooks/*|.claude/rules/context-quality.md|.claude/settings.json|.claude/agents/context-updater.md) continue ;;
     commands/*.md) HAS_STRUCTURAL=true; break ;;
     .claude/skills/*/SKILL.md) HAS_STRUCTURAL=true; break ;;
     .agents/skills/*/SKILL.md) HAS_STRUCTURAL=true; break ;;
@@ -80,7 +80,7 @@ done <<< "$CHANGED_FILES"
 STRUCTURAL_LIST=""
 while IFS= read -r FILE; do
   case "$FILE" in
-    .claude/hooks/*|.claude/rules/context-quality.md|.claude/settings.json) continue ;;
+    .claude/hooks/*|.claude/rules/context-quality.md|.claude/settings.json|.claude/agents/context-updater.md) continue ;;
     commands/*.md|.claude/skills/*/SKILL.md|.agents/skills/*/SKILL.md|.claude/agents/*.md|.agents/agents/*.md|.claude/rules/*.md|package.json|pyproject.toml|Cargo.toml|go.mod|tsconfig*.json|wrangler.toml|vitest.config*|jest.config*|eslint.config*|biome.json|.claude-plugin/plugin.json)
       STRUCTURAL_LIST="$STRUCTURAL_LIST\n  - $FILE"
       ;;
