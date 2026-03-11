@@ -221,8 +221,11 @@ for run in $(seq 1 "$RUNS"); do
       fi
     else
       # Negative test: should NOT activate any ContextDocs skill
-      if [ "$ACTIVATED_SKILL" = "none" ] || [ "$ACTIVATED_SKILL" = "parse_error" ]; then
-        echo "PASS (correctly silent)"
+      # Other plugins (e.g. PitchDocs) activating is correct behaviour, not a failure
+      CONTEXTDOCS_SKILLS="ai-context|context-guard|context-verify|contextdocs"
+      if [ "$ACTIVATED_SKILL" = "none" ] || [ "$ACTIVATED_SKILL" = "parse_error" ] \
+         || ! echo "$ACTIVATED_SKILL" | grep -qiE "$CONTEXTDOCS_SKILLS"; then
+        echo "PASS (correctly silent: $ACTIVATED_SKILL)"
         PASS=$((PASS + 1))
         RESULT="pass"
       else
