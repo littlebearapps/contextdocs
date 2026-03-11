@@ -5,6 +5,18 @@ All notable changes to ContextDocs will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0](https://github.com/littlebearapps/contextdocs/compare/v1.2.0...v1.3.0) (2026-03-11)
+
+
+### Added
+
+* bundle context-updater agent with Context Guard install ([e733e05](https://github.com/littlebearapps/contextdocs/commit/e733e0536a3fe543847cf1645717f5521fe4efdd))
+
+
+### Documentation
+
+* show both Context Guard tiers in Get Started section ([691e677](https://github.com/littlebearapps/contextdocs/commit/691e6779a9a33b02a9fad816441818cac0fdb586))
+
 ## [1.2.0](https://github.com/littlebearapps/contextdocs/compare/v1.1.0...v1.2.0) (2026-03-11)
 
 
