@@ -2,7 +2,8 @@ name: Check Upstream Spec Versions
 
 on:
   schedule:
-    - cron: '0 9 1 * *' # 1st of each month at 9am UTC
+    - cron: '0 9 1 * *' # 1st of each month at 9am UTC (agents-md)
+    - cron: '0 9 * * 1' # Every Monday at 9am UTC (claude-code)
   workflow_dispatch: # Manual trigger
 
 permissions:
@@ -10,21 +11,21 @@ permissions:
   contents: read
 
 jobs:
-  check-upstream:
+  check-agents-md:
     runs-on: ubuntu-latest
+    # Run on monthly schedule (1st of month) or manual trigger
+    if: github.event.schedule == '0 9 1 * *' || github.event_name == 'workflow_dispatch'
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
-      - name: Check upstream versions
+      - name: Check AGENTS.md spec version
         id: check
         run: |
           DRIFT_FOUND=false
           DRIFT_REPORT=""
 
-          # Read pinned versions
           VERSIONS_FILE="upstream-versions.json"
 
-          # Check AGENTS.md spec
           AGENTS_PINNED=$(jq -r '.sources["agents-md"].version' "$VERSIONS_FILE")
           AGENTS_LATEST=$(curl -sf https://api.github.com/repos/agentsmd/agents.md/releases/latest | jq -r '.tag_name // empty' | sed 's/^v//')
           if [ -n "$AGENTS_LATEST" ] && [ "$AGENTS_LATEST" != "$AGENTS_PINNED" ]; then
@@ -33,7 +34,6 @@ jobs:
           fi
 
           echo "drift_found=$DRIFT_FOUND" >> "$GITHUB_OUTPUT"
-          # Write multiline report
           {
             echo "drift_report<<EOF"
             echo -e "$DRIFT_REPORT"
@@ -99,3 +99,133 @@ jobs:
       - name: No drift found
         if: steps.check.outputs.drift_found == 'false'
         run: echo "All upstream specs are up to date with pinned versions."
+
+  check-claude-code:
+    runs-on: ubuntu-latest
+    # Run on weekly schedule (Monday) or manual trigger
+    if: github.event.schedule == '0 9 * * 1' || github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Check Claude Code release version
+        id: check-release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DRIFT_FOUND=false
+          DRIFT_REPORT=""
+
+          VERSIONS_FILE="upstream-versions.json"
+
+          # Check release version
+          CC_PINNED=$(jq -r '.sources["claude-code"].last_seen_version' "$VERSIONS_FILE")
+          CC_LATEST=$(gh api repos/anthropics/claude-code/releases/latest --jq '.tag_name // empty' 2>/dev/null | sed 's/^v//')
+          if [ -n "$CC_LATEST" ] && [ "$CC_LATEST" != "$CC_PINNED" ]; then
+            DRIFT_FOUND=true
+            DRIFT_REPORT="${DRIFT_REPORT}\n- **Claude Code Release**: pinned \`${CC_PINNED}\`, latest \`${CC_LATEST}\`"
+          fi
+
+          echo "drift_found=$DRIFT_FOUND" >> "$GITHUB_OUTPUT"
+          echo "latest_version=${CC_LATEST:-unknown}" >> "$GITHUB_OUTPUT"
+          {
+            echo "drift_report<<EOF"
+            echo -e "$DRIFT_REPORT"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Check settings schema for new hook events
+        id: check-schema
+        if: steps.check-release.outputs.drift_found == 'true'
+        run: |
+          SCHEMA_REPORT=""
+
+          # Fetch settings schema
+          SCHEMA=$(curl -sf "https://json.schemastore.org/claude-code-settings.json" 2>/dev/null || echo "")
+          if [ -n "$SCHEMA" ]; then
+            # Extract hook event names from schema
+            SCHEMA_EVENTS=$(echo "$SCHEMA" | jq -r '.. | .enum? // empty | .[]' 2>/dev/null | sort -u | grep -E '^(Pre|Post|Session|User|Permission|Stop|Sub|Task|Notification|Teammate|Config|Instructions|Worktree|PreCompact)' || true)
+
+            # Check against documented events in companion reference
+            REFERENCE=".claude/skills/context-guard/SKILL-reference.md"
+            if [ -f "$REFERENCE" ]; then
+              NEW_EVENTS=""
+              while IFS= read -r event; do
+                if [ -n "$event" ] && ! grep -q "$event" "$REFERENCE"; then
+                  NEW_EVENTS="${NEW_EVENTS} ${event}"
+                fi
+              done <<< "$SCHEMA_EVENTS"
+
+              if [ -n "$NEW_EVENTS" ]; then
+                SCHEMA_REPORT="New hook events not in companion reference:${NEW_EVENTS}"
+              fi
+            fi
+          fi
+
+          echo "schema_report=${SCHEMA_REPORT}" >> "$GITHUB_OUTPUT"
+
+      - name: Check for existing drift issue
+        if: steps.check-release.outputs.drift_found == 'true'
+        id: existing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          EXISTING=$(gh issue list --label "upstream-drift" --state open --json number --jq '.[0].number // empty')
+          echo "issue_number=$EXISTING" >> "$GITHUB_OUTPUT"
+
+      - name: Create drift issue
+        if: steps.check-release.outputs.drift_found == 'true' && steps.existing.outputs.issue_number == ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --title "Claude Code version drift detected (v${{ steps.check-release.outputs.latest_version }})" \
+            --label "upstream-drift,maintenance" \
+            --body "$(cat <<'ISSUE_EOF'
+          ## Claude Code Version Drift
+
+          The weekly upstream check has detected a new Claude Code release.
+
+          ### Changes Detected
+
+          ${{ steps.check-release.outputs.drift_report }}
+
+          ${{ steps.check-schema.outputs.schema_report }}
+
+          ### Action Required
+
+          1. Review the [Claude Code changelog](https://code.claude.com/docs/en/changelog) for breaking changes
+          2. Check for new or renamed hook events, frontmatter fields, or settings
+          3. Update companion references if affected:
+             - `.claude/skills/context-guard/SKILL-reference.md` — hook events and handler types
+             - `.claude/skills/ai-context/SKILL-reference.md` — agent/skill frontmatter
+          4. Update `upstream-versions.json` with the new version
+          5. Run `/contextdocs:context-verify` to confirm health score
+
+          ### Reference
+
+          - `upstream-versions.json` — pinned versions
+          - [Claude Code releases](https://github.com/anthropics/claude-code/releases)
+          - [Settings schema](https://json.schemastore.org/claude-code-settings.json)
+
+          *This issue was created automatically by the `check-upstream` workflow.*
+          ISSUE_EOF
+          )"
+
+      - name: Update existing drift issue
+        if: steps.check-release.outputs.drift_found == 'true' && steps.existing.outputs.issue_number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue comment "${{ steps.existing.outputs.issue_number }}" \
+            --body "$(cat <<'COMMENT_EOF'
+          **Weekly re-check** — drift still present:
+
+          ${{ steps.check-release.outputs.drift_report }}
+
+          ${{ steps.check-schema.outputs.schema_report }}
+          COMMENT_EOF
+          )"
+
+      - name: No drift found
+        if: steps.check-release.outputs.drift_found == 'false'
+        run: echo "Claude Code version matches pinned version."

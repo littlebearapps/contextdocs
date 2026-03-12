@@ -50,7 +50,7 @@
 - [Content Filter Guard Hook](./hooks/content-filter-guard.sh): PreToolUse hook that blocks Write on high-risk OSS files — CODE_OF_CONDUCT.md, LICENSE, SECURITY.md (Claude Code only)
 - [Context Guard Stop Hook](./hooks/context-guard-stop.sh): Stop hook that nudges to update context docs before session end — Tier 1 enforcement (Claude Code only)
 - [Context Commit Guard Hook](./hooks/context-commit-guard.sh): PreToolUse hook that blocks commits with stale context — Tier 2 enforcement (Claude Code only)
-- [Upstream Versions](./upstream-versions.json): Pinned AGENTS.md spec version, checked monthly by GitHub Action for drift
+- [Upstream Versions](./upstream-versions.json): Pinned AGENTS.md spec version (monthly) and Claude Code release version (weekly), checked by GitHub Action for drift
 - [Plugin Manifest](./.claude-plugin/plugin.json): Plugin metadata — name, version, description, keywords, author, repository, homepage
 - [Security](./SECURITY.md): Vulnerability reporting process, scope (Markdown + shell scripts), 48-hour acknowledgement, 7-day resolution target
 - [Code of Conduct](./CODE_OF_CONDUCT.md): Community behaviour standards (Contributor Covenant v3.0)

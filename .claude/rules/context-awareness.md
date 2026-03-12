@@ -13,6 +13,7 @@ Recognise when AI context files may need attention and suggest the appropriate c
 | Source files renamed or moved | `/contextdocs:context-verify` |
 | Project going public or onboarding contributors | `/contextdocs:ai-context init` |
 | Pre-release or version bump | `/contextdocs:context-verify` |
+| Upstream-drift issue is open | Review companion references for accuracy |
 
 ## Autonomous Actions (Claude Code Only)
 

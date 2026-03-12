@@ -1,5 +1,5 @@
 {
-  "description": "Pinned upstream specification versions. The check-upstream GitHub Action compares these against live sources monthly.",
+  "description": "Pinned upstream versions. The check-upstream GitHub Action monitors agents-md monthly and claude-code weekly.",
   "sources": {
     "agents-md": {
       "version": "1.0",
@@ -8,6 +8,15 @@
       "check_url": "https://api.github.com/repos/agentsmd/agents.md/releases/latest",
       "last_verified": "2026-03-10",
       "stability": "evolving — v1.1 proposals in progress"
+    },
+    "claude-code": {
+      "check_type": "github-release",
+      "repo": "anthropics/claude-code",
+      "check_url": "https://api.github.com/repos/anthropics/claude-code/releases/latest",
+      "last_verified": "2026-03-12",
+      "last_seen_version": "2.1.74",
+      "sources": ["releases.atom", "changelog", "llms.txt", "settings-schema"],
+      "stability": "no stability policy — 4-7 releases/week, breaking changes undocumented"
     }
   }
 }
