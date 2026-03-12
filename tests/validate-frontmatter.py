@@ -20,7 +20,15 @@ SKILL_OPTIONAL = {"version": str, "author": str, "tags": list}
 COMMAND_REQUIRED = {"description": str}
 
 AGENT_REQUIRED = {"name": str}
-AGENT_OPTIONAL = {"description": str}
+AGENT_OPTIONAL = {
+    "description": str,
+    "maxTurns": int,
+    "memory": str,
+    "permissionMode": str,
+    "isolation": str,
+    "background": bool,
+}
+AGENT_LIST_FIELDS = {"tools", "disallowedTools", "skills", "mcpServers"}
 
 
 def extract_frontmatter(filepath: str) -> dict | None:
@@ -111,6 +119,13 @@ def main():
         data = extract_frontmatter(f)
         if data:
             check_fields(f, data, AGENT_REQUIRED, AGENT_OPTIONAL)
+            # Validate list fields are actually lists
+            for field in AGENT_LIST_FIELDS:
+                if field in data and not isinstance(data[field], list):
+                    warnings.append(
+                        f"{f}: field '{field}' should be a list, "
+                        f"got {type(data[field]).__name__}"
+                    )
     print(f"Checked {len(agent_files)} agent files")
 
     # Report

@@ -8,6 +8,10 @@ tools:
   - Bash
   - Write
   - Edit
+disallowedTools:
+  - WebSearch
+  - WebFetch
+maxTurns: 10
 ---
 
 # Context Updater Agent

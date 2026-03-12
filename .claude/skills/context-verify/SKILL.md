@@ -41,6 +41,10 @@ If a project MEMORY.md exists, check for convention-like patterns ("Always", "Ne
 
 Check for hook scripts in `.claude/hooks/context-*.sh` and entries in `.claude/settings.json`.
 
+### 8. @import Path Validation
+
+If any CLAUDE.md contains `@path/to/file` import lines, verify each target exists on disk. Report broken imports with the source file and line number.
+
 ### 7. Context Load (Aggregate Token Estimate)
 
 Calculate per-tool aggregate token load using the tool-to-file mapping from `.claude/rules/context-quality.md`. Thresholds: <5,000 tokens healthy, 5,000–10,000 warning, >10,000 over budget.
@@ -61,7 +65,7 @@ Context Load:
 |-----------|-----|-----------|
 | Line Budget | 20 | -2 per file over warning, -5 per file over budget |
 | Signal Quality | 20 | -1 per discoverable instance (max -5), -3 if "Project Structure" present |
-| Path Accuracy | 20 | -2 per stale path (max -10) |
+| Path Accuracy | 20 | -2 per stale path or broken @import (max -10) |
 | Consistency | 15 | -3 if test/build/deploy commands differ between files |
 | Freshness | 15 | -2 if MEMORY.md not promoted, -3 per file stale 90+ days |
 | Context Load | 10 | -3 per tool over 5K warning, -5 per tool over 10K budget |

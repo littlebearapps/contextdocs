@@ -31,6 +31,9 @@ Pure Markdown Claude Code plugin — no JavaScript, no Python, no build step, no
 | `.claude/rules/context-quality.md` | Auto-loaded quality rule — cross-file consistency, path verification, sync points |
 | `.claude/rules/context-awareness.md` | Auto-loaded trigger map — suggests ContextDocs commands when relevant, includes autonomous action triggers |
 | `.claude/agents/context-updater.md` | Autonomous agent — launched by hooks to update stale context files |
+| `.claude/agents/docs-freshness.md` | Read-only agent — checks documentation freshness, suggests PitchDocs commands *(PitchDocs)* |
+| `.claude/rules/doc-standards.md` | Auto-loaded quality rule — 4-Question Test, Lobby Principle, banned phrases *(PitchDocs)* |
+| `.claude/rules/docs-awareness.md` | Auto-loaded trigger map — suggests PitchDocs commands when docs-relevant work is detected *(PitchDocs)* |
 
 ## Known Limitations
 

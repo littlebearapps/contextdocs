@@ -38,7 +38,7 @@ HAS_STRUCTURAL=false
 while IFS= read -r FILE; do
   case "$FILE" in
     # Skip Context Guard's own infrastructure — not project structural changes
-    .claude/hooks/*|.claude/rules/context-quality.md|.claude/settings.json) continue ;;
+    .claude/hooks/*|.claude/rules/context-quality.md|.claude/settings.json|.claude/agents/context-updater.md) continue ;;
     commands/*.md) HAS_STRUCTURAL=true; break ;;
     .claude/skills/*/SKILL.md) HAS_STRUCTURAL=true; break ;;
     .agents/skills/*/SKILL.md) HAS_STRUCTURAL=true; break ;;

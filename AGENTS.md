@@ -8,7 +8,8 @@ ContextDocs is a Claude Code plugin for generating, maintaining, and auditing AI
 
 | Agent | What It Does |
 |-------|-------------|
-| `context-updater` | Autonomously updates stale AI context files after structural project changes — launched by hooks, applies surgical edits, verifies quality *(Claude Code only)* |
+| `context-updater` | Autonomously updates stale AI context files after structural project changes — launched by hooks, applies surgical edits, verifies quality. Capped at 10 turns, no internet access *(Claude Code only)* |
+| `docs-freshness` | Read-only documentation freshness checker — detects stale docs, version mismatches, missing files, suggests `/pitchdocs:*` commands to fix. Capped at 8 turns, enforces read-only via disallowedTools *(PitchDocs, Claude Code only)* |
 
 ## Available Skills
 
@@ -16,7 +17,7 @@ Skills are loaded on-demand. Each lives at `.claude/skills/<name>/SKILL.md`. The
 
 | Skill | What It Provides |
 |-------|-----------------|
-| `ai-context` | AI IDE context file generation with Signal Gate principle — 7 context file types from codebase analysis, init/update/promote/audit lifecycle |
+| `ai-context` | AI IDE context file generation with Signal Gate principle — 7 context file types from codebase analysis, init/update/promote/audit lifecycle, companion reference for advanced agent/skill frontmatter |
 | `context-guard` | Context Guard hook installation — two-tier enforcement, settings.json configuration, troubleshooting *(Claude Code only)* |
 | `context-verify` | Context file validation — line budgets, discoverable content detection, stale paths, cross-file consistency, aggregate context load, 0–100 health scoring (6 dimensions) with CI integration |
 
@@ -34,6 +35,8 @@ Invoke as `/contextdocs:command-name` in Claude Code, or as prompts in Codex CLI
 
 - `context-quality.md` — cross-file consistency, path verification, version accuracy, sync points (auto-loaded)
 - `context-awareness.md` — context trigger map, suggests ContextDocs commands when relevant (auto-loaded)
+- `doc-standards.md` — documentation quality standards, 4-Question Test, Lobby Principle, banned phrases (auto-loaded, PitchDocs)
+- `docs-awareness.md` — documentation trigger map, suggests PitchDocs commands when docs-relevant work is detected (auto-loaded, PitchDocs)
 
 ## Hooks (Claude Code Only)
 
