@@ -1,6 +1,6 @@
 #!/bin/bash
 # test-hooks.sh
-# Unit tests for all 5 ContextDocs hooks.
+# Unit tests for all 6 ContextDocs hooks.
 # Exit 0 = all pass, Exit 1 = failures found
 
 set -euo pipefail
@@ -448,6 +448,78 @@ setup_git_repo
 echo '{}' > package.json
 run_test "package.json modified, no context → block" "$HOOK" \
   '{}' 0 "CONTEXT DRIFT DETECTED"
+teardown_git_repo
+
+echo ""
+
+########################################################################
+# 6. context-session-start.sh (SessionStart)
+########################################################################
+echo "--- context-session-start.sh ---"
+HOOK="$ORIG_DIR/.claude/hooks/context-session-start.sh"
+
+# No git repo → silent pass
+run_test "No git repo → silent" "$HOOK" \
+  '{}' 0 "{}"
+
+# Git repo with no context files → silent
+setup_git_repo
+run_test "No context files → silent" "$HOOK" \
+  '{}' 0 "{}"
+teardown_git_repo
+
+# Git repo with up-to-date context file → silent
+setup_git_repo
+echo "# Context" > CLAUDE.md
+git add CLAUDE.md
+git commit -q -m "add context"
+run_test "Up-to-date CLAUDE.md → silent" "$HOOK" \
+  '{}' 0 "{}"
+teardown_git_repo
+
+# Git repo with stale context file → reports health check
+setup_git_repo
+echo "# Context" > CLAUDE.md
+git add CLAUDE.md
+GIT_COMMITTER_DATE="2025-01-01T00:00:00" git commit -q -m "add context" --date="2025-01-01T00:00:00"
+echo "code" > app.js
+git add app.js
+GIT_COMMITTER_DATE="2025-06-01T00:00:00" git commit -q -m "add code" --date="2025-06-01T00:00:00"
+run_test "Stale CLAUDE.md → health check" "$HOOK" \
+  '{}' 0 "CONTEXT HEALTH CHECK"
+teardown_git_repo
+
+# Large aggregate context → warns about line count
+setup_git_repo
+for i in $(seq 1 310); do echo "line $i" >> CLAUDE.md; done
+git add CLAUDE.md
+git commit -q -m "add large context"
+run_test "Large aggregate context → warns" "$HOOK" \
+  '{}' 0 "Aggregate context"
+teardown_git_repo
+
+# Always exits 0 (advisory only)
+setup_git_repo
+echo "# Context" > CLAUDE.md
+git add CLAUDE.md
+GIT_COMMITTER_DATE="2025-01-01T00:00:00" git commit -q -m "add context" --date="2025-01-01T00:00:00"
+echo "code" > app.ts
+git add app.ts
+GIT_COMMITTER_DATE="2025-06-01T00:00:00" git commit -q -m "add code" --date="2025-06-01T00:00:00"
+run_test "Always exits 0 (advisory)" "$HOOK" \
+  '{}' 0
+teardown_git_repo
+
+# Valid JSON output when issues found
+setup_git_repo
+echo "# Context" > CLAUDE.md
+git add CLAUDE.md
+GIT_COMMITTER_DATE="2025-01-01T00:00:00" git commit -q -m "add context" --date="2025-01-01T00:00:00"
+echo "code" > main.py
+git add main.py
+GIT_COMMITTER_DATE="2025-06-01T00:00:00" git commit -q -m "add code" --date="2025-06-01T00:00:00"
+run_test "Valid JSON output with issues" "$HOOK" \
+  '{}' 0 "hookSpecificOutput"
 teardown_git_repo
 
 echo ""

@@ -7,7 +7,7 @@
 ## Docs
 
 - [README](./README.md): Project overview, Signal Gate value proposition, quick start (under 60 seconds), comparison table (vs manual vs generic AI), commands with "Why It Matters", cross-tool discovery table for 7 AI tools
-- [AGENTS.md](./AGENTS.md): Cross-tool AI context — 2 agents, 3 skills inventory, 3 commands, 4 rules, 5 hooks with descriptions (Codex CLI, OpenCode, Gemini CLI format)
+- [AGENTS.md](./AGENTS.md): Cross-tool AI context — 2 agents, 3 skills inventory, 3 commands, 4 rules, 6 hooks with descriptions (Codex CLI, OpenCode, Gemini CLI format)
 - [CLAUDE.md](./CLAUDE.md): Claude Code project context — plugin architecture, Australian English conventions, key files, modification guide, PitchDocs relationship
 - [Docs Hub](./docs/README.md): Documentation index linking all guides, quick links to README/Contributing/Changelog/Support, and skills reference
 
@@ -25,7 +25,8 @@
 
 - [AI Context](./.claude/skills/ai-context/SKILL.md): AI IDE context file generation with Signal Gate principle — 7 context file types from codebase analysis, init/update/promote/audit lifecycle, automatic line budgets, AGENTS.md spec tracking
 - [AI Context Reference](./.claude/skills/ai-context/SKILL-reference.md): Companion reference for Claude Code — complete agent frontmatter catalogue (13 fields), skill frontmatter catalogue (11 fields), variable substitution, dynamic context injection, bundled resource patterns, agent memory directories, CLAUDE.md advanced features (@import, directory walking, claudeMdExcludes, managed policy), rules system (path-scoped rules, recursive discovery, user-level rules, symlinks)
-- [Context Guard](./.claude/skills/context-guard/SKILL.md): Context Guard hook installation — two-tier enforcement (session-end nudge + pre-commit guard), post-commit drift detection, structural change reminders, content filter protection, Untether compatibility (Claude Code only)
+- [Context Guard](./.claude/skills/context-guard/SKILL.md): Context Guard hook installation — two-tier enforcement (session-end nudge + pre-commit guard), SessionStart health check, post-commit drift detection, structural change reminders, content filter protection, companion reference for 17 hook events, Untether compatibility (Claude Code only)
+- [Context Guard Reference](./.claude/skills/context-guard/SKILL-reference.md): Companion reference for Claude Code hooks — complete event catalogue (17 events with decision control), 4 handler types (command, http, prompt, agent), advanced features (async, once, timeout, matcher, updatedInput, CLAUDE_ENV_FILE), settings.json schema, stability notes
 - [Context Verify](./.claude/skills/context-verify/SKILL.md): Context file validation — line budget compliance, discoverable content detection, stale path scanning, @import path validation, rule path-scope and symlink validation, cross-file consistency, MEMORY.md drift, aggregate context load monitoring (per-tool token estimates), 0–100 health scoring with CI integration (`--min-score` enforcement)
 
 ## Commands
@@ -43,6 +44,7 @@
 - [Context Awareness Rule](./.claude/rules/context-awareness.md): Auto-loaded context trigger map — suggests ContextDocs commands when context-relevant work is detected (Claude Code only)
 - [Doc Standards Rule](./.claude/rules/doc-standards.md): Auto-loaded documentation quality standards — 4-Question Test, Lobby Principle, progressive disclosure, banned phrases (PitchDocs, Claude Code only)
 - [Docs Awareness Rule](./.claude/rules/docs-awareness.md): Auto-loaded documentation trigger map — suggests PitchDocs commands when docs-relevant work is detected (PitchDocs, Claude Code only)
+- [Context Session Start Hook](./hooks/context-session-start.sh): SessionStart hook that runs a quick context health check — detects stale files, warns on high aggregate line count (Claude Code only)
 - [Context Drift Check Hook](./hooks/context-drift-check.sh): PostToolUse hook that detects stale AI context files after git commits (Claude Code only)
 - [Context Structural Change Hook](./hooks/context-structural-change.sh): PostToolUse hook that reminds about context file updates after structural changes (Claude Code only)
 - [Content Filter Guard Hook](./hooks/content-filter-guard.sh): PreToolUse hook that blocks Write on high-risk OSS files — CODE_OF_CONDUCT.md, LICENSE, SECURITY.md (Claude Code only)

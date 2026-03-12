@@ -48,6 +48,10 @@ Fires on session end. Checks for uncommitted structural changes without context 
 
 Fires before `git commit`. Checks staging area for structural files without context files. Exit 2 blocks the commit.
 
+### context-session-start.sh (SessionStart)
+
+Fires at session start. Quick context health check: counts context files, detects stale files (source commits ahead), warns if aggregate line count exceeds budget. Advisory only — cannot block session start.
+
 ### context-updater agent
 
 Autonomous agent (`.claude/agents/context-updater.md`) launched by Claude in response to hook output. Applies surgical, incremental context file updates. Uses `.git/.context-updater-running` flag for loop prevention.
@@ -70,6 +74,9 @@ Autonomous agent (`.claude/agents/context-updater.md`) launched by Claude in res
     "PostToolUse": [
       { "matcher": "Bash", "hooks": [{ "type": "command", "command": ".claude/hooks/context-drift-check.sh" }] },
       { "matcher": "Write|Edit", "hooks": [{ "type": "command", "command": ".claude/hooks/context-structural-change.sh" }] }
+    ],
+    "SessionStart": [
+      { "hooks": [{ "type": "command", "command": ".claude/hooks/context-session-start.sh" }] }
     ],
     "Stop": [
       { "hooks": [{ "type": "command", "command": ".claude/hooks/context-guard-stop.sh" }] }
@@ -97,3 +104,7 @@ The PreToolUse Bash entry for `context-commit-guard.sh` is only added with `inst
 ## Untether Compatibility
 
 When running via [Untether](https://github.com/littlebearapps/untether) (Telegram bridge), `context-guard-stop.sh` checks `UNTETHER_SESSION` env var and exits immediately — Stop hook blocks would displace user content in Telegram output. All other hooks (drift check, structural reminders, content filter, commit guard) work normally. If you don't use Untether, this has no effect.
+
+## Hook System Reference
+
+For the complete hook event catalogue (17 events), handler types (command, http, prompt, agent), advanced features (async, once, timeout, matcher, updatedInput, CLAUDE_ENV_FILE), and settings.json schema, load the companion reference: `SKILL-reference.md`
