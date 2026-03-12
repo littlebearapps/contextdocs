@@ -67,22 +67,24 @@ Your AI coding assistant works better when it understands your project's convent
 
 ContextDocs solves the full lifecycle. It scans your codebase and generates context files for 7 AI tools using the **Signal Gate principle** — only what agents cannot discover by reading source code on their own. No directory listings, no file trees, no architecture overviews that agents find themselves. Just the conventions, gotchas, and decisions that actually help.
 
-Then it keeps them fresh: `update` patches drift incrementally, `promote` moves Claude's auto-learned MEMORY.md patterns into CLAUDE.md, `context-verify` scores health 0–100 across 5 dimensions, and Context Guard hooks enforce freshness at session end and commit time — with the context-updater agent applying fixes automatically.
+Then it keeps them fresh: `update` patches drift incrementally, `promote` moves Claude's auto-learned MEMORY.md patterns into CLAUDE.md, `context-verify` scores health 0–100 across 6 dimensions with 13 checks, and Context Guard hooks enforce freshness at session start, session end, and commit time — with the context-updater agent applying fixes automatically.
 
 ---
 
 ## 🎯 Features
 
-ContextDocs generates context files for 7 AI coding tools from a single codebase scan, applies Signal Gate filtering to strip discoverable content, enforces line budgets (CLAUDE.md <80, AGENTS.md <120, others <60), and scores health 0–100 across 6 dimensions. Context Guard hooks catch drift at session end and commit time.
+ContextDocs generates context files for 7 AI coding tools from a single codebase scan, applies Signal Gate filtering to strip discoverable content, enforces line budgets (CLAUDE.md <80, AGENTS.md <120, others <60), and scores health 0–100 across 6 dimensions with 13 verification checks. Context Guard hooks catch drift at session start, session end, and commit time.
 
 - 🧠 **Signal Gate filtering** — strips out discoverable content (directory listings, file trees, architecture overviews) so your context files contain only what actually helps AI tools, keeping them lean and under budget
 - 📋 **7 context file types from one scan** — AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, and GEMINI.md generated together, so every AI tool on your team gets the same project knowledge
 - 🔄 **Full lifecycle, not just generation** — `init` bootstraps, `update` patches only what drifted, `promote` graduates MEMORY.md patterns to CLAUDE.md, `audit` flags staleness — so context files stay accurate as your project evolves
 - ✅ **Health scoring (0–100)** — grades context files across line budget, signal quality, path accuracy, cross-file consistency, freshness, and aggregate context load — export to CI with `--min-score` so drift never reaches your team
-- 🔒 **Context Guard enforcement** — two-tier hooks nudge at session end (Tier 1) and block commits (Tier 2) when context files are stale, so drift gets caught before it costs anyone tokens *(Claude Code only)*
+- 🔒 **Context Guard enforcement** — SessionStart health check validates on entry, Tier 1 nudges at session end, Tier 2 blocks commits when context files are stale, so drift gets caught at every stage *(Claude Code only)*
 - 🤖 **Autonomous context updates** — the context-updater agent is launched automatically by hooks to update stale files without user intervention, closing the loop from detection to action *(Claude Code only)*
 - 🛡️ **Content filter protection** — guards against Claude Code's API filter (HTTP 400) for CODE_OF_CONDUCT, LICENSE, and SECURITY files, so hook installation never gets blocked *(Claude Code only)*
 - 📏 **Line budgets that work** — CLAUDE.md <80, AGENTS.md <120, all others <60 — backed by the ETH Zurich finding that shorter, focused context outperforms longer files
+- 🗂️ **Path-scoped context rules** — apply different conventions to different directories using glob patterns, so monorepos and multi-platform projects get targeted context per area *(Claude Code only)*
+- 📡 **Upstream compatibility tracking** — weekly Claude Code release monitoring and settings schema diffing detect breaking changes before they affect your context files
 - 🔌 **Works with 7 AI tools** — Claude Code and OpenCode natively; generated files work with Codex CLI, Cursor, Windsurf, Cline, and Gemini CLI automatically
 
 ---

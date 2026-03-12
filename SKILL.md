@@ -1,7 +1,7 @@
 ---
 name: contextdocs
 description: AI IDE context file management — generate, maintain, and audit AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, and GEMINI.md using the Signal Gate principle. Includes Context Guard hooks and context health scoring. Zero runtime dependencies.
-version: "1.0.0"
+version: "1.3.0"
 author: Little Bear Apps
 tags:
   - ai-context
@@ -18,7 +18,7 @@ tags:
 
 ContextDocs is a pure Markdown Claude Code plugin that generates, maintains, and audits AI IDE context files for 7 tools. Every generated file follows the Signal Gate principle — only what agents cannot discover on their own — keeping context lean and effective.
 
-3 skills, 3 slash commands, 2 quality rules, 5 opt-in hooks. 100% Markdown, zero runtime dependencies, MIT licensed.
+3 skills, 3 slash commands, 2 quality rules, 6 opt-in hooks, 13 verification checks. 100% Markdown, zero runtime dependencies, MIT licensed.
 
 ## When to Use
 

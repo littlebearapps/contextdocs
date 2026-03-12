@@ -26,8 +26,8 @@ contextdocs/
 │       ├── context-guard/SKILL.md # Hook installation
 │       └── context-verify/SKILL.md # Health scoring
 ├── commands/                      # Slash commands
-├── hooks/                         # 5 opt-in shell scripts (Claude Code only)
-└── upstream-versions.json         # Pinned AGENTS.md spec version
+├── hooks/                         # 6 opt-in shell scripts (Claude Code only)
+└── upstream-versions.json         # Pinned AGENTS.md spec + Claude Code release versions
 ```
 
 ---

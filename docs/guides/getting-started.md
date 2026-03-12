@@ -4,7 +4,7 @@ description: "Install ContextDocs, generate your first AI context files, and set
 type: how-to
 difficulty: beginner
 time_to_complete: "5 minutes"
-last_verified: "1.2.0"
+last_verified: "1.4.0"
 related:
   - guides/troubleshooting.md
 order: 1
@@ -74,7 +74,7 @@ Check that your generated files are healthy:
 /contextdocs:context-verify
 ```
 
-This scores your context files 0–100 across 6 dimensions:
+This scores your context files 0–100 across 6 dimensions with 13 checks:
 - **Line budget** — are files within their size targets?
 - **Signal quality** — does the content pass Signal Gate (no discoverable content)?
 - **Path accuracy** — do referenced file paths actually exist?
@@ -92,8 +92,9 @@ Context Guard hooks keep your context files in sync as your project evolves:
 /contextdocs:context-guard install
 ```
 
-This installs hooks with two tiers of enforcement:
+This installs hooks with a health check and two tiers of enforcement:
 
+- **SessionStart** — validates context files at session start, warns if stale or over budget
 - **Tier 1 (Nudge)** — at session end, reminds you if context files may be stale
 - **Tier 2 (Guard)** — blocks commits when context files haven't been updated after structural changes
 

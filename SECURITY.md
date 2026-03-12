@@ -22,4 +22,4 @@ We aim to acknowledge reports within 48 hours and provide a resolution or update
 
 ## Upstream Specifications
 
-This plugin references the AGENTS.md specification. If the upstream spec introduces a security-relevant change, the monthly [upstream drift check](.github/workflows/check-upstream.yml) will detect it and open an issue for review.
+This plugin references the AGENTS.md specification and tracks Claude Code releases. If an upstream spec or platform change introduces a security-relevant change, the monthly (AGENTS.md spec) and weekly (Claude Code releases) [upstream drift check](.github/workflows/check-upstream.yml) will detect it and open an issue for review.

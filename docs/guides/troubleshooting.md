@@ -3,7 +3,7 @@ title: "Troubleshooting & FAQ"
 description: "Common ContextDocs issues and solutions — Signal Gate, Context Guard hooks, content filter errors, and cross-tool limitations."
 type: how-to
 difficulty: intermediate
-last_verified: "1.2.0"
+last_verified: "1.4.0"
 related:
   - guides/getting-started.md
 order: 2
@@ -55,7 +55,7 @@ If generated context files exceed their line budgets, the Signal Gate filter may
 1. Check status: `/contextdocs:context-guard status`
 2. Verify entries exist in `.claude/settings.json`
 3. Context Guard hooks are **Claude Code only** — they don't work in OpenCode, Cursor, or other tools
-4. Tier 1 (nudge) triggers at session end; Tier 2 (guard) triggers at commit time
+4. SessionStart fires at session start (validates context files, warns if stale); Tier 1 (nudge) triggers at session end; Tier 2 (guard) triggers at commit time
 
 **If hooks were installed but aren't in settings.json:** Run `/contextdocs:context-guard install` again — it's idempotent.
 

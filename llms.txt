@@ -55,4 +55,4 @@
 - [Security](./SECURITY.md): Vulnerability reporting process, scope (Markdown + shell scripts), 48-hour acknowledgement, 7-day resolution target
 - [Code of Conduct](./CODE_OF_CONDUCT.md): Community behaviour standards (Contributor Covenant v3.0)
 - [License](./LICENSE): MIT licence terms — Little Bear Apps 2026
-- [Evaluation Scenarios](./tests/evaluations.json): 16 test scenarios for command routing verification — maps commands and natural language triggers to expected skills, includes 3 negative cases
+- [Evaluation Scenarios](./tests/evaluations.json): 20 test scenarios for command routing verification — maps commands and natural language triggers to expected skills, includes 5 negative cases
