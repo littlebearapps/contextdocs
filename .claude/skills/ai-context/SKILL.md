@@ -91,4 +91,4 @@ Tracks [agents.md spec](https://github.com/agentsmd/agents.md) v1.0 via `upstrea
 
 ## Claude Code Reference
 
-For advanced agent/skill frontmatter fields, variable substitution, dynamic context injection, bundled resource patterns, and CLAUDE.md advanced features (@import, directory walking, claudeMdExcludes, managed policy), load the companion reference: `SKILL-reference.md`
+For advanced agent/skill frontmatter fields, variable substitution, dynamic context injection, bundled resource patterns, CLAUDE.md advanced features (@import, directory walking, claudeMdExcludes, managed policy), and rules system (path-scoped rules, recursive discovery, user-level rules, symlinks), load the companion reference: `SKILL-reference.md`

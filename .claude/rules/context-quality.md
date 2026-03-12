@@ -16,7 +16,7 @@ Reference correct language runtime (from `.nvmrc`, `engines`, `requires-python`,
 
 ## Sync Points
 
-When project structure, dependencies, commands, or conventions change, update all context files that reference the affected content. Load the `ai-context` skill for the full sync matrix.
+When project structure, dependencies, commands, or conventions change, update all context files that reference the affected content. When using path-scoped rules (`paths:` frontmatter), verify glob patterns still match after file renames or directory restructuring. Load the `ai-context` skill for the full sync matrix.
 
 ## Tool Compatibility
 

@@ -136,3 +136,43 @@ Organisations can deploy a managed `CLAUDE.md` at system level:
 - macOS: `/Library/Application Support/ClaudeCode/CLAUDE.md`
 
 Managed policy files load before all other CLAUDE.md files, cannot be excluded, and cannot be overridden by project settings. When auditing context load, account for managed policy if present.
+
+## Rules System
+
+### Path-Scoped Rules
+
+Rules can restrict which files they apply to using `paths:` YAML frontmatter with glob patterns:
+
+```yaml
+---
+paths:
+  - "src/frontend/**/*.tsx"
+  - "src/frontend/**/*.ts"
+---
+# Frontend Conventions
+Use React Server Components by default...
+```
+
+Claude Code only loads the rule when working on files matching the globs. Use path-scoped rules instead of subdirectory `CLAUDE.md` files when conventions apply to specific file patterns rather than directory trees.
+
+### Recursive Discovery
+
+Claude Code discovers rules recursively under `.claude/rules/`. Subdirectories organise rules by domain:
+
+```
+.claude/rules/
+  context-quality.md       # Always loaded (no paths: restriction)
+  frontend/
+    react-patterns.md      # paths: ["src/frontend/**"]
+    styling.md             # paths: ["**/*.css", "**/*.scss"]
+  backend/
+    api-conventions.md     # paths: ["src/api/**"]
+```
+
+### User-Level Rules
+
+`~/.claude/rules/*.md` files load before project rules and apply to all projects. Use for personal conventions (editor preferences, commit style) that should not be committed to a shared repo.
+
+### Symlink Support
+
+Rules can be symlinks pointing to shared files in other directories or repos. Claude Code resolves symlinks to their targets. When generating context-verify checks, verify symlink targets exist on disk.

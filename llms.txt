@@ -24,9 +24,9 @@
 ## Skills
 
 - [AI Context](./.claude/skills/ai-context/SKILL.md): AI IDE context file generation with Signal Gate principle — 7 context file types from codebase analysis, init/update/promote/audit lifecycle, automatic line budgets, AGENTS.md spec tracking
-- [AI Context Reference](./.claude/skills/ai-context/SKILL-reference.md): Companion reference for Claude Code — complete agent frontmatter catalogue (13 fields), skill frontmatter catalogue (11 fields), variable substitution, dynamic context injection, bundled resource patterns, agent memory directories, CLAUDE.md advanced features (@import, directory walking, claudeMdExcludes, managed policy)
+- [AI Context Reference](./.claude/skills/ai-context/SKILL-reference.md): Companion reference for Claude Code — complete agent frontmatter catalogue (13 fields), skill frontmatter catalogue (11 fields), variable substitution, dynamic context injection, bundled resource patterns, agent memory directories, CLAUDE.md advanced features (@import, directory walking, claudeMdExcludes, managed policy), rules system (path-scoped rules, recursive discovery, user-level rules, symlinks)
 - [Context Guard](./.claude/skills/context-guard/SKILL.md): Context Guard hook installation — two-tier enforcement (session-end nudge + pre-commit guard), post-commit drift detection, structural change reminders, content filter protection, Untether compatibility (Claude Code only)
-- [Context Verify](./.claude/skills/context-verify/SKILL.md): Context file validation — line budget compliance, discoverable content detection, stale path scanning, @import path validation, cross-file consistency, MEMORY.md drift, aggregate context load monitoring (per-tool token estimates), 0–100 health scoring (6 dimensions) with CI integration (`--min-score` enforcement)
+- [Context Verify](./.claude/skills/context-verify/SKILL.md): Context file validation — line budget compliance, discoverable content detection, stale path scanning, @import path validation, rule path-scope and symlink validation, cross-file consistency, MEMORY.md drift, aggregate context load monitoring (per-tool token estimates), 0–100 health scoring with CI integration (`--min-score` enforcement)
 
 ## Commands
 

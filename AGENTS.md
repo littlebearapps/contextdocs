@@ -17,9 +17,9 @@ Skills are loaded on-demand. Each lives at `.claude/skills/<name>/SKILL.md`. The
 
 | Skill | What It Provides |
 |-------|-----------------|
-| `ai-context` | AI IDE context file generation with Signal Gate principle — 7 context file types from codebase analysis, init/update/promote/audit lifecycle, companion reference for advanced agent/skill frontmatter |
+| `ai-context` | AI IDE context file generation with Signal Gate principle — 7 context file types from codebase analysis, init/update/promote/audit lifecycle, companion reference for advanced frontmatter, rules system, and CLAUDE.md features |
 | `context-guard` | Context Guard hook installation — two-tier enforcement, settings.json configuration, troubleshooting *(Claude Code only)* |
-| `context-verify` | Context file validation — line budgets, discoverable content detection, stale paths, cross-file consistency, aggregate context load, 0–100 health scoring (6 dimensions) with CI integration |
+| `context-verify` | Context file validation — line budgets, discoverable content detection, stale paths, @import validation, rule path-scope and symlink checks, cross-file consistency, aggregate context load, 0–100 health scoring with CI integration |
 
 ## Workflow Commands
 
