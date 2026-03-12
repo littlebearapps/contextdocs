@@ -1,6 +1,6 @@
 ---
 name: contextdocs
-description: AGENTS-first AI IDE context management — generate, maintain, and audit canonical AGENTS.md plus thin bridge files for CLAUDE.md, copilot-instructions.md, .cursorrules, .windsurfrules, .clinerules, and GEMINI.md using the Signal Gate principle. Includes Context Guard hooks and context health scoring. Zero runtime dependencies.
+description: AGENTS-first AI IDE context management — generate, maintain, and audit canonical AGENTS.md plus thin bridge files for CLAUDE.md, .github/copilot-instructions.md, .cursorrules, .windsurfrules, .clinerules, and GEMINI.md using the Signal Gate principle. Includes Context Guard hooks and context health scoring. Zero runtime dependencies.
 version: "1.3.0"
 author: Little Bear Apps
 tags:
@@ -16,7 +16,7 @@ tags:
 
 ## Overview
 
-ContextDocs is a pure Markdown Claude Code plugin that generates, maintains, and audits AGENTS-first AI IDE context files for 7 tools. `AGENTS.md` carries the shared project conventions, and every generated bridge file follows the Signal Gate principle — only what agents cannot discover on their own — keeping context lean and effective.
+ContextDocs is a pure Markdown Claude Code plugin that generates, maintains, and audits AGENTS-first AI IDE context files for 8 tools. `AGENTS.md` carries the shared project conventions, and every generated bridge file follows the Signal Gate principle — only what agents cannot discover on their own — keeping context lean and effective.
 
 3 skills, 3 slash commands, 2 quality rules, 6 opt-in hooks, 13 verification checks. 100% Markdown, zero runtime dependencies, MIT licensed.
 
@@ -55,14 +55,14 @@ Each generated file is written directly to the repository. `AGENTS.md` is the sh
 | AGENTS.md | Canonical shared context | <120 lines |
 | CLAUDE.md | Claude bridge | <80 lines |
 | .cursorrules | Cursor bridge | <60 lines |
-| copilot-instructions.md | Copilot bridge | <60 lines |
+| .github/copilot-instructions.md | Copilot bridge | <60 lines |
 | .windsurfrules | Windsurf compatibility bridge | <60 lines |
 | .clinerules | Cline bridge | <60 lines |
 | GEMINI.md | Gemini compatibility bridge | <60 lines |
 
 ## Notes
 
-- Works with Claude Code and OpenCode natively; generated files support 7 AI tools total
+- Works with Claude Code and OpenCode natively; generated files support 8 AI tools total
 - Signal Gate filtering excludes directory listings, file trees, and architecture overviews
 - Context Guard hooks are Claude Code only (opt-in)
 - For public-facing documentation (README, CHANGELOG, ROADMAP), see [PitchDocs](https://github.com/littlebearapps/pitchdocs)

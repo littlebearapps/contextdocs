@@ -3,11 +3,11 @@
 </p>
 
 <p align="center">
-  <strong>Keep your AI coding assistants in sync with your codebase — generate, maintain, and audit AGENTS-first context for 7 AI tools.</strong>
+  <strong>Keep your AI coding assistants in sync with your codebase — generate, maintain, and audit AGENTS-first context for 8 AI tools.</strong>
 </p>
 
 <p align="center">
-  Give your AI one canonical `AGENTS.md` plus thin bridge files for every major AI coding tool — `CLAUDE.md`, `.cursorrules`, `copilot-instructions.md`, `.windsurfrules`, `.clinerules`, and `GEMINI.md` — from a single codebase scan. Signal Gate filtering strips out what agents already discover on their own. Context Guard hooks enforce freshness. Health scoring catches drift before it costs you tokens. 100% Markdown, zero runtime dependencies.
+  Give your AI one canonical `AGENTS.md` plus thin bridge files for every major AI coding tool — `CLAUDE.md`, `.cursorrules`, `.github/copilot-instructions.md`, `.windsurfrules`, `.clinerules`, and `GEMINI.md` — from a single codebase scan. Signal Gate filtering strips out what agents already discover on their own. Context Guard hooks enforce freshness. Health scoring catches drift before it costs you tokens. 100% Markdown, zero runtime dependencies.
 </p>
 
 <p align="center">
@@ -32,7 +32,7 @@ Get your first AI context files generated in under 60 seconds.
 
 - [Claude Code](https://code.claude.com/) or [OpenCode](https://opencode.ai/) installed
 
-**Using a different AI tool?** ContextDocs generates plain Markdown files that work with [Codex CLI, Cursor, Windsurf, Cline, and Gemini CLI](#-use-with-other-ai-tools) automatically.
+**Using a different AI tool?** ContextDocs generates plain Markdown files that work with [Codex CLI, GitHub Copilot, Cursor, Windsurf, Cline, and Gemini CLI](#-use-with-other-ai-tools) automatically.
 
 ### Install
 
@@ -65,7 +65,7 @@ For README, CHANGELOG, ROADMAP, user guides, and launch artifacts, install [Pitc
 
 Your AI coding assistant works better when it understands your project's conventions — but overstuffed context files actually make things worse. Research shows bloated context **reduces** AI task success by ~3% and increases token costs by 20% (ETH Zurich, 2026). Most teams either write too much, write the wrong things, or let context files go stale within a week.
 
-ContextDocs solves the full lifecycle. It scans your codebase, generates `AGENTS.md` as the canonical shared context, then creates thin bridge files for 7 AI tools using the **Signal Gate principle** — only what agents cannot discover by reading source code on their own. No directory listings, no file trees, no architecture overviews that agents find themselves. Just the conventions, gotchas, and decisions that actually help.
+ContextDocs solves the full lifecycle. It scans your codebase, generates `AGENTS.md` as the canonical shared context, then creates thin bridge files and companion context that cover 8 AI tools using the **Signal Gate principle** — only what agents cannot discover by reading source code on their own. No directory listings, no file trees, no architecture overviews that agents find themselves. Just the conventions, gotchas, and decisions that actually help.
 
 Then it keeps them fresh: `update` patches drift incrementally, `promote` moves Claude's auto-learned MEMORY.md patterns into CLAUDE.md, `context-verify` scores health 0–100 across 6 dimensions with 13 checks, and Context Guard hooks enforce freshness at session start, session end, and commit time — with the context-updater agent applying fixes automatically.
 
@@ -73,7 +73,7 @@ Then it keeps them fresh: `update` patches drift incrementally, `promote` moves 
 
 ## 🎯 Features
 
-ContextDocs generates AGENTS-first context for 7 AI coding tools from a single codebase scan, applies Signal Gate filtering to strip discoverable content, enforces line budgets (AGENTS.md <120, CLAUDE.md <80, other bridges <60), and scores health 0–100 across 6 dimensions with 13 verification checks. Context Guard hooks catch drift at session start, session end, and commit time.
+ContextDocs generates AGENTS-first context for 8 AI coding tools from a single codebase scan, applies Signal Gate filtering to strip discoverable content, enforces line budgets (AGENTS.md <120, CLAUDE.md <80, other bridges <60), and scores health 0–100 across 6 dimensions with 13 verification checks. Context Guard hooks catch drift at session start, session end, and commit time.
 
 - 🧠 **Signal Gate filtering** — strips out discoverable content (directory listings, file trees, architecture overviews) so your context files contain only what actually helps AI tools, keeping them lean and under budget
 - 📋 **AGENTS-first generation + thin bridges** — shared conventions live once in `AGENTS.md`, while `CLAUDE.md`, Copilot instructions, Cursor rules, Cline rules, and compatibility bridges stay minimal and tool-specific
@@ -85,13 +85,13 @@ ContextDocs generates AGENTS-first context for 7 AI coding tools from a single c
 - 📏 **Line budgets that work** — CLAUDE.md <80, AGENTS.md <120, all others <60 — backed by the ETH Zurich finding that shorter, focused context outperforms longer files
 - 🗂️ **Path-scoped context rules** — apply different conventions to different directories using glob patterns, so monorepos and multi-platform projects get targeted context per area *(Claude Code only)*
 - 📡 **Upstream compatibility tracking** — weekly Claude Code release monitoring and settings schema diffing detect breaking changes before they affect your context files
-- 🔌 **Works with 7 AI tools** — Claude Code and OpenCode natively; generated files work with Codex CLI, Cursor, Windsurf, Cline, and Gemini CLI automatically
+- 🔌 **Works with 8 AI tools** — Claude Code and OpenCode natively; generated files also work with Codex CLI, GitHub Copilot, Cursor, Windsurf, Cline, and Gemini CLI automatically
 
 ---
 
 ## ⚖️ How ContextDocs Compares
 
-ContextDocs automates what most teams do manually — writing and maintaining AI context files. Compared to hand-writing context files or asking a generic AI prompt, ContextDocs applies Signal Gate filtering, generates canonical `AGENTS.md` plus bridges for 7 tools, enforces line budgets, and keeps files in sync with Context Guard hooks.
+ContextDocs automates what most teams do manually — writing and maintaining AI context files. Compared to hand-writing context files or asking a generic AI prompt, ContextDocs applies Signal Gate filtering, generates canonical `AGENTS.md` plus bridges for 8 tools, enforces line budgets, and keeps files in sync with Context Guard hooks.
 
 | Capability | ContextDocs | Writing Context Files Manually | Generic AI Prompt |
 |-----------|-------------|-------------------------------|-------------------|

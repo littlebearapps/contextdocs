@@ -6,7 +6,7 @@
 
 ## Docs
 
-- [README](./README.md): Project overview, Signal Gate value proposition, quick start (under 60 seconds), comparison table (vs manual vs generic AI), commands with "Why It Matters", cross-tool discovery table for AGENTS-first context across 7 AI tools
+- [README](./README.md): Project overview, Signal Gate value proposition, quick start (under 60 seconds), comparison table (vs manual vs generic AI), commands with "Why It Matters", cross-tool discovery table for AGENTS-first context across 8 AI tools
 - [AGENTS.md](./AGENTS.md): Cross-tool AI context — AGENTS-first architecture, 2 agents, 3 skills inventory, 3 commands, 4 rules, 6 hooks with descriptions (Codex CLI, OpenCode, Gemini CLI format)
 - [CLAUDE.md](./CLAUDE.md): Claude Code project context — plugin architecture, Australian English conventions, AGENTS-first modification guide, key files, PitchDocs relationship
 - [Docs Hub](./docs/README.md): Documentation index linking all guides, quick links to README/Contributing/Changelog/Support, and skills reference

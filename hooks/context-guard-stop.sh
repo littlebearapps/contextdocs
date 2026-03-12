@@ -36,30 +36,24 @@ git rev-parse --is-inside-work-tree &>/dev/null || { echo '{}'; exit 0; }
 CHANGED_FILES=$(git status --porcelain 2>/dev/null | awk '{print $NF}')
 [ -z "$CHANGED_FILES" ] && echo '{}' && exit 0
 
+is_structural_path() {
+  case "$1" in
+    # Skip Context Guard's own infrastructure — not project structural changes
+    .claude/hooks/*|.claude/rules/context-quality.md|.claude/settings.json|.claude/agents/context-updater.md) return 1 ;;
+    commands/*.md|.claude/skills/*/SKILL.md|.agents/skills/*/SKILL.md|.claude/agents/*.md|.agents/agents/*.md|.claude/rules/*.md|package.json|*/package.json|pyproject.toml|*/pyproject.toml|Cargo.toml|*/Cargo.toml|go.mod|*/go.mod|tsconfig*.json|*/tsconfig*.json|wrangler.toml|*/wrangler.toml|vitest.config*|*/vitest.config*|jest.config*|*/jest.config*|eslint.config*|*/eslint.config*|biome.json|*/biome.json|.claude-plugin/plugin.json)
+      return 0
+      ;;
+  esac
+  return 1
+}
+
 # Structural file patterns that warrant context doc updates
 HAS_STRUCTURAL=false
 while IFS= read -r FILE; do
-  case "$FILE" in
-    # Skip Context Guard's own infrastructure — not project structural changes
-    .claude/hooks/*|.claude/rules/context-quality.md|.claude/settings.json|.claude/agents/context-updater.md) continue ;;
-    commands/*.md) HAS_STRUCTURAL=true; break ;;
-    .claude/skills/*/SKILL.md) HAS_STRUCTURAL=true; break ;;
-    .agents/skills/*/SKILL.md) HAS_STRUCTURAL=true; break ;;
-    .claude/agents/*.md) HAS_STRUCTURAL=true; break ;;
-    .agents/agents/*.md) HAS_STRUCTURAL=true; break ;;
-    .claude/rules/*.md) HAS_STRUCTURAL=true; break ;;
-    package.json) HAS_STRUCTURAL=true; break ;;
-    pyproject.toml) HAS_STRUCTURAL=true; break ;;
-    Cargo.toml) HAS_STRUCTURAL=true; break ;;
-    go.mod) HAS_STRUCTURAL=true; break ;;
-    tsconfig*.json) HAS_STRUCTURAL=true; break ;;
-    wrangler.toml) HAS_STRUCTURAL=true; break ;;
-    vitest.config*) HAS_STRUCTURAL=true; break ;;
-    jest.config*) HAS_STRUCTURAL=true; break ;;
-    eslint.config*) HAS_STRUCTURAL=true; break ;;
-    biome.json) HAS_STRUCTURAL=true; break ;;
-    .claude-plugin/plugin.json) HAS_STRUCTURAL=true; break ;;
-  esac
+  if is_structural_path "$FILE"; then
+    HAS_STRUCTURAL=true
+    break
+  fi
 done <<< "$CHANGED_FILES"
 
 # Fast exit if no structural files changed (most sessions)
@@ -79,12 +73,9 @@ done <<< "$CHANGED_FILES"
 # Collect which structural files changed for the agent
 STRUCTURAL_LIST=""
 while IFS= read -r FILE; do
-  case "$FILE" in
-    .claude/hooks/*|.claude/rules/context-quality.md|.claude/settings.json|.claude/agents/context-updater.md) continue ;;
-    commands/*.md|.claude/skills/*/SKILL.md|.agents/skills/*/SKILL.md|.claude/agents/*.md|.agents/agents/*.md|.claude/rules/*.md|package.json|pyproject.toml|Cargo.toml|go.mod|tsconfig*.json|wrangler.toml|vitest.config*|jest.config*|eslint.config*|biome.json|.claude-plugin/plugin.json)
-      STRUCTURAL_LIST="$STRUCTURAL_LIST\n  - $FILE"
-      ;;
-  esac
+  if is_structural_path "$FILE"; then
+    STRUCTURAL_LIST="$STRUCTURAL_LIST\n  - $FILE"
+  fi
 done <<< "$CHANGED_FILES"
 
 # If structural changes exist without context updates, instruct agent launch

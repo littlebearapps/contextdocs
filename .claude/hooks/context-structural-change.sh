@@ -24,7 +24,7 @@ cd "$PROJECT_DIR" || { echo '{}'; exit 0; }
 
 # Check if any context files exist (no point reminding if none are tracked)
 HAS_CONTEXT=false
-for CTX in CLAUDE.md AGENTS.md GEMINI.md .cursorrules .windsurfrules .clinerules; do
+for CTX in CLAUDE.md AGENTS.md GEMINI.md .cursorrules .github/copilot-instructions.md llms.txt .windsurfrules .clinerules; do
   [ -f "$CTX" ] && HAS_CONTEXT=true && break
 done
 [ "$HAS_CONTEXT" = false ] && echo '{}' && exit 0

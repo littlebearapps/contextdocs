@@ -31,10 +31,12 @@ Default: Tier 1 only. Add Tier 2 with `install strict`.
 ### context-structural-change.sh (PostToolUse → Write|Edit)
 
 Fires after creating/editing structural files. Reminds which context files may need updating:
-- `commands/*.md`, `.claude/skills/*/SKILL.md` → update `AGENTS.md` first, then `CLAUDE.md`, `llms.txt`, and any affected bridge files
-- `.claude/agents/*.md` → `AGENTS.md`, `llms.txt`
+- `commands/*.md`, `.claude/skills/*/SKILL.md`, `.agents/skills/*/SKILL.md` → update `AGENTS.md` first, then `CLAUDE.md`, `llms.txt`, and any affected bridge files
+- `.claude/agents/*.md`, `.agents/agents/*.md` → `AGENTS.md`, `llms.txt`
 - `.claude/rules/*.md` → `AGENTS.md` and `CLAUDE.md` if rule references changed
 - Config files (`package.json`, `pyproject.toml`, etc.) → update `AGENTS.md` first, then only the bridge files with tool-specific command/tooling notes
+
+If your repository uses the `.agents/` layout instead of `.claude/`, apply the same AGENTS-first update order to the equivalent skill and agent paths above.
 
 ### context-drift-check.sh (PostToolUse → Bash)
 

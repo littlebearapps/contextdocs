@@ -8,7 +8,11 @@ warnings=0
 
 echo "=== Validating llms.txt file references ==="
 
-mapfile -t llms_paths < <(python3 - <<'PY'
+llms_paths=()
+while IFS= read -r path; do
+  [ -z "$path" ] && continue
+  llms_paths+=("$path")
+done < <(python3 - <<'PY'
 import re
 from pathlib import Path
 
@@ -21,7 +25,6 @@ PY
 )
 
 for path in "${llms_paths[@]}"; do
-  [ -z "$path" ] && continue
   if [ ! -f "$path" ]; then
     echo "ERROR: llms.txt references '$path' but file does not exist"
     errors=$((errors + 1))

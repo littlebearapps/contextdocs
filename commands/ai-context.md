@@ -19,8 +19,8 @@ Generate lean context files that help AI coding assistants understand your proje
 1. Load the `ai-context` skill for templates, the Signal Gate, and the codebase analysis workflow
 2. Load the `context-quality` rule for quality criteria
 3. Run the codebase analysis: detect language, framework, test runner, linter, conventions
-4. Generate or update `AGENTS.md` as the canonical shared context
-5. Generate the requested bridge file(s) from the same analysis, keeping them thin and limited to tool-specific additions
+4. For `all`, `init`, and `update`, generate or refresh `AGENTS.md` as the canonical shared context
+5. Generate the requested bridge file(s) from the same analysis, keeping them thin and limited to tool-specific additions. Single-tool modes (`claude`, `cursor`, `copilot`, `windsurf`, `cline`, `gemini`) update only the requested bridge; use `agents` when you want to refresh `AGENTS.md` itself.
 
 ## Arguments
 
@@ -33,6 +33,8 @@ Generate lean context files that help AI coding assistants understand your proje
 - `windsurf`: Generate .windsurfrules only
 - `cline`: Generate .clinerules only
 - `gemini`: Generate GEMINI.md only
+
+Single-tool generate modes leave `AGENTS.md` unchanged so targeted bridge refreshes stay predictable.
 
 ### Lifecycle
 - `init`: Bootstrap a new project — generate missing context files, offer Context Guard hooks, run audit. Skips existing files.

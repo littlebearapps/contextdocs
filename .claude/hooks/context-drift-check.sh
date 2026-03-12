@@ -36,7 +36,7 @@ fi
 
 # Context files to check
 CONTEXT_FILES=("CLAUDE.md" "AGENTS.md" "GEMINI.md" ".cursorrules"
-               ".github/copilot-instructions.md" ".windsurfrules" ".clinerules")
+               ".github/copilot-instructions.md" "llms.txt" ".windsurfrules" ".clinerules")
 
 STALE=()
 BROKEN_PATHS=()

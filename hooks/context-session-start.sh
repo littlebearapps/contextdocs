@@ -21,7 +21,7 @@ git rev-parse --is-inside-work-tree &>/dev/null || { echo '{}'; exit 0; }
 
 # Context files to check
 CONTEXT_FILES=("CLAUDE.md" "AGENTS.md" "GEMINI.md" ".cursorrules"
-               ".github/copilot-instructions.md" ".windsurfrules" ".clinerules")
+               ".github/copilot-instructions.md" "llms.txt" ".windsurfrules" ".clinerules")
 
 FOUND=()
 STALE=()
