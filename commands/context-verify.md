@@ -27,14 +27,19 @@ Validate the quality and freshness of AI context files in the current project. S
 ## Output
 
 ```
-AI Context Health: 85/100 (B — Minor tuning needed)
+AI Context Health: 82/100 (B — Minor tuning needed)
 
 Breakdown:
-  Line Budget:      25/25  ✓
-  Signal Quality:   20/25  (-3 AGENTS.md has file tree, -2 dependency listing)
+  Line Budget:      20/20  ✓
+  Signal Quality:   17/20  (-3 AGENTS.md has file tree)
   Path Accuracy:    18/20  (-2 .cursorrules references src/old.ts)
   Consistency:      15/15  ✓
-  Freshness:         7/15  (-2 MEMORY.md not promoted, -3 copilot-instructions.md stale, -3 .windsurfrules stale)
+  Freshness:        12/15  (-3 copilot-instructions.md stale 90+ days)
+  Context Load:     10/10  ✓
+
+Checks: 13 run (line budgets, signal quality, stale paths, cross-file consistency,
+MEMORY.md drift, Context Guard status, context load, @import paths, rule path-scopes,
+rule symlinks, .mcp.json, agent memory hygiene, plugin manifest)
 
 To reach grade A (90+): Remove file tree from AGENTS.md (+3), fix stale path (+2).
 ```

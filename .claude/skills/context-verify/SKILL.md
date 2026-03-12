@@ -67,14 +67,26 @@ If any `.claude/rules/*.md` has `paths:` YAML frontmatter, verify each glob patt
 
 If any `.claude/rules/*.md` is a symlink, verify the target file exists. Report broken symlinks with the rule name and dangling target path.
 
+### 11. .mcp.json Validation
+
+If `.mcp.json` exists, validate JSON structure — check `mcpServers` object exists, each server has a valid `command` or `url` field, and referenced commands exist on PATH or as relative paths. Report structural errors and invalid server entries.
+
+### 12. Agent Memory Directory Hygiene
+
+Check if `.claude/agent-memory/` or `.claude/agent-memory-local/` directories are tracked in git (they should be gitignored — these contain per-agent runtime state). Warn if tracked. Check for `.gitignore` entries covering these paths.
+
+### 13. Plugin Manifest Completeness
+
+If `.claude-plugin/plugin.json` exists, verify required fields: `name`, `version`, `description`. Warn on missing optional fields: `keywords`, `author`, `repository`. Report missing fields.
+
 ## Scoring
 
 | Dimension | Max | Deductions |
 |-----------|-----|-----------|
 | Line Budget | 20 | -2 per file over warning, -5 per file over budget |
-| Signal Quality | 20 | -1 per discoverable instance (max -5), -3 if "Project Structure" present |
-| Path Accuracy | 20 | -2 per stale path, broken @import, orphaned path-scope rule, or broken rule symlink (max -10) |
-| Consistency | 15 | -3 if test/build/deploy commands differ between files |
+| Signal Quality | 20 | -1 per discoverable instance (max -5), -3 if "Project Structure" present, -3 if agent memory dirs tracked in git |
+| Path Accuracy | 20 | -2 per stale path, broken @import, orphaned path-scope rule, broken rule symlink, or invalid .mcp.json server entry (max -10) |
+| Consistency | 15 | -3 if test/build/deploy commands differ between files, -2 per missing required plugin manifest field |
 | Freshness | 15 | -2 if MEMORY.md not promoted, -3 per file stale 90+ days |
 | Context Load | 10 | -3 per tool over 5K warning, -5 per tool over 10K budget |
 
