@@ -176,3 +176,41 @@ Claude Code discovers rules recursively under `.claude/rules/`. Subdirectories o
 ### Symlink Support
 
 Rules can be symlinks pointing to shared files in other directories or repos. Claude Code resolves symlinks to their targets. When generating context-verify checks, verify symlink targets exist on disk.
+
+## Plugin System
+
+### Installation Scopes
+
+Four scopes determine where plugins are installed and their visibility:
+
+| Scope | Location | Visibility |
+|-------|----------|-----------|
+| Project | `.claude-plugin/` in project root | Project only (committed to repo) |
+| User | `~/.claude/plugins/` | All projects for this user |
+| Local | `file://` URL in settings | Project-specific, not committed |
+| Managed | Organisation/enterprise deployment | All users in org, cannot be overridden |
+
+When generating context files for plugin projects, note the installation scope so consumers understand where the plugin can be used. Project-scoped plugins should document their `.claude-plugin/` structure. Managed plugins should note they cannot be overridden by user or project settings.
+
+### .lsp.json Manifest
+
+Plugins can provide Language Server Protocol (LSP) integration via a `.lsp.json` manifest in the plugin root. The manifest declares which languages the plugin supports and how to start the language server:
+
+```json
+{
+  "name": "my-lsp",
+  "languages": ["typescript", "javascript"],
+  "command": "node",
+  "args": ["./lsp-server.js", "--stdio"]
+}
+```
+
+When generating context files for projects with LSP plugins, note the supported languages and any initialisation requirements. ContextDocs itself does not use LSP (pure Markdown plugin).
+
+### Output Styles
+
+The `outputStyles/` directory convention allows plugins to define custom output rendering. Each file in the directory defines a named style that changes how Claude Code formats responses when the plugin is active. When generating context files, mention custom output styles if they affect how developers interact with the tool.
+
+### Plugin Settings
+
+Plugins can define configurable settings via `settings.json` at the plugin root. Currently, the `agent` key is the primary supported setting — it allows plugins to specify default agent configuration. When generating context files for plugin projects, document user-configurable settings and their defaults so consumers know what can be customised.
