@@ -1,14 +1,14 @@
 # AI Context File Quality Standards
 
-When generating or updating AI context files (CLAUDE.md, AGENTS.md, GEMINI.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules), follow these standards.
+When generating or updating AI context files, treat `AGENTS.md` as the canonical shared context and keep other files as thin bridges.
 
-## Cross-File Consistency
+## Bridge Consistency
 
-All context files must agree on: language/framework version, key commands (test, build, lint, deploy), directory structure, naming conventions, and critical rules. When updating one, check and update others.
+`AGENTS.md` owns shared commands, conventions, naming rules, and security constraints. Bridge files may subset that content when needed, but they must not contradict `AGENTS.md`. If a bridge grows because it repeats shared content, move that material back into `AGENTS.md` and leave only tool-specific instructions.
 
 ## Path and Command Verification
 
-Every file path in a context file must exist on disk. Every command must be runnable — verify against `package.json` scripts, `Makefile` targets, or `pyproject.toml` scripts before writing.
+Every file path in a context file must exist on disk. Every command must be runnable — verify against `package.json`, `Makefile`, or `pyproject.toml` before writing. If `CLAUDE.md` uses `@AGENTS.md` or other imports, verify those too.
 
 ## Version Accuracy
 
@@ -16,11 +16,11 @@ Reference correct language runtime (from `.nvmrc`, `engines`, `requires-python`,
 
 ## Sync Points
 
-When project structure, dependencies, commands, or conventions change, update all context files that reference the affected content. When using path-scoped rules (`paths:` frontmatter), verify glob patterns still match after file renames or directory restructuring. Load the `ai-context` skill for the full sync matrix.
+When structure, dependencies, commands, or conventions change, update `AGENTS.md` first. Then update only the bridge files that reference that content or add tool-specific notes. When using path-scoped rules (`paths:` frontmatter), verify globs still match after renames or directory changes. Load the `ai-context` skill for the full sync matrix.
 
 ## Tool Compatibility
 
-`AGENTS.md`: Claude Code, OpenCode, Codex CLI, Gemini CLI. `CLAUDE.md`: Claude Code, OpenCode. `.cursorrules`, `.windsurfrules`, `.clinerules`, `GEMINI.md`, `copilot-instructions.md`: tool-specific. `.claude/rules/*.md` and hooks: Claude Code only. `MEMORY.md`: auto-written by Claude, not version-controlled.
+`AGENTS.md`: canonical shared context, read natively by OpenCode, Codex CLI, Gemini CLI, and other AGENTS-aware tools. `CLAUDE.md`: Claude Code/OpenCode bridge that can import `@AGENTS.md`. `.cursorrules`, `.windsurfrules`, `.clinerules`, `GEMINI.md`, `copilot-instructions.md`: thin bridges. `.claude/rules/*.md` and hooks: Claude Code only. `MEMORY.md`: auto-written by Claude, not version-controlled.
 
 ## Aggregate Context Load
 

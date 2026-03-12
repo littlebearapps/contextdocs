@@ -92,7 +92,7 @@ if [ "$HAS_CONTEXT" = false ]; then
   cat << EOF
 {
   "decision": "block",
-  "reason": "CONTEXT DRIFT DETECTED — structural files changed this session without context file updates:\\n$STRUCTURAL_LIST\\n\\nAffected context files likely include: AGENTS.md, CLAUDE.md, llms.txt\\n\\nACTION REQUIRED: Launch the context-updater agent (defined in .claude/agents/context-updater.md) to update these files before ending the session. The agent will apply surgical edits to only the affected sections. If context docs genuinely don't need changes, you can finish — this is advisory only."
+  "reason": "CONTEXT DRIFT DETECTED — structural files changed this session without context file updates:\\n$STRUCTURAL_LIST\\n\\nUpdate AGENTS.md first, then refresh only the affected bridge files (for example CLAUDE.md, llms.txt, .cursorrules, or .github/copilot-instructions.md).\\n\\nACTION REQUIRED: Launch the context-updater agent (defined in .claude/agents/context-updater.md) to apply these AGENTS-first updates before ending the session. The agent will make surgical edits to only the affected sections. If context docs genuinely don't need changes, you can finish — this is advisory only."
 }
 EOF
   exit 0

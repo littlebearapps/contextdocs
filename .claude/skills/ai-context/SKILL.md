@@ -1,6 +1,6 @@
 ---
 name: ai-context
-description: Generates, updates, and maintains AI IDE context files (AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, GEMINI.md). Updates stale or out-of-date context files, promotes stable MEMORY.md patterns into CLAUDE.md, bootstraps new projects, and audits existing files for drift. Applies the Signal Gate principle — only includes what agents cannot discover on their own.
+description: Generates, updates, and maintains AGENTS-first AI IDE context files. Treats AGENTS.md as the canonical shared context, then emits thin tool-specific bridges (CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, GEMINI.md). Updates stale context, promotes stable MEMORY.md patterns into CLAUDE.md, bootstraps new projects, and audits existing files for drift.
 ---
 
 # AI Context File Generator
@@ -28,21 +28,21 @@ Describe the **end state** you want, not step-by-step instructions. Consider fix
 
 | File | Target | Hard Max |
 |------|--------|----------|
-| CLAUDE.md | Under 80 lines | 120 lines |
 | AGENTS.md | Under 120 lines | 160 lines |
-| Other context files | Under 60 lines | 100 lines |
+| CLAUDE.md bridge | 10-20 lines | 80 lines |
+| Other bridge files | 10-20 lines | 60 lines |
 
 ## Supported Context Files
 
-| File | AI Tool | Purpose |
-|------|---------|---------|
-| `AGENTS.md` | Codex CLI, Cursor, Gemini CLI, Claude Code, OpenCode, Copilot, RooCode | Cross-tool agent context (60K+ repos) |
-| `CLAUDE.md` | Claude Code, OpenCode | Project-specific instructions loaded every session |
-| `.cursorrules` | Cursor | Editor-specific code generation rules |
-| `.github/copilot-instructions.md` | GitHub Copilot | Repository-level Copilot instructions |
-| `.windsurfrules` | Windsurf | Project rules for Cascade AI |
-| `.clinerules` | Cline | Project context for autonomous tasks |
-| `GEMINI.md` | Gemini CLI | Session context for Gemini CLI |
+| File | Role | Purpose |
+|------|------|---------|
+| `AGENTS.md` | Canonical shared context | Shared identity, commands, conventions, constraints, security notes, and monorepo guidance |
+| `CLAUDE.md` | Thin bridge | `@AGENTS.md` import plus Claude-specific rules, key files, and workflow notes |
+| `.cursorrules` | Thin bridge | Cursor-specific rule scoping or metadata only |
+| `.github/copilot-instructions.md` | Thin bridge | Copilot-specific review and PR guidance only |
+| `.windsurfrules` | Compatibility bridge | Windsurf compatibility while AGENTS.md adoption continues |
+| `.clinerules` | Thin bridge | Cline-specific autonomy boundaries and commit checklist |
+| `GEMINI.md` | Compatibility bridge | Gemini-specific discovery shim while keeping AGENTS.md canonical |
 
 **CLAUDE.md vs MEMORY.md:** CLAUDE.md contains instructions *for* Claude (shared via git). MEMORY.md contains notes *by* Claude (local only). Promote recurring MEMORY.md insights to CLAUDE.md.
 
@@ -50,29 +50,30 @@ Describe the **end state** you want, not step-by-step instructions. Consider fix
 
 1. **Detect project profile** — scan manifests for language, framework, test runner, linter, CI/CD
 2. **Extract non-discoverable conventions** — import order, naming patterns, commands, security rules, environment quirks
-3. **Generate context files** — apply Signal Gate filter. Each file uses the structure below.
+3. **Generate `AGENTS.md` first** — put all shared commands, conventions, rules, and security notes in one canonical file
+4. **Generate bridge files** — apply the Signal Gate again so each tool-specific file stays thin and only adds tool-unique behaviour
 
 ### Context File Structure
 
-**AGENTS.md** (~120 lines): Identity (1-2 lines), Conventions (non-default only), Commands (test/build/deploy/lint), Rules (hard constraints). Omit Project Structure, Architecture, Important Files.
+**AGENTS.md** (~120 lines): Identity, commands, non-default conventions, hard constraints, security notes, monorepo guidance. Omit Project Structure, architecture, dependency dumps, and key file tables.
 
-**CLAUDE.md** (~80 lines): Project name + one sentence, Commands, Conventions (3-5 non-default bullets), Rules. Omit architecture, paths, directory listings.
+**CLAUDE.md** (~10-20 lines, hard max 80): `@AGENTS.md`, then only Claude-specific additions such as `.claude/rules/` references, key file pointers, or path-scoped guidance. Do not restate shared commands and conventions unless Claude-specific formatting requires it.
 
-**Other files** (~60 lines each): `.cursorrules`, `.windsurfrules`, `.clinerules`, `GEMINI.md`, `copilot-instructions.md` share the same core: description, conventions, commands, rules. Cline adds a `## Before Committing` checklist.
+**Other bridge files** (~10-20 lines each, hard max 60): reference or subset `AGENTS.md`, then add only tool-specific fields. Cline may add a `## Before Committing` checklist. `.windsurfrules` and `GEMINI.md` are compatibility bridges for now — keep them especially lean.
 
 ## Modes
 
 ### `init` — Bootstrap new project
 
-Scan codebase, generate missing context files (skip existing), offer Context Guard hooks (Claude Code only), run audit pass, report summary.
+Scan codebase, generate missing `AGENTS.md` plus any missing bridge files (skip existing), offer Context Guard hooks (Claude Code only), run audit pass, report summary.
 
 ### `update` — Incremental drift patching
 
-Compare context file commits vs source commits. Classify changes (scripts → Commands, configs → Conventions, renames → paths). Apply surgical edits using Edit — preserve human customisations.
+Compare context file commits vs source commits. Classify changes (scripts → Commands, configs → Conventions, renames → paths). Update `AGENTS.md` first, then only the bridge files whose tool-specific sections or references changed. Apply surgical edits using Edit — preserve human customisations.
 
 ### `audit` — Staleness check
 
-Check version accuracy, command accuracy, stale paths, new untracked conventions, MEMORY.md drift, Context Guard health.
+Check version accuracy, command accuracy, stale paths, bridge contradictions against `AGENTS.md`, new untracked conventions, MEMORY.md drift, Context Guard health.
 
 ### `promote` — MEMORY.md → CLAUDE.md
 

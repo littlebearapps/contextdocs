@@ -47,7 +47,7 @@ ContextDocs is a pure Markdown Claude Code plugin that generates, maintains, and
 2. Navigate to any project repository
 
 3. Run commands:
-   - `/contextdocs:ai-context init` — Bootstrap all 7 context file types
+   - `/contextdocs:ai-context init` — Bootstrap canonical `AGENTS.md` plus all needed bridges
    - `/contextdocs:ai-context update` — Patch only what drifted
    - `/contextdocs:ai-context promote` — Move MEMORY.md patterns to CLAUDE.md
    - `/contextdocs:ai-context audit` — Check for staleness and drift
@@ -84,7 +84,7 @@ Each command produces Markdown files written directly to the repository. Context
 </p>
 
 <p align="center">
-  <strong>Keep your AI coding assistants in sync with your codebase — generate, maintain, and audit context files for 7 AI tools.</strong>
+  <strong>Keep your AI coding assistants in sync with your codebase — generate, maintain, and audit AGENTS-first context for 7 AI tools.</strong>
 </p>
 
 <p align="center">
@@ -145,7 +145,7 @@ For README, CHANGELOG, ROADMAP, user guides, and launch artifacts, install [Pitc
 
 Your AI coding assistant works better when it understands your project's conventions — but overstuffed context files actually make things worse. Research shows bloated context **reduces** AI task success by ~3% and increases token costs by 20% (ETH Zurich, 2026). Most teams either write too much, write the wrong things, or let context files go stale within a week.
 
-ContextDocs solves the full lifecycle. It scans your codebase and generates context files for 7 AI tools using the **Signal Gate principle** — only what agents cannot discover by reading source code on their own. No directory listings, no file trees, no architecture overviews that agents find themselves. Just the conventions, gotchas, and decisions that actually help.
+ContextDocs solves the full lifecycle. It scans your codebase, generates `AGENTS.md` as the canonical shared context, then creates thin bridge files for 7 AI tools using the **Signal Gate principle** — only what agents cannot discover by reading source code on their own. No directory listings, no file trees, no architecture overviews that agents find themselves. Just the conventions, gotchas, and decisions that actually help.
 
 Then it keeps them fresh: `update` patches drift incrementally, `promote` moves Claude's auto-learned MEMORY.md patterns into CLAUDE.md, `context-verify` scores health 0–100 across 5 dimensions, and Context Guard hooks enforce freshness at session end and commit time.
 
@@ -156,9 +156,9 @@ Then it keeps them fresh: `update` patches drift incrementally, `promote` moves 
 ContextDocs generates context files for 7 AI coding tools from a single codebase scan, applies Signal Gate filtering to strip discoverable content, enforces line budgets (CLAUDE.md <80, AGENTS.md <120, others <60), and scores health 0–100 across 5 dimensions. Context Guard hooks catch drift at session end and commit time.
 
 - 🧠 **Signal Gate filtering** — strips out discoverable content (directory listings, file trees, architecture overviews) so your context files contain only what actually helps AI tools, keeping them lean and under budget
-- 📋 **7 context file types from one scan** — AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, and GEMINI.md generated together, so every AI tool on your team gets the same project knowledge
+- 📋 **AGENTS-first generation + thin bridges** — shared conventions live once in `AGENTS.md`, while `CLAUDE.md`, Copilot instructions, Cursor rules, Cline rules, and compatibility bridges stay minimal and tool-specific
 - 🔄 **Full lifecycle, not just generation** — `init` bootstraps, `update` patches only what drifted, `promote` graduates MEMORY.md patterns to CLAUDE.md, `audit` flags staleness — so context files stay accurate as your project evolves
-- ✅ **Health scoring (0–100)** — grades context files across line budget, signal quality, path accuracy, cross-file consistency, and freshness — export to CI with `--min-score` so drift never reaches your team
+- ✅ **Health scoring (0–100)** — grades context files across line budget, signal quality, path accuracy, AGENTS-to-bridge consistency, and freshness — export to CI with `--min-score` so drift never reaches your team
 - 🔒 **Context Guard enforcement** — two-tier hooks nudge at session end (Tier 1) and block commits (Tier 2) when context files are stale, so drift gets caught before it costs anyone tokens *(Claude Code only)*
 - 🛡️ **Content filter protection** — guards against Claude Code's API filter (HTTP 400) for CODE_OF_CONDUCT, LICENSE, and SECURITY files, so hook installation never gets blocked *(Claude Code only)*
 - 📏 **Line budgets that work** — CLAUDE.md <80, AGENTS.md <120, all others <60 — backed by the ETH Zurich finding that shorter, focused context outperforms longer files
@@ -168,7 +168,7 @@ ContextDocs generates context files for 7 AI coding tools from a single codebase
 
 ## ⚖️ How ContextDocs Compares
 
-ContextDocs automates what most teams do manually — writing and maintaining AI context files. Compared to hand-writing context files or asking a generic AI prompt, ContextDocs applies Signal Gate filtering, generates for 7 tools simultaneously, enforces line budgets, and keeps files in sync with Context Guard hooks.
+ContextDocs automates what most teams do manually — writing and maintaining AI context files. Compared to hand-writing context files or asking a generic AI prompt, ContextDocs applies Signal Gate filtering, generates canonical `AGENTS.md` plus bridges for 7 tools, enforces line budgets, and keeps files in sync with Context Guard hooks.
 
 | Capability | ContextDocs | Writing Context Files Manually | Generic AI Prompt |
 |-----------|-------------|-------------------------------|-------------------|
@@ -271,7 +271,7 @@ Skills are loaded on-demand to provide deep reference knowledge. Each lives at `
 |-------|-----------------|
 | `ai-context` | AI IDE context file generation with Signal Gate principle — AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, GEMINI.md from codebase analysis. Includes init (bootstrap), update (incremental drift patching), promote (MEMORY.md → CLAUDE.md), and audit with Context Guard status |
 | `context-guard` | Context Guard installation reference — hook architecture, settings.json configuration, two-tier enforcement, customisation, and troubleshooting *(Claude Code only)* |
-| `context-verify` | Context file validation — line budget compliance, discoverable content detection, stale path scanning, cross-file consistency, MEMORY.md drift, and 0–100 health scoring with CI integration |
+| `context-verify` | Context file validation — line budget compliance, discoverable content detection, stale path scanning, AGENTS-to-bridge consistency, MEMORY.md drift, and 0–100 health scoring with CI integration |
 
 ## Workflow Commands
 
@@ -319,7 +319,7 @@ hooks/*.sh                      → 5 opt-in hook scripts (Claude Code only)
 | File | Purpose |
 |------|---------|
 | `plugin.json` | Version, description, keywords — update on every release |
-| `context-quality.md` | Quality rule auto-loaded every session — cross-file consistency, path verification, sync points |
+| `context-quality.md` | Quality rule auto-loaded every session — AGENTS-first bridge consistency, path verification, sync points |
 | `context-awareness.md` | Trigger map rule — suggests ContextDocs commands when context-relevant work is detected |
 
 ## When Modifying This Plugin
@@ -419,7 +419,7 @@ Navigate to the project you want to add context files to, then run:
 ContextDocs will:
 1. Scan your codebase (manifest files, project structure, conventions)
 2. Apply the Signal Gate filter — only include what agents cannot discover on their own
-3. Generate up to 7 context files, each within its line budget:
+3. Generate canonical `AGENTS.md`, then add the bridge files each tool needs:
 
 | File | Tool | Budget |
 |------|------|--------|
@@ -1183,8 +1183,8 @@ Cross-tool features like skills (`.claude/skills/`) and AGENTS.md work in OpenCo
 - **Fires:** After creating or editing structural files (commands, skills, agents, rules, manifests, config)
 - **Reminds:** Which context files may need updating based on the type of change
 - **File patterns:**
-  - `commands/*.md` → AGENTS.md, CLAUDE.md, llms.txt
-  - `.claude/skills/*/SKILL.md` → AGENTS.md, CLAUDE.md, llms.txt
+  - `commands/*.md` → update `AGENTS.md` first, then `CLAUDE.md`, `llms.txt`, and any affected bridge files
+  - `.claude/skills/*/SKILL.md` → update `AGENTS.md` first, then `CLAUDE.md`, `llms.txt`, and any affected bridge files
   - `.claude/agents/*.md` → AGENTS.md
   - `.claude/rules/*.md` → CLAUDE.md, AGENTS.md
   - `package.json`, `pyproject.toml`, config files → all context files
@@ -1222,7 +1222,7 @@ Cross-tool features like skills (`.claude/skills/`) and AGENTS.md work in OpenCo
 
 ### Rule: context-quality.md
 
-Auto-loaded every session. Establishes cross-file consistency, path verification, version accuracy, command accuracy, context doc size guidance, and a sync-points table mapping project changes to context files.
+Auto-loaded every session. Establishes AGENTS-first bridge consistency, path verification, version accuracy, command accuracy, context doc size guidance, and a sync-points table mapping project changes to context files.
 
 ## Installation
 
@@ -1338,7 +1338,7 @@ To prevent this, `context-guard-stop.sh` checks the `UNTETHER_SESSION` environme
 
 ---
 name: context-verify
-description: Validates AI context file quality — signal-to-noise ratio, line budgets, stale paths, cross-file consistency, discoverable content detection, and MEMORY.md drift. Scores context health and integrates with CI. Use to catch context file decay before it reaches your repo.
+description: Validates AI context file quality — signal-to-noise ratio, line budgets, stale paths, AGENTS-to-bridge consistency, discoverable content detection, and MEMORY.md drift. Scores context health and integrates with CI. Use to catch context file decay before it reaches your repo.
 version: "1.0.0"
 ---
 
@@ -1671,7 +1671,7 @@ Drift check:
 ## commands/context-verify.md
 
 ---
-description: "Validate AI context file quality — signal-to-noise ratio, line budgets, stale paths, cross-file consistency, and context health scoring: $ARGUMENTS"
+description: "Validate AI context file quality — signal-to-noise ratio, line budgets, stale paths, AGENTS-to-bridge consistency, and context health scoring: $ARGUMENTS"
 argument-hint: "[ci|ci --min-score N] or no args for interactive report"
 allowed-tools:
   - Read
@@ -1682,7 +1682,7 @@ allowed-tools:
 
 # /context-verify
 
-Validate the quality and freshness of AI context files in the current project. Scores signal-to-noise ratio, checks line budgets, detects stale paths, verifies cross-file consistency, and flags MEMORY.md drift.
+Validate the quality and freshness of AI context files in the current project. Scores signal-to-noise ratio, checks line budgets, detects stale paths, verifies that bridge files stay consistent with `AGENTS.md`, and flags MEMORY.md drift.
 
 ## Behaviour
 

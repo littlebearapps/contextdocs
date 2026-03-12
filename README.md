@@ -3,11 +3,11 @@
 </p>
 
 <p align="center">
-  <strong>Keep your AI coding assistants in sync with your codebase — generate, maintain, and audit context files for 7 AI tools.</strong>
+  <strong>Keep your AI coding assistants in sync with your codebase — generate, maintain, and audit AGENTS-first context for 7 AI tools.</strong>
 </p>
 
 <p align="center">
-  Give your AI the knowledge to generate lean, effective context files for every major AI coding tool — AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, and GEMINI.md from a single codebase scan. Signal Gate filtering strips out what agents already discover on their own. Context Guard hooks enforce freshness. Health scoring catches drift before it costs you tokens. 100% Markdown, zero runtime dependencies.
+  Give your AI one canonical `AGENTS.md` plus thin bridge files for every major AI coding tool — `CLAUDE.md`, `.cursorrules`, `copilot-instructions.md`, `.windsurfrules`, `.clinerules`, and `GEMINI.md` — from a single codebase scan. Signal Gate filtering strips out what agents already discover on their own. Context Guard hooks enforce freshness. Health scoring catches drift before it costs you tokens. 100% Markdown, zero runtime dependencies.
 </p>
 
 <p align="center">
@@ -65,7 +65,7 @@ For README, CHANGELOG, ROADMAP, user guides, and launch artifacts, install [Pitc
 
 Your AI coding assistant works better when it understands your project's conventions — but overstuffed context files actually make things worse. Research shows bloated context **reduces** AI task success by ~3% and increases token costs by 20% (ETH Zurich, 2026). Most teams either write too much, write the wrong things, or let context files go stale within a week.
 
-ContextDocs solves the full lifecycle. It scans your codebase and generates context files for 7 AI tools using the **Signal Gate principle** — only what agents cannot discover by reading source code on their own. No directory listings, no file trees, no architecture overviews that agents find themselves. Just the conventions, gotchas, and decisions that actually help.
+ContextDocs solves the full lifecycle. It scans your codebase, generates `AGENTS.md` as the canonical shared context, then creates thin bridge files for 7 AI tools using the **Signal Gate principle** — only what agents cannot discover by reading source code on their own. No directory listings, no file trees, no architecture overviews that agents find themselves. Just the conventions, gotchas, and decisions that actually help.
 
 Then it keeps them fresh: `update` patches drift incrementally, `promote` moves Claude's auto-learned MEMORY.md patterns into CLAUDE.md, `context-verify` scores health 0–100 across 6 dimensions with 13 checks, and Context Guard hooks enforce freshness at session start, session end, and commit time — with the context-updater agent applying fixes automatically.
 
@@ -73,12 +73,12 @@ Then it keeps them fresh: `update` patches drift incrementally, `promote` moves 
 
 ## 🎯 Features
 
-ContextDocs generates context files for 7 AI coding tools from a single codebase scan, applies Signal Gate filtering to strip discoverable content, enforces line budgets (CLAUDE.md <80, AGENTS.md <120, others <60), and scores health 0–100 across 6 dimensions with 13 verification checks. Context Guard hooks catch drift at session start, session end, and commit time.
+ContextDocs generates AGENTS-first context for 7 AI coding tools from a single codebase scan, applies Signal Gate filtering to strip discoverable content, enforces line budgets (AGENTS.md <120, CLAUDE.md <80, other bridges <60), and scores health 0–100 across 6 dimensions with 13 verification checks. Context Guard hooks catch drift at session start, session end, and commit time.
 
 - 🧠 **Signal Gate filtering** — strips out discoverable content (directory listings, file trees, architecture overviews) so your context files contain only what actually helps AI tools, keeping them lean and under budget
-- 📋 **7 context file types from one scan** — AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, and GEMINI.md generated together, so every AI tool on your team gets the same project knowledge
+- 📋 **AGENTS-first generation + thin bridges** — shared conventions live once in `AGENTS.md`, while `CLAUDE.md`, Copilot instructions, Cursor rules, Cline rules, and compatibility bridges stay minimal and tool-specific
 - 🔄 **Full lifecycle, not just generation** — `init` bootstraps, `update` patches only what drifted, `promote` graduates MEMORY.md patterns to CLAUDE.md, `audit` flags staleness — so context files stay accurate as your project evolves
-- ✅ **Health scoring (0–100)** — grades context files across line budget, signal quality, path accuracy, cross-file consistency, freshness, and aggregate context load — export to CI with `--min-score` so drift never reaches your team
+- ✅ **Health scoring (0–100)** — grades context files across line budget, signal quality, path accuracy, AGENTS-to-bridge consistency, freshness, and aggregate context load — export to CI with `--min-score` so drift never reaches your team
 - 🔒 **Context Guard enforcement** — SessionStart health check validates on entry, Tier 1 nudges at session end, Tier 2 blocks commits when context files are stale, so drift gets caught at every stage *(Claude Code only)*
 - 🤖 **Autonomous context updates** — the context-updater agent is launched automatically by hooks to update stale files without user intervention, closing the loop from detection to action *(Claude Code only)*
 - 🛡️ **Content filter protection** — guards against Claude Code's API filter (HTTP 400) for CODE_OF_CONDUCT, LICENSE, and SECURITY files, so hook installation never gets blocked *(Claude Code only)*
@@ -91,12 +91,12 @@ ContextDocs generates context files for 7 AI coding tools from a single codebase
 
 ## ⚖️ How ContextDocs Compares
 
-ContextDocs automates what most teams do manually — writing and maintaining AI context files. Compared to hand-writing context files or asking a generic AI prompt, ContextDocs applies Signal Gate filtering, generates for 7 tools simultaneously, enforces line budgets, and keeps files in sync with Context Guard hooks.
+ContextDocs automates what most teams do manually — writing and maintaining AI context files. Compared to hand-writing context files or asking a generic AI prompt, ContextDocs applies Signal Gate filtering, generates canonical `AGENTS.md` plus bridges for 7 tools, enforces line budgets, and keeps files in sync with Context Guard hooks.
 
 | Capability | ContextDocs | Writing Context Files Manually | Generic AI Prompt |
 |-----------|-------------|-------------------------------|-------------------|
 | Filters out discoverable content | Signal Gate principle — only undiscoverable signals | Requires discipline and AI knowledge | No filtering — dumps everything |
-| Generates for multiple AI tools | 7 formats from one scan | Write each file separately | One file at a time |
+| Generates for multiple AI tools | Canonical `AGENTS.md` + thin bridges from one scan | Write each file separately | One file at a time |
 | Keeps files in sync over time | `update`, `audit`, Context Guard hooks + autonomous agent | Manual review after every change | Start from scratch each time |
 | Enforces quality standards | 0–100 health score, CI integration, line budgets | No enforcement | No enforcement |
 | Handles line budgets | Automatic per-file limits | Easy to exceed without noticing | No awareness of budgets |
@@ -109,9 +109,9 @@ ContextDocs provides 3 slash commands covering the full context file lifecycle �
 
 | Command | What It Does | Why It Matters |
 |---------|-------------|----------------|
-| `/contextdocs:ai-context` | Generate AI context files using Signal Gate — `init`, `update`, `promote`, `audit`, or per-tool (`claude`, `agents`, `cursor`, etc.) | Every AI tool gets lean, accurate project context |
+| `/contextdocs:ai-context` | Generate AGENTS-first AI context using Signal Gate — `init`, `update`, `promote`, `audit`, or per-tool (`claude`, `agents`, `cursor`, etc.) | Every AI tool gets lean, accurate project context |
 | `/contextdocs:context-guard` | Install, uninstall, or check status of Context Guard hooks *(Claude Code only)* | Stale context files get caught before they waste tokens |
-| `/contextdocs:context-verify` | Score context file health 0–100 — line budgets, stale paths, consistency, signal quality | Drift never reaches your team — enforce in CI or check locally |
+| `/contextdocs:context-verify` | Score context file health 0–100 — line budgets, stale paths, bridge consistency, signal quality | Drift never reaches your team — enforce in CI or check locally |
 
 ### Quick Examples
 
@@ -129,19 +129,19 @@ ContextDocs provides 3 slash commands covering the full context file lifecycle �
 
 ## 🔀 Use with Other AI Tools
 
-ContextDocs generates plain Markdown files placed where each AI tool expects them — CLAUDE.md for Claude Code, AGENTS.md for Codex CLI, .cursorrules for Cursor, and 4 more. No manual copying required for any supported tool.
+ContextDocs generates plain Markdown files placed where each AI tool expects them. `AGENTS.md` is the canonical shared context; bridge files exist only where a tool still benefits from or requires its own file. No manual copying required for any supported tool.
 
 ContextDocs works natively with [Claude Code](https://code.claude.com/) and [OpenCode](https://opencode.ai/). The generated context files are plain Markdown — each is placed where the target tool expects it:
 
-| File | Tool | Automatically Discovered |
-|------|------|-------------------------|
-| CLAUDE.md | Claude Code | Yes — loaded every session |
-| AGENTS.md | Codex CLI, OpenCode, Gemini CLI | Yes — read on startup |
-| .cursorrules | Cursor | Yes — project root convention |
-| .github/copilot-instructions.md | GitHub Copilot | Yes — GitHub convention |
-| .windsurfrules | Windsurf | Yes — project root convention |
-| .clinerules | Cline | Yes — project root convention |
-| GEMINI.md | Gemini CLI | Yes — loaded on startup |
+| File | Role | Tool | Automatically Discovered |
+|------|------|------|-------------------------|
+| AGENTS.md | Canonical shared context | Codex CLI, OpenCode, Gemini CLI, AGENTS-aware tools | Yes — read on startup |
+| CLAUDE.md | Thin bridge | Claude Code, OpenCode | Yes — loaded every session |
+| .cursorrules | Thin bridge | Cursor | Yes — project root convention |
+| .github/copilot-instructions.md | Thin bridge | GitHub Copilot | Yes — GitHub convention |
+| .windsurfrules | Compatibility bridge | Windsurf | Yes — project root convention |
+| .clinerules | Thin bridge | Cline | Yes — project root convention |
+| GEMINI.md | Compatibility bridge | Gemini CLI | Yes — loaded on startup |
 
 Context Guard hooks are Claude Code only. All other features (generation, update, verify) work wherever the plugin runs.
 

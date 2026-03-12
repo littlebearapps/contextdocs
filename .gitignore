@@ -7,7 +7,8 @@
 .vscode/
 
 # Dev environment (local to each developer)
-.claude/hooks/
+.claude/hooks/*
+!.claude/hooks/*.sh
 .claude/settings.json
 .claude/settings.local.json
 

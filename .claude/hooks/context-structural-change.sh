@@ -38,30 +38,30 @@ REL_PATH="${REL_PATH#/}"
 
 case "$REL_PATH" in
   commands/*.md)
-    MSG="You modified a command definition. AGENTS.md, CLAUDE.md, and llms.txt may need their command tables updated."
+    MSG="You modified a command definition. Update AGENTS.md first, then refresh CLAUDE.md, llms.txt, or any tool-specific bridges that mention this command."
     ;;
   .claude/skills/*/SKILL.md|.agents/skills/*/SKILL.md)
-    MSG="You modified a skill. AGENTS.md, CLAUDE.md, and llms.txt may need their skill listings updated."
+    MSG="You modified a skill. Update AGENTS.md first, then refresh CLAUDE.md, llms.txt, or any affected bridge files."
     ;;
   .claude/agents/context-updater.md)
     # Context Guard's own agent — not a project structural change
     echo '{}'; exit 0
     ;;
   .claude/agents/*.md|.agents/agents/*.md)
-    MSG="You modified an agent definition. AGENTS.md may need updating."
+    MSG="You modified an agent definition. AGENTS.md and llms.txt may need updating."
     ;;
   .claude/rules/context-quality.md)
     # Context Guard's own quality rule — not a project structural change
     echo '{}'; exit 0
     ;;
   .claude/rules/*.md)
-    MSG="You modified a rule. CLAUDE.md and AGENTS.md may need updating if they list rules."
+    MSG="You modified a rule. Update AGENTS.md first, then refresh CLAUDE.md or other bridge files only if they reference this rule."
     ;;
   package.json|*/package.json|pyproject.toml|*/pyproject.toml|Cargo.toml|*/Cargo.toml|go.mod|*/go.mod)
-    MSG="Project manifest changed. AI context files may reference outdated dependencies or commands."
+    MSG="Project manifest changed. Update AGENTS.md first, then refresh only the bridge files whose tool-specific commands or notes changed."
     ;;
   tsconfig*.json|*/tsconfig*.json|wrangler.toml|*/wrangler.toml|vitest.config*|*/vitest.config*|jest.config*|*/jest.config*|eslint.config*|*/eslint.config*|biome.json|*/biome.json)
-    MSG="Build/test/lint configuration changed. AI context files may reference outdated tooling."
+    MSG="Build/test/lint configuration changed. Update AGENTS.md first, then refresh any bridge files with tool-specific tooling notes."
     ;;
   *)
     echo '{}'; exit 0

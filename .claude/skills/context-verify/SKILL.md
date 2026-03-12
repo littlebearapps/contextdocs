@@ -1,6 +1,6 @@
 ---
 name: context-verify
-description: Validates AI context file quality — signal-to-noise ratio, line budgets, stale paths, cross-file consistency, discoverable content detection, and MEMORY.md drift. Scores context health and integrates with CI. Use to catch context file decay before it reaches your repo.
+description: Validates AI context file quality — signal-to-noise ratio, line budgets, stale paths, AGENTS-to-bridge consistency, discoverable content detection, and MEMORY.md drift. Scores context health and integrates with CI. Use to catch context file decay before it reaches your repo.
 ---
 
 # Context Verifier
@@ -17,9 +17,11 @@ Check line counts and estimate tokens (lines × 4). Apply budgets:
 
 | File | Warning | Over Budget |
 |------|---------|-------------|
-| CLAUDE.md | >80 lines | >120 lines |
 | AGENTS.md | >120 lines | >160 lines |
-| Other context files | >60 lines | >100 lines |
+| CLAUDE.md bridge | >20 lines | >80 lines |
+| Other bridge files | >20 lines | >60 lines |
+
+Warn on bridge length only when the extra lines appear to restate shared `AGENTS.md` content rather than genuine tool-specific instructions.
 
 ### 2. Discoverable Content Detection
 
@@ -29,9 +31,9 @@ Flag file tree characters (├──, └──, │), "Project Structure" secti
 
 Extract backtick-quoted paths from context files and verify each exists on disk. Report stale paths.
 
-### 4. Cross-File Consistency
+### 4. AGENTS-to-Bridge Consistency
 
-Key commands (test, build, deploy) must match across all context files. Extract and compare command strings. Flag mismatches.
+Treat `AGENTS.md` as the canonical shared context. Bridge files may subset or reference it, but they must not contradict key commands, hard rules, naming conventions, or security notes. Flag missing bridge references (for example `@AGENTS.md` in `CLAUDE.md`) and bridges that duplicate AGENTS sections instead of staying thin.
 
 ### 5. MEMORY.md Drift
 
@@ -86,7 +88,7 @@ If `.claude-plugin/plugin.json` exists, verify required fields: `name`, `version
 | Line Budget | 20 | -2 per file over warning, -5 per file over budget |
 | Signal Quality | 20 | -1 per discoverable instance (max -5), -3 if "Project Structure" present, -3 if agent memory dirs tracked in git |
 | Path Accuracy | 20 | -2 per stale path, broken @import, orphaned path-scope rule, broken rule symlink, or invalid .mcp.json server entry (max -10) |
-| Consistency | 15 | -3 if test/build/deploy commands differ between files, -2 per missing required plugin manifest field |
+| Consistency | 15 | -3 if a bridge contradicts AGENTS.md on commands or rules, -2 if a required bridge reference/import is missing, -2 per missing required plugin manifest field |
 | Freshness | 15 | -2 if MEMORY.md not promoted, -3 per file stale 90+ days |
 | Context Load | 10 | -3 per tool over 5K warning, -5 per tool over 10K budget |
 

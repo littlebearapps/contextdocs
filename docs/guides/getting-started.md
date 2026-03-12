@@ -1,6 +1,6 @@
 ---
 title: "Getting Started with ContextDocs"
-description: "Install ContextDocs, generate your first AI context files, and set up Context Guard hooks."
+description: "Install ContextDocs, generate canonical AGENTS.md plus bridge files, and set up Context Guard hooks."
 type: how-to
 difficulty: beginner
 time_to_complete: "5 minutes"
@@ -12,7 +12,7 @@ order: 1
 
 # Getting Started with ContextDocs
 
-> **Summary**: Install ContextDocs, generate AI context files for 7 tools, and optionally set up Context Guard hooks for freshness enforcement.
+> **Summary**: Install ContextDocs, generate canonical `AGENTS.md` plus bridge files for 7 tools, and optionally set up Context Guard hooks for freshness enforcement.
 
 **Time to Hello World:** Under 60 seconds for your first context files. Full walkthrough below: ~5 minutes.
 
@@ -50,17 +50,17 @@ Navigate to the project you want to add context files to, then run:
 ContextDocs will:
 1. Scan your codebase (manifest files, project structure, conventions)
 2. Apply the Signal Gate filter — only include what agents cannot discover on their own
-3. Generate up to 7 context files, each within its line budget:
+3. Generate canonical `AGENTS.md`, then add the bridge files each tool needs:
 
-| File | Tool | Budget |
+| File | Role | Budget |
 |------|------|--------|
-| CLAUDE.md | Claude Code | <80 lines |
-| AGENTS.md | Codex CLI, OpenCode, Gemini CLI | <120 lines |
-| .cursorrules | Cursor | <60 lines |
-| .github/copilot-instructions.md | GitHub Copilot | <60 lines |
-| .windsurfrules | Windsurf | <60 lines |
-| .clinerules | Cline | <60 lines |
-| GEMINI.md | Gemini CLI | <60 lines |
+| AGENTS.md | Canonical shared context | <120 lines |
+| CLAUDE.md | Claude Code bridge (`@AGENTS.md` + Claude-specific notes) | <80 lines |
+| .cursorrules | Cursor bridge | <60 lines |
+| .github/copilot-instructions.md | GitHub Copilot bridge | <60 lines |
+| .windsurfrules | Windsurf compatibility bridge | <60 lines |
+| .clinerules | Cline bridge | <60 lines |
+| GEMINI.md | Gemini compatibility bridge | <60 lines |
 
 **Tip:** To generate a single file, specify the tool: `/contextdocs:ai-context claude` or `/contextdocs:ai-context cursor`.
 
@@ -78,7 +78,7 @@ This scores your context files 0–100 across 6 dimensions with 13 checks:
 - **Line budget** — are files within their size targets?
 - **Signal quality** — does the content pass Signal Gate (no discoverable content)?
 - **Path accuracy** — do referenced file paths actually exist?
-- **Consistency** — do files agree on conventions, tech stack, and key paths?
+- **Consistency** — do bridge files stay aligned with `AGENTS.md`?
 - **Freshness** — have files been updated since the last significant code change?
 - **Context load** — is the aggregate token usage across all context files within healthy limits per tool?
 
@@ -96,9 +96,9 @@ This installs hooks with a health check and two tiers of enforcement:
 
 - **SessionStart** — validates context files at session start, warns if stale or over budget
 - **Tier 1 (Nudge)** — at session end, reminds you if context files may be stale
-- **Tier 2 (Guard)** — blocks commits when context files haven't been updated after structural changes
+- **Tier 2 (Guard)** — blocks commits when structural files haven't been reflected in `AGENTS.md` or other affected bridge files
 
-Hooks automatically launch the **context-updater agent** to apply updates — no manual intervention needed. The agent applies surgical edits to only the affected sections, respecting line budgets and the Signal Gate principle.
+Hooks automatically launch the **context-updater agent** to apply AGENTS-first updates — shared changes go to `AGENTS.md` first, then only the affected bridge sections are refreshed.
 
 To check hook status or uninstall:
 
