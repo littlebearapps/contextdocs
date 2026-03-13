@@ -1,7 +1,7 @@
 ---
 name: contextdocs
-description: AGENTS-first AI IDE context management — generate, maintain, and audit canonical AGENTS.md plus thin bridge files for CLAUDE.md, .github/copilot-instructions.md, .cursorrules, .windsurfrules, .clinerules, and GEMINI.md using the Signal Gate principle. Includes Context Guard hooks and context health scoring. Zero runtime dependencies.
-version: "1.3.0"
+description: Your AI agent maintains its own context files — a Claude Code plugin with an AGENTS-first model that covers Codex, Copilot, Cursor, Gemini, and 3 more tools. Signal Gate filtering, Context Guard hooks, health scoring, and MEMORY.md promotion.
+version: "1.4.0"
 author: Little Bear Apps
 tags:
   - ai-context

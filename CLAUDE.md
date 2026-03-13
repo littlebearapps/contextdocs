@@ -1,6 +1,9 @@
 # ContextDocs
 
-Pure Markdown Claude Code plugin — no JavaScript, no Python, no build step, no runtime dependencies. Generates, maintains, and audits AI IDE context files using the Signal Gate principle.
+**Canonical description (use this in all listings and submissions):**
+> Your AI agent maintains its own context files — a Claude Code plugin with an AGENTS-first model that covers Codex, Copilot, Cursor, Gemini, and 3 more tools.
+
+Pure Markdown Claude Code plugin — no JavaScript, no Python, no build step, no runtime dependencies. Signal Gate filtering, Context Guard hooks, and 0-100 health scoring.
 
 ## Commands
 
