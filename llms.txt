@@ -1,54 +1,54 @@
 # ContextDocs
 
-> AI IDE context file management for Claude Code, OpenCode, Codex CLI, and Gemini CLI. A Claude Code plugin that generates, maintains, and audits AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, and GEMINI.md using the Signal Gate principle — only what agents cannot discover on their own. Research shows overstuffed context files reduce AI task success by ~3% and increase token costs by 20% (ETH Zurich, 2026). ContextDocs keeps files lean with automatic line budgets (CLAUDE.md <80, AGENTS.md <120, others <60), enforces freshness with Context Guard hooks, scores health 0–100, and promotes MEMORY.md patterns into CLAUDE.md. Pure Markdown, zero runtime dependencies. For public-facing documentation (README, CHANGELOG, ROADMAP), see [PitchDocs](https://github.com/littlebearapps/pitchdocs).
+> AGENTS-first AI IDE context management for Claude Code, OpenCode, Codex CLI, and Gemini CLI. A Claude Code plugin that generates, maintains, and audits canonical `AGENTS.md` plus thin bridge files (`CLAUDE.md`, `.cursorrules`, `.github/copilot-instructions.md`, `.windsurfrules`, `.clinerules`, `GEMINI.md`) using the Signal Gate principle — only what agents cannot discover on their own. ContextDocs keeps files lean with automatic line budgets (`AGENTS.md` <120, `CLAUDE.md` <80, other bridges <60), enforces freshness with Context Guard hooks, scores health 0–100, and promotes MEMORY.md patterns into CLAUDE.md. Pure Markdown, zero runtime dependencies. For public-facing documentation (README, CHANGELOG, ROADMAP), see [PitchDocs](https://github.com/littlebearapps/pitchdocs).
 
-- [SKILL.md](./SKILL.md): Root-level skill manifest for directory submissions — plugin overview, installation, 3 commands, output format with line budgets per tool
+- [SKILL.md](./SKILL.md): Root-level skill manifest for directory submissions — plugin overview, installation, 3 commands, and AGENTS-first output model with line budgets
 
 ## Docs
 
-- [README](./README.md): Project overview, Signal Gate value proposition, quick start (under 60 seconds), comparison table (vs manual vs generic AI), commands with "Why It Matters", cross-tool discovery table for 7 AI tools
-- [AGENTS.md](./AGENTS.md): Cross-tool AI context — 2 agents, 3 skills inventory, 3 commands, 4 rules, 6 hooks with descriptions (Codex CLI, OpenCode, Gemini CLI format)
-- [CLAUDE.md](./CLAUDE.md): Claude Code project context — plugin architecture, Australian English conventions, key files, modification guide, PitchDocs relationship
+- [README](./README.md): Project overview, Signal Gate value proposition, quick start (under 60 seconds), comparison table (vs manual vs generic AI), commands with "Why It Matters", cross-tool discovery table for AGENTS-first context across 8 AI tools
+- [AGENTS.md](./AGENTS.md): Cross-tool AI context — AGENTS-first architecture, 2 agents, 3 skills inventory, 3 commands, 4 rules, 6 hooks with descriptions (Codex CLI, OpenCode, Gemini CLI format)
+- [CLAUDE.md](./CLAUDE.md): Claude Code project context — plugin architecture, Australian English conventions, AGENTS-first modification guide, key files, PitchDocs relationship
 - [Docs Hub](./docs/README.md): Documentation index linking all guides, quick links to README/Contributing/Changelog/Support, and skills reference
 
 ## Guides
 
-- [Getting Started](./docs/guides/getting-started.md): Install ContextDocs, bootstrap 7 context file types with line budgets, verify health (0–100 across 6 dimensions), set up Context Guard hooks, keep context fresh with update/promote/audit
+- [Getting Started](./docs/guides/getting-started.md): Install ContextDocs, bootstrap canonical `AGENTS.md` plus bridge files with line budgets, verify health (0–100 across 6 dimensions), set up Context Guard hooks, keep context fresh with update/promote/audit
 - [Troubleshooting](./docs/guides/troubleshooting.md): Content filter errors (HTTP 400) with fetch commands, Signal Gate filtering issues, Context Guard hooks not triggering, stale context files, MEMORY.md promotion, cross-tool compatibility matrix, FAQ (origin, PitchDocs relationship, Signal Gate explained)
 
 ## Agent
 
-- [Context Updater](./.claude/agents/context-updater.md): Autonomous agent that updates stale AI context files after structural project changes — launched by hooks, applies surgical edits using Signal Gate principle, verifies quality. Capped at 10 turns, no internet access (Claude Code only)
+- [Context Updater](./.claude/agents/context-updater.md): Autonomous agent that updates stale AI context files with an AGENTS-first workflow — launched by hooks, edits shared context in `AGENTS.md`, then refreshes only affected bridge files. Capped at 10 turns, no internet access (Claude Code only)
 - [Docs Freshness](./.claude/agents/docs-freshness.md): Read-only documentation freshness checker — detects stale docs, version mismatches, missing files, suggests PitchDocs commands to fix. Capped at 8 turns, enforces read-only via disallowedTools (PitchDocs, Claude Code only)
 
 ## Skills
 
-- [AI Context](./.claude/skills/ai-context/SKILL.md): AI IDE context file generation with Signal Gate principle — 7 context file types from codebase analysis, init/update/promote/audit lifecycle, automatic line budgets, AGENTS.md spec tracking
-- [AI Context Reference](./.claude/skills/ai-context/SKILL-reference.md): Companion reference for Claude Code — complete agent frontmatter catalogue (13 fields), skill frontmatter catalogue (11 fields), variable substitution, dynamic context injection, bundled resource patterns, agent memory directories, CLAUDE.md advanced features (@import, directory walking, claudeMdExcludes, managed policy), rules system (path-scoped rules, recursive discovery, user-level rules, symlinks), plugin system (installation scopes, .lsp.json, output styles, settings)
+- [AI Context](./.claude/skills/ai-context/SKILL.md): AGENTS-first AI IDE context generation with Signal Gate — canonical `AGENTS.md`, thin bridge files, init/update/promote/audit lifecycle, automatic line budgets, AGENTS.md spec tracking
+- [AI Context Reference](./.claude/skills/ai-context/SKILL-reference.md): Companion reference for Claude Code — complete agent frontmatter catalogue (13 fields), skill frontmatter catalogue (11 fields), variable substitution, dynamic context injection, bundled resource patterns, agent memory directories, AGENTS-first bridge architecture, CLAUDE.md advanced features (@import, directory walking, claudeMdExcludes, managed policy), rules system, plugin system
 - [Context Guard](./.claude/skills/context-guard/SKILL.md): Context Guard hook installation — two-tier enforcement (session-end nudge + pre-commit guard), SessionStart health check, post-commit drift detection, structural change reminders, content filter protection, companion reference for 17 hook events, Untether compatibility (Claude Code only)
 - [Context Guard Reference](./.claude/skills/context-guard/SKILL-reference.md): Companion reference for Claude Code hooks — complete event catalogue (17 events with decision control), 4 handler types (command, http, prompt, agent), advanced features (async, once, timeout, matcher, updatedInput, CLAUDE_ENV_FILE), settings.json schema, stability notes
-- [Context Verify](./.claude/skills/context-verify/SKILL.md): Context file validation — line budget compliance, discoverable content detection, stale path scanning, @import path validation, rule path-scope and symlink validation, .mcp.json structure validation, agent memory directory hygiene, plugin manifest completeness, cross-file consistency, MEMORY.md drift, aggregate context load monitoring (per-tool token estimates), 0–100 health scoring with CI integration (`--min-score` enforcement)
+- [Context Verify](./.claude/skills/context-verify/SKILL.md): Context file validation — line budget compliance, discoverable content detection, stale path scanning, @import path validation, rule path-scope and symlink validation, .mcp.json structure validation, agent memory directory hygiene, plugin manifest completeness, AGENTS-to-bridge consistency, MEMORY.md drift, aggregate context load monitoring (per-tool token estimates), 0–100 health scoring with CI integration (`--min-score` enforcement)
 
 ## Commands
 
-- [/contextdocs:ai-context](./commands/ai-context.md): Generate lean AI IDE context files using Signal Gate — supports init (bootstrap), update (incremental drift patching), promote (MEMORY.md → CLAUDE.md), audit (staleness check), and per-tool generation (claude, agents, cursor, copilot, windsurf, cline, gemini)
+- [/contextdocs:ai-context](./commands/ai-context.md): Generate lean AGENTS-first AI IDE context using Signal Gate — supports init (bootstrap), update (incremental drift patching), promote (MEMORY.md → CLAUDE.md), audit (staleness check), and per-tool generation (claude, agents, cursor, copilot, windsurf, cline, gemini)
 - [/contextdocs:context-guard](./commands/context-guard.md): Install, uninstall, or check status of Context Guard hooks — two-tier freshness enforcement so stale context files get caught before they waste tokens (Claude Code only)
-- [/contextdocs:context-verify](./commands/context-verify.md): Score context file health 0–100 across 6 dimensions (line budget, signal quality, path accuracy, consistency, freshness, context load) with 13 checks including .mcp.json, agent memory, and plugin manifest — CI integration with `--min-score` threshold
+- [/contextdocs:context-verify](./commands/context-verify.md): Score context file health 0–100 across 6 dimensions (line budget, signal quality, path accuracy, bridge consistency, freshness, context load) with 13 checks including .mcp.json, agent memory, and plugin manifest — CI integration with `--min-score` threshold
 
 ## Optional
 
 - [Contributing](./CONTRIBUTING.md): Development setup, how to improve skills, modify hooks, submit PRs using conventional commits, content filter warning for high-risk files
 - [Changelog](./CHANGELOG.md): Version history — v1.3.0 (current), v1.2.0, v1.1.0, and v1.0.0 releases with migration guide from PitchDocs commands
 - [Support](./SUPPORT.md): Getting help, Signal Gate and Context Guard troubleshooting, content filter known issue, contact details, response times
-- [Context Quality Rule](./.claude/rules/context-quality.md): Auto-loaded quality rule for AI context files — cross-file consistency, path verification, version accuracy, sync points (Claude Code only)
+- [Context Quality Rule](./.claude/rules/context-quality.md): Auto-loaded quality rule for AI context files — AGENTS-first bridge consistency, path verification, version accuracy, sync points (Claude Code only)
 - [Context Awareness Rule](./.claude/rules/context-awareness.md): Auto-loaded context trigger map — suggests ContextDocs commands when context-relevant work is detected (Claude Code only)
 - [Doc Standards Rule](./.claude/rules/doc-standards.md): Auto-loaded documentation quality standards — 4-Question Test, Lobby Principle, progressive disclosure, banned phrases (PitchDocs, Claude Code only)
 - [Docs Awareness Rule](./.claude/rules/docs-awareness.md): Auto-loaded documentation trigger map — suggests PitchDocs commands when docs-relevant work is detected (PitchDocs, Claude Code only)
 - [Context Session Start Hook](./hooks/context-session-start.sh): SessionStart hook that runs a quick context health check — detects stale files, warns on high aggregate line count (Claude Code only)
 - [Context Drift Check Hook](./hooks/context-drift-check.sh): PostToolUse hook that detects stale AI context files after git commits (Claude Code only)
-- [Context Structural Change Hook](./hooks/context-structural-change.sh): PostToolUse hook that reminds about context file updates after structural changes (Claude Code only)
+- [Context Structural Change Hook](./hooks/context-structural-change.sh): PostToolUse hook that reminds about AGENTS-first context updates after structural changes (Claude Code only)
 - [Content Filter Guard Hook](./hooks/content-filter-guard.sh): PreToolUse hook that blocks Write on high-risk OSS files — CODE_OF_CONDUCT.md, LICENSE, SECURITY.md (Claude Code only)
-- [Context Guard Stop Hook](./hooks/context-guard-stop.sh): Stop hook that nudges to update context docs before session end — Tier 1 enforcement (Claude Code only)
+- [Context Guard Stop Hook](./hooks/context-guard-stop.sh): Stop hook that nudges to update AGENTS.md first, then affected bridge files before session end — Tier 1 enforcement (Claude Code only)
 - [Context Commit Guard Hook](./hooks/context-commit-guard.sh): PreToolUse hook that blocks commits with stale context — Tier 2 enforcement (Claude Code only)
 - [Upstream Versions](./upstream-versions.json): Pinned AGENTS.md spec version (monthly) and Claude Code release version (weekly), checked by GitHub Action for drift
 - [Plugin Manifest](./.claude-plugin/plugin.json): Plugin metadata — name, version, description, keywords, author, repository, homepage

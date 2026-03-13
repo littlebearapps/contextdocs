@@ -1,7 +1,7 @@
 {
   "name": "contextdocs",
   "version": "1.3.0",
-  "description": "Generate, maintain, and audit AI IDE context files (AGENTS.md, CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, GEMINI.md) using the Signal Gate principle — only what agents cannot discover on their own. Includes Context Guard hooks for freshness enforcement, context verification scoring, and MEMORY.md promotion. Claude Code, OpenCode, Codex CLI, and Gemini CLI compatible.",
+  "description": "Your AI agent maintains its own context files — a Claude Code plugin with an AGENTS-first model that covers Codex, Copilot, Cursor, Gemini, and 3 more tools. Signal Gate filtering, Context Guard hooks, health scoring, and MEMORY.md promotion.",
   "author": {
     "name": "Little Bear Apps",
     "email": "hello@littlebearapps.com"

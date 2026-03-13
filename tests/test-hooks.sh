@@ -205,6 +205,23 @@ run_test "No context files → silent" "$HOOK" \
   "{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$NO_CTX_TEMP/commands/foo.md\"}}" 0 "{}"
 rm -rf "$NO_CTX_TEMP"
 
+echo ""
+echo "--- llms.txt or Copilot-only repos still count as context ---"
+LLMS_ONLY_TEMP=$(mktemp -d)
+touch "$LLMS_ONLY_TEMP/llms.txt"
+export CLAUDE_PROJECT_DIR="$LLMS_ONLY_TEMP"
+run_test "llms.txt only → reminder fires" "$HOOK" \
+  "{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$LLMS_ONLY_TEMP/commands/foo.md\"}}" 0 "CONTEXT REMINDER"
+rm -rf "$LLMS_ONLY_TEMP"
+
+COPILOT_ONLY_TEMP=$(mktemp -d)
+mkdir -p "$COPILOT_ONLY_TEMP/.github"
+touch "$COPILOT_ONLY_TEMP/.github/copilot-instructions.md"
+export CLAUDE_PROJECT_DIR="$COPILOT_ONLY_TEMP"
+run_test "Copilot bridge only → reminder fires" "$HOOK" \
+  "{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$COPILOT_ONLY_TEMP/commands/foo.md\"}}" 0 "CONTEXT REMINDER"
+rm -rf "$COPILOT_ONLY_TEMP"
+
 # Restore for next section
 export CLAUDE_PROJECT_DIR="$STRUCT_TEMP"
 rm -rf "$STRUCT_TEMP"
@@ -370,6 +387,18 @@ run_test "Context file up to date → silent" "$HOOK" \
   '{"tool_name":"Bash","tool_input":{"command":"git commit -m test"}}' 0 "{}"
 teardown_git_repo
 
+# llms.txt stale after a source commit → drift detected
+setup_git_repo
+echo "# Index" > "$TEMP_REPO/llms.txt"
+git add llms.txt
+GIT_COMMITTER_DATE="2025-01-01T00:00:00" git commit -q -m "add llms index" --date="2025-01-01T00:00:00"
+echo "code" > "$TEMP_REPO/app.js"
+git add app.js
+GIT_COMMITTER_DATE="2025-06-01T00:00:00" git commit -q -m "add code" --date="2025-06-01T00:00:00"
+run_test "Stale llms.txt → drift detected" "$HOOK" \
+  '{"tool_name":"Bash","tool_input":{"command":"git commit -m test"}}' 0 "AI CONTEXT DRIFT DETECTED"
+teardown_git_repo
+
 echo ""
 
 ########################################################################
@@ -450,6 +479,17 @@ run_test "package.json modified, no context → block" "$HOOK" \
   '{}' 0 "CONTEXT DRIFT DETECTED"
 teardown_git_repo
 
+# nested package.json structural → block
+setup_git_repo
+mkdir -p packages/web
+echo '{}' > packages/web/package.json
+git add packages/web/package.json
+git commit -q -m "add nested package"
+echo '{"private":true}' > packages/web/package.json
+run_test "packages/web/package.json modified, no context → block" "$HOOK" \
+  '{}' 0 "CONTEXT DRIFT DETECTED"
+teardown_git_repo
+
 echo ""
 
 ########################################################################
@@ -486,6 +526,18 @@ echo "code" > app.js
 git add app.js
 GIT_COMMITTER_DATE="2025-06-01T00:00:00" git commit -q -m "add code" --date="2025-06-01T00:00:00"
 run_test "Stale CLAUDE.md → health check" "$HOOK" \
+  '{}' 0 "CONTEXT HEALTH CHECK"
+teardown_git_repo
+
+# Git repo with stale llms.txt → reports health check
+setup_git_repo
+echo "# Index" > llms.txt
+git add llms.txt
+GIT_COMMITTER_DATE="2025-01-01T00:00:00" git commit -q -m "add llms index" --date="2025-01-01T00:00:00"
+echo "code" > app.js
+git add app.js
+GIT_COMMITTER_DATE="2025-06-01T00:00:00" git commit -q -m "add code" --date="2025-06-01T00:00:00"
+run_test "Stale llms.txt → health check" "$HOOK" \
   '{}' 0 "CONTEXT HEALTH CHECK"
 teardown_git_repo
 

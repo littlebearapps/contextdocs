@@ -121,5 +121,8 @@ jobs:
       - name: Validate llms.txt references and orphan detection
         run: bash tests/validate-llms-txt.sh
 
+      - name: Validate AGENTS-first bridge model
+        run: bash tests/validate-bridge-model.sh
+
       - name: Check token budgets
         run: bash tests/check-token-budgets.sh

@@ -88,6 +88,18 @@ skills/<name>/
 
 Companion files (`SKILL-*.md`) are loaded when the skill explicitly references them. They have a higher token budget (~3000 tokens / 12,000 chars) than the main SKILL.md (~2000 tokens / 8,000 chars).
 
+## AGENTS-first Bridge Architecture
+
+ContextDocs now generates `AGENTS.md` as the canonical shared context. Put shared identity, commands, conventions, hard rules, security notes, and monorepo guidance there first.
+
+Bridge files stay thin:
+
+- `CLAUDE.md`: `@AGENTS.md` plus Claude-specific rules, key files, and path-scoped guidance
+- `.cursorrules`, `.github/copilot-instructions.md`, `.clinerules`: only tool-specific scoping, workflow, or checklist additions
+- `.windsurfrules` and `GEMINI.md`: compatibility bridges retained for now while upstream tools converge on `AGENTS.md`
+
+When updating or auditing generated files, edit `AGENTS.md` first and only touch bridge files when their imports, references, or tool-specific sections need changes.
+
 ## CLAUDE.md Advanced Features
 
 ### @import Syntax
