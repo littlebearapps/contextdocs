@@ -5,6 +5,25 @@ All notable changes to ContextDocs will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0](https://github.com/littlebearapps/contextdocs/compare/v1.3.0...v1.4.0) (2026-03-13)
+
+
+### Added
+
+* add .mcp.json, agent memory, and plugin manifest validation ([097f452](https://github.com/littlebearapps/contextdocs/commit/097f452e14d12a2f90414e06636113f2631fa97e))
+* add ai-context companion reference, agent upgrades, and CLAUDE.md advanced features ([d2389b9](https://github.com/littlebearapps/contextdocs/commit/d2389b9491552e75e77fd9042b069677a2aa45e2))
+* add Claude Code release and schema monitoring ([42fbb84](https://github.com/littlebearapps/contextdocs/commit/42fbb840b9b3c727cccb931f604e20e3aa7c8291))
+* add complete hook system reference and SessionStart health check hook ([f91ec63](https://github.com/littlebearapps/contextdocs/commit/f91ec631bad0b315a6690e1a5819226cef0228b8))
+* add path-scoped rules, recursive subdirectories, and symlink support ([6d59bc9](https://github.com/littlebearapps/contextdocs/commit/6d59bc9547f6561d03b064deed8acd7fc8bd3c63))
+* add plugin system documentation to ai-context reference ([5efa291](https://github.com/littlebearapps/contextdocs/commit/5efa291b801d42cece7cd0ca52b80cc52db9c3bc))
+* adopt AGENTS-first context model with docs clarifications ([#11](https://github.com/littlebearapps/contextdocs/issues/11)) ([600305b](https://github.com/littlebearapps/contextdocs/commit/600305b45ca3e3e536c4fdad8858bb4e6bdc5bcf))
+
+
+### Documentation
+
+* clean up stale [Unreleased] section, update version refs to 1.3.0 ([04ee3e5](https://github.com/littlebearapps/contextdocs/commit/04ee3e510200647438b9d32278c3e96d87b299fd))
+* update documentation for v1.4.0 features ([baecafb](https://github.com/littlebearapps/contextdocs/commit/baecafbe075cf4073c433d415a36f32e0c1c4bfa))
+
 ## [Unreleased]
 
 ### Added
