@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <strong>Keep your AI coding assistants in sync with your codebase — generate, maintain, and audit AGENTS-first context for 8 AI tools.</strong>
+  <strong>Your AI agent maintains its own context files — a Claude Code plugin with an AGENTS-first model that covers Codex, Copilot, Cursor, Gemini, and 3 more tools.</strong>
 </p>
 
 <p align="center">
@@ -65,7 +65,9 @@ For README, CHANGELOG, ROADMAP, user guides, and launch artifacts, install [Pitc
 
 Your AI coding assistant works better when it understands your project's conventions — but overstuffed context files actually make things worse. Research shows bloated context **reduces** AI task success by ~3% and increases token costs by 20% (ETH Zurich, 2026). Most teams either write too much, write the wrong things, or let context files go stale within a week.
 
-ContextDocs solves the full lifecycle. It scans your codebase, generates `AGENTS.md` as the canonical shared context, then creates thin bridge files and companion context that cover 8 AI tools using the **Signal Gate principle** — only what agents cannot discover by reading source code on their own. No directory listings, no file trees, no architecture overviews that agents find themselves. Just the conventions, gotchas, and decisions that actually help.
+ContextDocs solves the full lifecycle. It scans your codebase, generates `AGENTS.md` as the canonical shared context, then creates thin bridge files that cover 8 AI tools using the **Signal Gate principle** — only what agents cannot discover by reading source code on their own. No directory listings, no file trees, no architecture overviews that agents find themselves. Just the conventions, gotchas, and decisions that actually help.
+
+**For Claude Code users:** Claude Code auto-loads `CLAUDE.md` every session. The generated `CLAUDE.md` starts with `@AGENTS.md`, which imports the canonical shared context directly — so you get the full conventions plus Claude-specific additions without duplication. Other tools (Codex CLI, Gemini CLI, Copilot, Cursor) load their own bridge files or `AGENTS.md` directly.
 
 Then it keeps them fresh: `update` patches drift incrementally, `promote` moves Claude's auto-learned MEMORY.md patterns into CLAUDE.md, `context-verify` scores health 0–100 across 6 dimensions with 13 checks, and Context Guard hooks enforce freshness at session start, session end, and commit time — with the context-updater agent applying fixes automatically.
 
@@ -133,10 +135,10 @@ ContextDocs generates plain Markdown files placed where each AI tool expects the
 
 ContextDocs works natively with [Claude Code](https://code.claude.com/) and [OpenCode](https://opencode.ai/). The generated context files are plain Markdown — each is placed where the target tool expects it:
 
-| File | Role | Tool | Automatically Discovered |
-|------|------|------|-------------------------|
-| AGENTS.md | Canonical shared context | Codex CLI, OpenCode, Gemini CLI, AGENTS-aware tools | Yes — read on startup |
-| CLAUDE.md | Thin bridge | Claude Code, OpenCode | Yes — loaded every session |
+| File | Role | Tool | How It's Loaded |
+|------|------|------|-----------------|
+| AGENTS.md | Canonical shared context | Codex CLI, OpenCode, Gemini CLI | Auto-loaded at startup; Claude Code loads via `@AGENTS.md` import in CLAUDE.md |
+| CLAUDE.md | Claude Code bridge | Claude Code, OpenCode | Auto-loaded every session; starts with `@AGENTS.md` to import shared context |
 | .cursorrules | Thin bridge | Cursor | Yes — project root convention |
 | .github/copilot-instructions.md | Thin bridge | GitHub Copilot | Yes — GitHub convention |
 | .windsurfrules | Compatibility bridge | Windsurf | Yes — project root convention |

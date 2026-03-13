@@ -20,7 +20,7 @@ When structure, dependencies, commands, or conventions change, update `AGENTS.md
 
 ## Tool Compatibility
 
-`AGENTS.md`: canonical shared context. `CLAUDE.md`: Claude Code/OpenCode bridge with `@AGENTS.md`. `.cursorrules`, `.windsurfrules`, `.clinerules`, `GEMINI.md`, `.github/copilot-instructions.md`: thin bridges. `llms.txt`: LLM ingestion index. `.claude/rules/*.md` and hooks: Claude Code only. `MEMORY.md`: Claude-authored local notes, not version-controlled.
+Claude Code auto-loads `CLAUDE.md` only — not `AGENTS.md` ([source](https://code.claude.com/docs/en/claude-code-on-the-web)). Use `@AGENTS.md` in `CLAUDE.md` to import canonical content. Codex CLI, Gemini CLI, and OpenCode auto-load `AGENTS.md` directly. Other tools (Cursor, Copilot, Windsurf, Cline) load their own bridge files. `.claude/rules/*.md` and hooks are Claude Code only.
 
 ## Aggregate Context Load
 

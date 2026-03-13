@@ -65,7 +65,7 @@ Describe the **end state** you want, not step-by-step instructions. Consider fix
 
 ### `init` — Bootstrap new project
 
-Scan codebase, generate missing `AGENTS.md` plus any missing bridge files (skip existing), offer Context Guard hooks (Claude Code only), run audit pass, report summary.
+Scan codebase, generate `AGENTS.md` plus all bridge files that don't already exist (CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, GEMINI.md). Skip files that already exist. Offer Context Guard hooks (Claude Code only), run audit pass, report summary. Users can delete bridge files for tools they don't use after generation.
 
 ### `update` — Incremental drift patching
 

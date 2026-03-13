@@ -4,7 +4,7 @@
 
 ContextDocs is a Claude Code plugin for generating, maintaining, and auditing AI IDE context files. Pure Markdown, zero runtime dependencies. Applies the Signal Gate principle — only includes what agents cannot discover on their own.
 
-Generated project context follows an AGENTS-first model: `AGENTS.md` carries the shared conventions, commands, and constraints, while `CLAUDE.md`, `.cursorrules`, Copilot instructions, `.clinerules`, `.windsurfrules`, and `GEMINI.md` stay thin bridges.
+Generated project context follows an AGENTS-first model: `AGENTS.md` carries the shared conventions, commands, and constraints, while `CLAUDE.md`, `.cursorrules`, Copilot instructions, `.clinerules`, `.windsurfrules`, and `GEMINI.md` stay thin bridges. For Claude Code, `CLAUDE.md` is auto-loaded every session and uses `@AGENTS.md` to import the canonical shared context. Other tools (Codex CLI, Gemini CLI, OpenCode) load `AGENTS.md` directly at startup.
 
 ## Agent
 

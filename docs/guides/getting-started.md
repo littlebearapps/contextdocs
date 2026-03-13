@@ -4,7 +4,7 @@ description: "Install ContextDocs, generate canonical AGENTS.md plus bridge file
 type: how-to
 difficulty: beginner
 time_to_complete: "5 minutes"
-last_verified: "1.4.0"
+last_verified: "1.3.0"
 related:
   - guides/troubleshooting.md
 order: 1
@@ -12,7 +12,7 @@ order: 1
 
 # Getting Started with ContextDocs
 
-> **Summary**: Install ContextDocs, generate canonical `AGENTS.md` plus bridge files for 7 tools, and optionally set up Context Guard hooks for freshness enforcement.
+> **Summary**: Install ContextDocs, generate canonical `AGENTS.md` plus bridge files for 8 tools, and optionally set up Context Guard hooks for freshness enforcement.
 
 **Time to Hello World:** Under 60 seconds for your first context files. Full walkthrough below: ~5 minutes.
 
@@ -61,6 +61,8 @@ ContextDocs will:
 | .windsurfrules | Windsurf compatibility bridge | <60 lines |
 | .clinerules | Cline bridge | <60 lines |
 | GEMINI.md | Gemini compatibility bridge | <60 lines |
+
+**For Claude Code users:** Claude Code auto-loads `CLAUDE.md` every session. The generated `CLAUDE.md` starts with `@AGENTS.md`, which imports the canonical shared context — so you get everything without duplication. The other bridge files are optional and only needed if team members use Copilot, Cursor, Windsurf, Cline, or Gemini.
 
 **Tip:** To generate a single file, specify the tool: `/contextdocs:ai-context claude` or `/contextdocs:ai-context cursor`.
 

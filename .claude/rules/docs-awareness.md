@@ -4,20 +4,18 @@ When working on a project with PitchDocs installed, recognise documentation-rele
 
 ## Documentation Trigger Map
 
-| You Notice | Suggest | Why |
-|-----------|---------|-----|
-| New feature added (new exports, commands, routes, API endpoints) | `/pitchdocs:features audit` then `/pitchdocs:readme` | README features section may be out of date |
-| Workflow or CLI args changed | `/pitchdocs:user-guide` to refresh guides | User guides may reference old behaviour |
-| Version bump or new git tag | `/pitchdocs:doc-refresh` | Changelog, README metrics, and guides need updating |
-| Release prep or changelog discussion | `/pitchdocs:changelog` then `/pitchdocs:launch` | Ship release notes and promotion content together |
-| Merging a release-please PR | Remind: run activation evals first (`Actions → Activation Evals → Run workflow`) | Confirm skill activation hasn't regressed (target 80%+) |
-| Project going public (no README or thin README) | `/pitchdocs:readme` | First impressions — generate the full marketing framework |
-| Missing docs detected (no `docs/guides/`, no llms.txt) | `/pitchdocs:docs-audit` | Identify all documentation gaps at once |
-| User asks "why should someone use this?" or discusses positioning | `/pitchdocs:features benefits` | Surface the two-path user benefits extraction (auto-scan or conversational) |
-| README section growing beyond 2 paragraphs or 8-row table | Suggest delegating to `docs/guides/` | Lobby Principle — keep README scannable |
-| User mentions "talk it out" or wants to explain their project's value | `/pitchdocs:features benefits` (conversational path) | The 4-question interview produces the most authentic user benefits |
-| User asks "are my docs up to date?" or similar | Launch the `docs-freshness` agent | Quick triage with specific command suggestions |
-| Session start in a project with PitchDocs activated | Launch the `docs-freshness` agent | Quick freshness check before diving into work |
+| You Notice | Suggest |
+|-----------|---------|
+| New feature added (exports, commands, routes, endpoints) | `/pitchdocs:features audit` then `/pitchdocs:readme` |
+| Workflow or CLI args changed | `/pitchdocs:user-guide` |
+| Version bump or new git tag | `/pitchdocs:doc-refresh` |
+| Release prep or changelog discussion | `/pitchdocs:changelog` then `/pitchdocs:launch` |
+| Merging a release-please PR | Remind: run activation evals first |
+| Project going public or thin README | `/pitchdocs:readme` |
+| Missing docs (no `docs/guides/`, no llms.txt) | `/pitchdocs:docs-audit` |
+| User asks about positioning or "why use this?" | `/pitchdocs:features benefits` |
+| README section exceeds 2 paragraphs or 8-row table | Suggest delegating to `docs/guides/` |
+| User asks "are my docs up to date?" or session start | Launch `docs-freshness` agent |
 
 ## When NOT to Suggest
 
