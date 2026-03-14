@@ -39,7 +39,7 @@ CHANGED_FILES=$(git status --porcelain 2>/dev/null | awk '{print $NF}')
 is_structural_path() {
   case "$1" in
     # Skip Context Guard's own infrastructure — not project structural changes
-    .claude/hooks/*|.claude/rules/context-quality.md|.claude/settings.json|.claude/agents/context-updater.md) return 1 ;;
+    .claude/hooks/*|.claude/rules/context-quality.md|.claude/rules/context-awareness.md|.claude/rules/docs-awareness.md|.claude/rules/doc-standards.md|.claude/settings.json|.claude/agents/context-updater.md) return 1 ;;
     commands/*.md|.claude/skills/*/SKILL.md|.agents/skills/*/SKILL.md|.claude/agents/*.md|.agents/agents/*.md|.claude/rules/*.md|package.json|*/package.json|pyproject.toml|*/pyproject.toml|Cargo.toml|*/Cargo.toml|go.mod|*/go.mod|tsconfig*.json|*/tsconfig*.json|wrangler.toml|*/wrangler.toml|vitest.config*|*/vitest.config*|jest.config*|*/jest.config*|eslint.config*|*/eslint.config*|biome.json|*/biome.json|.claude-plugin/plugin.json)
       return 0
       ;;
