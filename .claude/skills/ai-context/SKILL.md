@@ -1,6 +1,6 @@
 ---
 name: ai-context
-description: Generates, updates, and maintains AGENTS-first AI IDE context files with AGENTS.md as canonical shared context and thin tool-specific bridges. Use this skill when the user wants to create a CLAUDE.md, generate AGENTS.md, set up context files for a project, update stale AI context, bootstrap context for a new repo, promote MEMORY.md patterns into CLAUDE.md, audit context for drift, or generate cursorrules, copilot instructions, clinerules, windsurfrules, or GEMINI.md. Use proactively whenever context files may need attention, even if not explicitly requested.
+description: Generates, updates, and maintains AGENTS-first AI IDE context files with AGENTS.md as canonical shared context and thin tool-specific bridges. Use this skill when the user wants to create a CLAUDE.md, generate AGENTS.md, set up context files for a project, update or fix out-of-date context files, refresh stale CLAUDE.md or AGENTS.md, bootstrap context for a new repo, move or promote MEMORY.md patterns into CLAUDE.md, audit context for drift, or generate cursorrules, copilot instructions, clinerules, windsurfrules, or GEMINI.md. This is the right skill for updating, regenerating, or fixing context files — not just checking them. Use proactively whenever context files may need attention, even if not explicitly requested.
 ---
 
 # AI Context File Generator
