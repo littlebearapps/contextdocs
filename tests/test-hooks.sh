@@ -177,6 +177,12 @@ echo ""
 echo "--- Rules excluded (context-quality.md, exit 0 silent) ---"
 run_test ".claude/rules/context-quality.md excluded" "$HOOK" \
   "{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$STRUCT_TEMP/.claude/rules/context-quality.md\"}}" 0 "{}"
+run_test ".claude/rules/context-awareness.md excluded" "$HOOK" \
+  "{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$STRUCT_TEMP/.claude/rules/context-awareness.md\"}}" 0 "{}"
+run_test ".claude/rules/docs-awareness.md excluded" "$HOOK" \
+  "{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$STRUCT_TEMP/.claude/rules/docs-awareness.md\"}}" 0 "{}"
+run_test ".claude/rules/doc-standards.md excluded" "$HOOK" \
+  "{\"tool_name\":\"Write\",\"tool_input\":{\"file_path\":\"$STRUCT_TEMP/.claude/rules/doc-standards.md\"}}" 0 "{}"
 
 echo ""
 echo "--- Config files (exit 0 with advisory) ---"
@@ -331,6 +337,30 @@ run_test ".claude/rules/context-quality.md excluded → allow" "$HOOK" \
   '{"tool_name":"Bash","tool_input":{"command":"git commit -m test"}}' 0
 teardown_git_repo
 
+setup_git_repo
+mkdir -p .claude/rules
+echo "test" > .claude/rules/context-awareness.md
+git add .claude/rules/context-awareness.md
+run_test ".claude/rules/context-awareness.md excluded → allow" "$HOOK" \
+  '{"tool_name":"Bash","tool_input":{"command":"git commit -m test"}}' 0
+teardown_git_repo
+
+setup_git_repo
+mkdir -p .claude/rules
+echo "test" > .claude/rules/docs-awareness.md
+git add .claude/rules/docs-awareness.md
+run_test ".claude/rules/docs-awareness.md excluded → allow" "$HOOK" \
+  '{"tool_name":"Bash","tool_input":{"command":"git commit -m test"}}' 0
+teardown_git_repo
+
+setup_git_repo
+mkdir -p .claude/rules
+echo "test" > .claude/rules/doc-standards.md
+git add .claude/rules/doc-standards.md
+run_test ".claude/rules/doc-standards.md excluded → allow" "$HOOK" \
+  '{"tool_name":"Bash","tool_input":{"command":"git commit -m test"}}' 0
+teardown_git_repo
+
 echo ""
 echo "--- Non-Bash tool → ALLOW (exit 0) ---"
 run_test "Non-Bash tool → allow" "$HOOK" \
@@ -469,6 +499,28 @@ setup_git_repo
 mkdir -p .claude/hooks
 echo "test" > .claude/hooks/foo.sh
 run_test "Excluded .claude/hooks/foo.sh → silent" "$HOOK" \
+  '{}' 0 "{}"
+teardown_git_repo
+
+# Excluded infrastructure rules → silent
+setup_git_repo
+mkdir -p .claude/rules
+echo "test" > .claude/rules/context-awareness.md
+run_test "Excluded .claude/rules/context-awareness.md → silent" "$HOOK" \
+  '{}' 0 "{}"
+teardown_git_repo
+
+setup_git_repo
+mkdir -p .claude/rules
+echo "test" > .claude/rules/docs-awareness.md
+run_test "Excluded .claude/rules/docs-awareness.md → silent" "$HOOK" \
+  '{}' 0 "{}"
+teardown_git_repo
+
+setup_git_repo
+mkdir -p .claude/rules
+echo "test" > .claude/rules/doc-standards.md
+run_test "Excluded .claude/rules/doc-standards.md → silent" "$HOOK" \
   '{}' 0 "{}"
 teardown_git_repo
 

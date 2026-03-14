@@ -50,8 +50,8 @@ case "$REL_PATH" in
   .claude/agents/*.md|.agents/agents/*.md)
     MSG="You modified an agent definition. AGENTS.md and llms.txt may need updating."
     ;;
-  .claude/rules/context-quality.md)
-    # Context Guard's own quality rule — not a project structural change
+  .claude/rules/context-quality.md|.claude/rules/context-awareness.md|.claude/rules/docs-awareness.md|.claude/rules/doc-standards.md)
+    # Context Guard / PitchDocs infrastructure rules — not project structural changes
     echo '{}'; exit 0
     ;;
   .claude/rules/*.md)

@@ -1,6 +1,6 @@
 ---
 name: context-verify
-description: Validates AI context file quality — signal-to-noise ratio, line budgets, stale paths, AGENTS-to-bridge consistency, discoverable content detection, and MEMORY.md drift. Scores context health and integrates with CI. Use to catch context file decay before it reaches your repo.
+description: Validates AI context file quality with 13 checks and 0-100 health scoring. Use this skill when the user wants to check context file health, validate line budgets, detect stale paths, verify AGENTS-to-bridge consistency, run a context quality audit, score context files for CI, or check for discoverable content and MEMORY.md drift. Use proactively before releases or after structural changes.
 ---
 
 # Context Verifier

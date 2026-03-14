@@ -1,6 +1,6 @@
 ---
 name: context-guard
-description: Installs opt-in Claude Code hooks with two-tier enforcement for AI context file freshness. Tier 1 (Nudge) uses a Stop hook to remind about context updates before session end. Tier 2 (Guard) uses a PreToolUse hook to block commits with stale context docs. Also includes post-commit drift detection, structural change reminders, content filter write guards, and a quality rule. Claude Code only — hooks do not work in OpenCode, Codex CLI, or other tools.
+description: Installs opt-in Claude Code hooks with two-tier enforcement for AI context file freshness. Use this skill when the user wants to install context hooks, set up commit guards for context files, prevent stale CLAUDE.md or AGENTS.md from being committed, detect context drift, add content filter guards for OSS files, check context guard status, or uninstall context hooks. Covers install, install strict, uninstall, and status. Claude Code only — hooks do not work in OpenCode, Codex CLI, or other tools.
 ---
 
 # Context Guard
