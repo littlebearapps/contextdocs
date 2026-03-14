@@ -24,25 +24,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * clean up stale [Unreleased] section, update version refs to 1.3.0 ([04ee3e5](https://github.com/littlebearapps/contextdocs/commit/04ee3e510200647438b9d32278c3e96d87b299fd))
 * update documentation for v1.4.0 features ([baecafb](https://github.com/littlebearapps/contextdocs/commit/baecafbe075cf4073c433d415a36f32e0c1c4bfa))
 
-## [Unreleased]
-
-### Added
-
-* Path-scoped context rules so you can apply different standards to different directories — enables monorepo and multi-platform projects ([6d59bc9](https://github.com/littlebearapps/contextdocs/commit/6d59bc9cb05dde19e5f1eb8fdd39eebee79a5c7f))
-* Recursive directory matching and symlink support in context rules — standardises deeply nested projects without manual path lists ([6d59bc9](https://github.com/littlebearapps/contextdocs/commit/6d59bc9cb05dde19e5f1eb8fdd39eebee79a5c7f))
-* New SessionStart health check hook — validates context files on every session for freshness and consistency ([f91ec63](https://github.com/littlebearapps/contextdocs/commit/f91ec63e6c77ebcd3a1a64d4e7cca5f0c35e7d07))
-* Comprehensive hook system reference — complete documentation of all Context Guard hooks and lifecycle points ([f91ec63](https://github.com/littlebearapps/contextdocs/commit/f91ec63e6c77ebcd3a1a64d4e7cca5f0c35e7d07))
-* Claude Code release and schema monitoring — context updater now tracks upstream Claude Code compatibility ([42fbb84](https://github.com/littlebearapps/contextdocs/commit/42fbb84968a2f8a4175226a4b0e50cc05938a0d9))
-* Plugin system documentation in ai-context reference — full guide to plugin architecture, hooks, skills, and commands ([5efa291](https://github.com/littlebearapps/contextdocs/commit/5efa2918cf2de1d7e71f94b04299e5b0937fcbe3))
-
-### Changed
-
-* ai-context companion reference expanded with agent upgrades and advanced CLAUDE.md features ([d2389b9](https://github.com/littlebearapps/contextdocs/commit/d2389b9fe3c5f67b7f9c38f0d0a60f2b0fc1bf9b))
-
-### Fixed
-
-* .mcp.json, agent memory, and plugin manifest validation now catches schema errors early ([097f452](https://github.com/littlebearapps/contextdocs/commit/097f452e0f8a5ecfaa26c4b8f87f4c5e33f39768))
-
 ## [1.3.0](https://github.com/littlebearapps/contextdocs/compare/v1.2.0...v1.3.0) (2026-03-11)
 
 
