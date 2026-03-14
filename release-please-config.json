@@ -20,6 +20,14 @@
           "type": "yaml",
           "path": "SKILL.md",
           "jsonpath": "$.version"
+        },
+        {
+          "type": "generic",
+          "path": "llms.txt"
+        },
+        {
+          "type": "generic",
+          "path": "docs/guides/troubleshooting.md"
         }
       ]
     }

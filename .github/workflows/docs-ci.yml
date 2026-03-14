@@ -126,3 +126,6 @@ jobs:
 
       - name: Check token budgets
         run: bash tests/check-token-budgets.sh
+
+      - name: Check version consistency
+        run: bash tests/check-version-consistency.sh
