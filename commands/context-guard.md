@@ -28,11 +28,11 @@ Context Guard has two enforcement tiers:
 
 - **`install`**: Install Context Guard (Tier 1) into the current project:
   1. Create `.claude/hooks/` directory if it does not exist
-  2. Copy `context-drift-check.sh`, `context-structural-change.sh`, `content-filter-guard.sh`, `context-guard-stop.sh`, and `context-session-start.sh` from the plugin's `hooks/` directory to `.claude/hooks/`
+  2. Copy `context-drift-check.sh`, `context-structural-change.sh`, `content-filter-guard.sh`, `context-guard-stop.sh`, `context-session-start.sh`, and `context-forced-eval.sh` from the plugin's `hooks/` directory to `.claude/hooks/`
   3. Make the scripts executable (`chmod +x`)
   4. Create `.claude/agents/` directory if it does not exist
   5. Copy `context-updater.md` from the plugin's `.claude/agents/` directory to `.claude/agents/context-updater.md`
-  6. Merge PreToolUse, PostToolUse, SessionStart, and Stop hook entries into `.claude/settings.json` (create the file if needed; if entries already exist, append without overwriting)
+  6. Merge PreToolUse, PostToolUse, SessionStart, UserPromptSubmit, and Stop hook entries into `.claude/settings.json` (create the file if needed; if entries already exist, append without overwriting)
   7. Copy `context-quality.md` to `.claude/rules/context-quality.md` (create directory if needed)
   8. Report what was installed
 
@@ -43,8 +43,8 @@ Context Guard has two enforcement tiers:
   4. Report what was installed, noting Tier 2 is active
 
 - **`uninstall`**: Remove all Context Guard hooks from the current project:
-  1. Remove `.claude/hooks/context-drift-check.sh`, `.claude/hooks/context-structural-change.sh`, `.claude/hooks/content-filter-guard.sh`, `.claude/hooks/context-guard-stop.sh`, `.claude/hooks/context-session-start.sh`, and `.claude/hooks/context-commit-guard.sh`
-  2. Remove all Context Guard hook entries (PreToolUse, PostToolUse, SessionStart, and Stop) from `.claude/settings.json` (preserve other hooks)
+  1. Remove `.claude/hooks/context-drift-check.sh`, `.claude/hooks/context-structural-change.sh`, `.claude/hooks/content-filter-guard.sh`, `.claude/hooks/context-guard-stop.sh`, `.claude/hooks/context-session-start.sh`, `.claude/hooks/context-forced-eval.sh`, and `.claude/hooks/context-commit-guard.sh`
+  2. Remove all Context Guard hook entries (PreToolUse, PostToolUse, SessionStart, UserPromptSubmit, and Stop) from `.claude/settings.json` (preserve other hooks)
   3. Remove `.claude/rules/context-quality.md`
   4. Remove `.claude/agents/context-updater.md`
   5. Report what was removed
@@ -68,9 +68,10 @@ Context Guard installed (Tier 1 — Nudge):
   ✓ .claude/hooks/content-filter-guard.sh — blocks Write on high-risk OSS files, advises on medium-risk
   ✓ .claude/hooks/context-guard-stop.sh — nudges to update context docs before session ends
   ✓ .claude/hooks/context-session-start.sh — quick context health check at session start
+  ✓ .claude/hooks/context-forced-eval.sh — injects skill evaluation on context-related prompts
   ✓ .claude/agents/context-updater.md — autonomous agent for surgical context file updates
   ✓ .claude/rules/context-quality.md — auto-loaded quality standards for context files
-  ✓ .claude/settings.json — PreToolUse, PostToolUse, SessionStart, and Stop hooks registered
+  ✓ .claude/settings.json — PreToolUse, PostToolUse, SessionStart, UserPromptSubmit, and Stop hooks registered
 
 Tier 2 (Guard) not installed. Run /contextdocs:context-guard install strict to also
 block commits when structural files change without context doc updates.
@@ -88,10 +89,11 @@ Context Guard installed (Tier 1 + Tier 2 — Nudge + Guard):
   ✓ .claude/hooks/content-filter-guard.sh — blocks Write on high-risk OSS files, advises on medium-risk
   ✓ .claude/hooks/context-guard-stop.sh — nudges to update context docs before session ends
   ✓ .claude/hooks/context-session-start.sh — quick context health check at session start
+  ✓ .claude/hooks/context-forced-eval.sh — injects skill evaluation on context-related prompts
   ✓ .claude/hooks/context-commit-guard.sh — blocks commits with stale context docs
   ✓ .claude/agents/context-updater.md — autonomous agent for surgical context file updates
   ✓ .claude/rules/context-quality.md — auto-loaded quality standards for context files
-  ✓ .claude/settings.json — PreToolUse, PostToolUse, SessionStart, and Stop hooks registered
+  ✓ .claude/settings.json — PreToolUse, PostToolUse, SessionStart, UserPromptSubmit, and Stop hooks registered
 ```
 
 ### Status
@@ -99,8 +101,8 @@ Context Guard installed (Tier 1 + Tier 2 — Nudge + Guard):
 Context Guard Status:
   ✓ Tier 1 — Nudge (Stop hook active — reminds about context docs before session end)
   ✓ Tier 2 — Guard (commit blocker active — blocks commits with stale context)
-  ✓ Base hooks installed (3/3 scripts in .claude/hooks/)
-  ✓ Settings configured (PreToolUse, PostToolUse, and Stop entries in .claude/settings.json)
+  ✓ Base hooks installed (scripts in .claude/hooks/)
+  ✓ Settings configured (PreToolUse, PostToolUse, UserPromptSubmit, and Stop entries in .claude/settings.json)
   ✓ Context-updater agent installed (.claude/agents/context-updater.md)
   ✓ Quality rule active (.claude/rules/context-quality.md)
 

@@ -45,6 +45,7 @@
 - [Doc Standards Rule](./.claude/rules/doc-standards.md): Auto-loaded documentation quality standards — 4-Question Test, Lobby Principle, progressive disclosure, banned phrases (PitchDocs, Claude Code only)
 - [Docs Awareness Rule](./.claude/rules/docs-awareness.md): Auto-loaded documentation trigger map — suggests PitchDocs commands when docs-relevant work is detected (PitchDocs, Claude Code only)
 - [Context Session Start Hook](./hooks/context-session-start.sh): SessionStart hook that runs a quick context health check — detects stale files, warns on high aggregate line count (Claude Code only)
+- [Context Forced Eval Hook](./hooks/context-forced-eval.sh): UserPromptSubmit hook that injects skill evaluation on context-related prompts — keyword-gated, advisory only (Claude Code only)
 - [Context Drift Check Hook](./hooks/context-drift-check.sh): PostToolUse hook that detects stale AI context files after git commits (Claude Code only)
 - [Context Structural Change Hook](./hooks/context-structural-change.sh): PostToolUse hook that reminds about AGENTS-first context updates after structural changes (Claude Code only)
 - [Content Filter Guard Hook](./hooks/content-filter-guard.sh): PreToolUse hook that blocks Write on high-risk OSS files — CODE_OF_CONDUCT.md, LICENSE, SECURITY.md (Claude Code only)

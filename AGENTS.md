@@ -42,9 +42,10 @@ Invoke as `/contextdocs:command-name` in Claude Code, or as prompts in Codex CLI
 
 ## Hooks (Claude Code Only)
 
-6 opt-in hooks, installed via `/contextdocs:context-guard install`. Hooks reference the context-updater agent for autonomous action:
+7 opt-in hooks, installed via `/contextdocs:context-guard install`. Hooks reference the context-updater agent for autonomous action:
 
 - `context-session-start.sh` — session-start context health check (advisory)
+- `context-forced-eval.sh` — keyword-gated skill evaluation on context-related prompts (advisory)
 - `context-drift-check.sh` — post-commit drift detection
 - `context-structural-change.sh` — structural change reminders to update `AGENTS.md` first, then bridges
 - `content-filter-guard.sh` — Write guard for high-risk OSS files

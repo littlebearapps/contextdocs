@@ -16,6 +16,11 @@
 docs/promotion/
 docs/plans/
 
+# Dev workspace and scratch files
+ai-context-workspace/
+incoming/
+tests/activation-results/
+
 # === Direnv ===
 .envrc.local
 .direnv/

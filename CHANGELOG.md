@@ -5,6 +5,14 @@ All notable changes to ContextDocs will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+* Context Guard hooks no longer flag infrastructure rule files as false positives ([#13](https://github.com/littlebearapps/contextdocs/issues/13))
+* ai-context skill triggers more reliably when you describe stale context or MEMORY.md promotion scenarios
+* SKILL.md and CLAUDE.md descriptions now match the canonical product definition across all tools
+
 ## [1.4.0](https://github.com/littlebearapps/contextdocs/compare/v1.3.0...v1.4.0) (2026-03-13)
 
 

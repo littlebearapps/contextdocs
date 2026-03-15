@@ -22,6 +22,7 @@ TIER1_HOOKS=(
   "context-structural-change.sh"
   "context-guard-stop.sh"
   "context-session-start.sh"
+  "context-forced-eval.sh"
 )
 
 # Tier 2 hook (only updated if already present)
@@ -46,6 +47,16 @@ SESSION_START_ENTRY='{
     {
       "type": "command",
       "command": ".claude/hooks/context-session-start.sh"
+    }
+  ]
+}'
+
+# UserPromptSubmit entry to inject via jq
+USER_PROMPT_SUBMIT_ENTRY='{
+  "hooks": [
+    {
+      "type": "command",
+      "command": ".claude/hooks/context-forced-eval.sh"
     }
   ]
 }'
@@ -135,6 +146,22 @@ for PROJECT in "${PROJECTS[@]}"; do
       echo "  settings.json: added SessionStart entry"
     fi
 
+    # --- Patch settings.json: add UserPromptSubmit if missing ---
+    HAS_USER_PROMPT_SUBMIT=$(jq '
+      .hooks.UserPromptSubmit // [] |
+      any(.[]; .hooks[]?.command | test("context-forced-eval\\.sh"))
+    ' "$SETTINGS" 2>/dev/null || echo "false")
+
+    if [ "$HAS_USER_PROMPT_SUBMIT" = "true" ]; then
+      echo "  settings.json: UserPromptSubmit already present"
+    else
+      TEMP=$(mktemp)
+      jq --argjson entry "$USER_PROMPT_SUBMIT_ENTRY" '
+        .hooks.UserPromptSubmit = (.hooks.UserPromptSubmit // []) + [$entry]
+      ' "$SETTINGS" > "$TEMP" && mv "$TEMP" "$SETTINGS"
+      echo "  settings.json: added UserPromptSubmit entry"
+    fi
+
     # --- Warn if Stop hook entry is missing from settings.json ---
     HAS_STOP=$(jq '
       .hooks.Stop // [] |
@@ -143,6 +170,11 @@ for PROJECT in "${PROJECTS[@]}"; do
 
     if [ "$HAS_STOP" != "true" ]; then
       WARNINGS+=("$NAME: Stop hook entry missing from settings.json (context-guard-stop.sh won't run)")
+    fi
+
+    # --- Warn if UserPromptSubmit hook entry is missing from settings.json ---
+    if [ "$HAS_USER_PROMPT_SUBMIT" != "true" ]; then
+      WARNINGS+=("$NAME: UserPromptSubmit hook entry missing from settings.json (context-forced-eval.sh won't run)")
     fi
   else
     echo "  settings.json: NOT FOUND — skipping patch"
