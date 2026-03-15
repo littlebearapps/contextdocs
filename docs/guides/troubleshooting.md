@@ -3,7 +3,7 @@ title: "Troubleshooting & FAQ"
 description: "Common ContextDocs issues and solutions — Signal Gate, Context Guard hooks, content filter errors, and cross-tool limitations."
 type: how-to
 difficulty: intermediate
-last_verified: "1.4.0" # x-release-please-version
+last_verified: "1.5.0" # x-release-please-version
 related:
   - guides/getting-started.md
 order: 2

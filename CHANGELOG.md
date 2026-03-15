@@ -5,6 +5,19 @@ All notable changes to ContextDocs will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0](https://github.com/littlebearapps/contextdocs/compare/v1.4.0...v1.5.0) (2026-03-15)
+
+
+### Added
+
+* add UserPromptSubmit hook for context-related skill activation ([#15](https://github.com/littlebearapps/contextdocs/issues/15)) ([98c3106](https://github.com/littlebearapps/contextdocs/commit/98c31066185275d7267f0123678924ba8383602e))
+
+
+### Fixed
+
+* align SKILL.md and CLAUDE.md with canonical description ([bb4b750](https://github.com/littlebearapps/contextdocs/commit/bb4b750b7916359a15184aea18462e2eec76b02e))
+* Context Guard hooks false positive on infrastructure rule files ([#13](https://github.com/littlebearapps/contextdocs/issues/13)) ([ab0cd47](https://github.com/littlebearapps/contextdocs/commit/ab0cd4728bffb386d93e7742b6262a04a28115a3))
+
 ## [Unreleased]
 
 ### Fixed
