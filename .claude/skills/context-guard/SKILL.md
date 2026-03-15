@@ -54,6 +54,10 @@ Fires before `git commit`. Checks staging area for structural files without cont
 
 Fires at session start. Quick context health check: counts context files, detects stale files (source commits ahead), warns if aggregate line count exceeds budget. Advisory only — cannot block session start.
 
+### context-forced-eval.sh (UserPromptSubmit)
+
+Fires on every user prompt. Checks for context-related keywords and injects a skill evaluation sequence that instructs Claude to evaluate and activate ContextDocs skills before responding. Keyword-gated to avoid overhead on unrelated prompts. Advisory only — never blocks.
+
 ### context-updater agent
 
 Autonomous agent (`.claude/agents/context-updater.md`) launched by Claude in response to hook output. Applies surgical, incremental context file updates. Uses `.git/.context-updater-running` flag for loop prevention.
@@ -79,6 +83,9 @@ Autonomous agent (`.claude/agents/context-updater.md`) launched by Claude in res
     ],
     "SessionStart": [
       { "hooks": [{ "type": "command", "command": ".claude/hooks/context-session-start.sh" }] }
+    ],
+    "UserPromptSubmit": [
+      { "hooks": [{ "type": "command", "command": ".claude/hooks/context-forced-eval.sh" }] }
     ],
     "Stop": [
       { "hooks": [{ "type": "command", "command": ".claude/hooks/context-guard-stop.sh" }] }

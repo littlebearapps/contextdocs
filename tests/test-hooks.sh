@@ -1,6 +1,6 @@
 #!/bin/bash
 # test-hooks.sh
-# Unit tests for all 6 ContextDocs hooks.
+# Unit tests for all 7 ContextDocs hooks.
 # Exit 0 = all pass, Exit 1 = failures found
 
 set -euo pipefail
@@ -625,6 +625,89 @@ GIT_COMMITTER_DATE="2025-06-01T00:00:00" git commit -q -m "add code" --date="202
 run_test "Valid JSON output with issues" "$HOOK" \
   '{}' 0 "hookSpecificOutput"
 teardown_git_repo
+
+echo ""
+
+########################################################################
+# SECTION 7: context-forced-eval.sh (UserPromptSubmit)
+########################################################################
+HOOK="$ORIG_DIR/hooks/context-forced-eval.sh"
+echo "--- Section 7: context-forced-eval.sh ---"
+echo ""
+
+echo "--- Slash command triggers (exit 0 with additionalContext) ---"
+run_test "/ai-context init triggers eval" "$HOOK" \
+  '{"prompt":"/ai-context init"}' 0 "SKILL EVALUATION"
+run_test "/ai-context update triggers eval" "$HOOK" \
+  '{"prompt":"/ai-context update"}' 0 "SKILL EVALUATION"
+run_test "/context-guard install triggers eval" "$HOOK" \
+  '{"prompt":"/context-guard install"}' 0 "SKILL EVALUATION"
+run_test "/context-verify triggers eval" "$HOOK" \
+  '{"prompt":"/context-verify"}' 0 "SKILL EVALUATION"
+run_test "/context-verify ci --min-score 80 triggers eval" "$HOOK" \
+  '{"prompt":"/context-verify ci --min-score 80"}' 0 "SKILL EVALUATION"
+
+echo ""
+echo "--- NL keyword triggers (exit 0 with additionalContext) ---"
+run_test "CLAUDE.md is out of date" "$HOOK" \
+  '{"prompt":"My CLAUDE.md is out of date"}' 0 "SKILL EVALUATION"
+run_test "Update my AGENTS.md" "$HOOK" \
+  '{"prompt":"Update my AGENTS.md"}' 0 "SKILL EVALUATION"
+run_test "Score my context files" "$HOOK" \
+  '{"prompt":"Score my context files"}' 0 "SKILL EVALUATION"
+run_test "Install context hooks" "$HOOK" \
+  '{"prompt":"Install context hooks"}' 0 "SKILL EVALUATION"
+run_test "Check context health" "$HOOK" \
+  '{"prompt":"Check context health"}' 0 "SKILL EVALUATION"
+run_test "Move MEMORY.md patterns into CLAUDE.md" "$HOOK" \
+  '{"prompt":"Move MEMORY.md patterns into CLAUDE.md"}' 0 "SKILL EVALUATION"
+run_test "My context files are stale" "$HOOK" \
+  '{"prompt":"My context files are stale"}' 0 "SKILL EVALUATION"
+run_test "Set up commit guard" "$HOOK" \
+  '{"prompt":"Set up commit guard"}' 0 "SKILL EVALUATION"
+run_test "Check my llms.txt" "$HOOK" \
+  '{"prompt":"Check my llms.txt"}' 0 "SKILL EVALUATION"
+run_test "Fix context drift" "$HOOK" \
+  '{"prompt":"Fix context drift"}' 0 "SKILL EVALUATION"
+run_test "Generate cursorrules" "$HOOK" \
+  '{"prompt":"Generate cursorrules"}' 0 "SKILL EVALUATION"
+run_test "Update copilot instructions" "$HOOK" \
+  '{"prompt":"Update copilot instructions"}' 0 "SKILL EVALUATION"
+run_test "Update bridge files" "$HOOK" \
+  '{"prompt":"Update bridge files"}' 0 "SKILL EVALUATION"
+
+echo ""
+echo "--- Non-matching prompts (exit 0, empty JSON) ---"
+run_test "Fix this bug → silent" "$HOOK" \
+  '{"prompt":"Fix this bug"}' 0 "{}"
+run_test "Run the test suite → silent" "$HOOK" \
+  '{"prompt":"Run the test suite"}' 0 "{}"
+run_test "Refactor to async/await → silent" "$HOOK" \
+  '{"prompt":"Refactor to async/await"}' 0 "{}"
+run_test "Deploy to production → silent" "$HOOK" \
+  '{"prompt":"Deploy to production"}' 0 "{}"
+run_test "Generate a README → silent" "$HOOK" \
+  '{"prompt":"Generate a README"}' 0 "{}"
+run_test "Add a new API endpoint → silent" "$HOOK" \
+  '{"prompt":"Add a new API endpoint"}' 0 "{}"
+run_test "Empty JSON → silent" "$HOOK" \
+  '{}' 0 "{}"
+run_test "Missing prompt field → silent" "$HOOK" \
+  '{"tool_name":"Write"}' 0 "{}"
+
+echo ""
+echo "--- Gate logic ---"
+export UNTETHER_SESSION="test"
+run_test "UNTETHER_SESSION set → silent even with keywords" "$HOOK" \
+  '{"prompt":"Update my CLAUDE.md"}' 0 "{}"
+unset UNTETHER_SESSION
+
+run_test "Case insensitivity: CLAUDE.MD" "$HOOK" \
+  '{"prompt":"Check CLAUDE.MD"}' 0 "SKILL EVALUATION"
+run_test "Case insensitivity: agents.md" "$HOOK" \
+  '{"prompt":"Update agents.md"}' 0 "SKILL EVALUATION"
+run_test "Case insensitivity: Context Files" "$HOOK" \
+  '{"prompt":"Verify my Context Files"}' 0 "SKILL EVALUATION"
 
 echo ""
 

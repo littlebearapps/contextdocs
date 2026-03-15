@@ -48,6 +48,7 @@ initialised = "initialised"
 center = "center"
 
 # Technical terms
+promot = "promot"  # regex partial match for promote/promotion in hooks
 contextdocs = "contextdocs"
 pitchdocs = "pitchdocs"
 llms = "llms"
