@@ -27,19 +27,21 @@ Validate the quality and freshness of AI context files in the current project. S
 ## Output
 
 ```
-AI Context Health: 82/100 (B — Minor tuning needed)
+AI Context Health: 80/100 (B — Minor tuning needed)
 
 Breakdown:
   Line Budget:      18/20  (-2 CLAUDE.md bridge restates AGENTS commands)
   Signal Quality:   17/20  (-3 AGENTS.md has file tree)
-  Path Accuracy:    18/20  (-2 .cursorrules references src/old.ts)
+  Path Accuracy:    16/20  (-2 .cursorrules references src/old.ts, -2 legacy .cursorrules without .cursor/rules/)
   Consistency:      13/15  (-2 CLAUDE.md missing @AGENTS.md)
   Freshness:        12/15  (-3 copilot-instructions.md stale 90+ days)
-  Context Load:     10/10  ✓
+  Context Load:      4/10  (-3 Cursor 5,400 tokens, -3 Cline 5,200 tokens — over warning)
 
-Checks: 13 run (line budgets, signal quality, stale paths, AGENTS-to-bridge consistency,
+Checks: 16 run (line budgets, signal quality, stale paths, AGENTS-to-bridge consistency,
 MEMORY.md drift, Context Guard status, context load, @import paths, rule path-scopes,
-rule symlinks, .mcp.json, agent memory hygiene, plugin manifest)
+rule symlinks, .mcp.json, agent memory hygiene, plugin manifest, modern Cursor layout,
+modern Cline layout, Copilot bridge optionality)
 
-To reach grade A (90+): Remove file tree from AGENTS.md (+3), restore @AGENTS.md import (+2), fix stale path (+2).
+To reach grade A (90+): Migrate to .cursor/rules/agents.mdc (+2), remove file tree (+3),
+restore @AGENTS.md import (+2), fix stale path (+2).
 ```

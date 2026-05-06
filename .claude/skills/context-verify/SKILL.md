@@ -1,6 +1,22 @@
 ---
 name: context-verify
-description: Validates AI context file quality with 13 checks and 0-100 health scoring. Works on any platform — also available as a standalone CLI script (bin/context-verify.sh). Use this skill when the user wants to check context file health, validate line budgets, detect stale paths, verify AGENTS-to-bridge consistency, run a context quality audit, score context files for CI, or check for discoverable content and MEMORY.md drift. Use proactively before releases or after structural changes.
+description: Validates AI context file quality with 16 checks and 0-100 health scoring. Works on any platform — also available as a standalone CLI script (bin/context-verify.sh). Validates line budgets, AGENTS-to-bridge consistency, stale paths, MEMORY.md drift, plugin manifest, and modern Cursor (.cursor/rules/*.mdc) / Cline (.clinerules/) / Copilot (AGENTS.md native) layouts.
+when_to_use: |
+  Trigger phrases:
+  - "check context file health" or "validate my context files"
+  - "score context for CI" or "run context-verify"
+  - "are my CLAUDE.md / AGENTS.md / .cursorrules consistent?"
+  - "find stale paths in context files"
+  - "check if .cursorrules is using the legacy format" (suggests modern .cursor/rules/*.mdc)
+  - "audit context quality before release"
+  - "is MEMORY.md drifting from CLAUDE.md?"
+  - "check aggregate context token load"
+  - "verify @AGENTS.md import in CLAUDE.md"
+  Skip when:
+  - The user wants to generate or regenerate context files (use ai-context)
+  - The user wants to install hooks (use context-guard)
+  - They are mid-debug on an unrelated error
+  - The repository has no AI context files yet (run ai-context init first)
 ---
 
 # Context Verifier
@@ -81,6 +97,18 @@ Check if `.claude/agent-memory/` or `.claude/agent-memory-local/` directories ar
 
 If `.claude-plugin/plugin.json` exists, verify required fields: `name`, `version`, `description`. Warn on missing optional fields: `keywords`, `author`, `repository`. Report missing fields.
 
+### 14. Modern Cursor Layout Check
+
+If `.cursorrules` exists but `.cursor/rules/` does not, warn that current Cursor versions ignore the legacy single-file format in Agent mode. Suggest migrating to `.cursor/rules/agents.mdc` with `description`, `globs`, and `alwaysApply` frontmatter. If both exist, note that the legacy file is redundant. If only `.cursor/rules/` exists, mark as healthy.
+
+### 15. Modern Cline Layout Check
+
+If `.clinerules` is a flat file (not a directory), suggest migrating to `.clinerules/` directory mode with optional `paths:` frontmatter for path-scoped rules. If `.clinerules/` directory exists, validate that each Markdown file has either no frontmatter or valid `paths:` frontmatter pointing to existing files.
+
+### 16. Copilot Bridge Optionality *(advisory only)*
+
+If `.github/copilot-instructions.md` exists and `AGENTS.md` is present, count unique non-trivial lines in the Copilot bridge that aren't in AGENTS.md. If fewer than 5, suggest deletion (Copilot loads AGENTS.md natively since Aug 2025). Advisory only — never deducts.
+
 ## Scoring
 
 | Dimension | Max | Deductions |
@@ -104,6 +132,8 @@ If `.claude-plugin/plugin.json` exists, verify required fields: `name`, `version
 
 Report includes per-dimension breakdown and specific actions to reach grade A.
 
+The new layout checks (14, 15) deduct 2 points each for using legacy formats; check 16 is advisory and never deducts.
+
 ## Standalone CLI
 
 For platforms without skill support, or for CI pipelines, use the standalone script:
@@ -114,7 +144,7 @@ bin/context-verify.sh --ci         # CI mode (exit 1 below threshold)
 bin/context-verify.sh --ci --min-score 90  # Custom threshold
 ```
 
-The CLI implements checks 1, 3, 5–14 automatically (bash + git). Check 2 (discoverable content) and check 4 (bridge consistency) are partially automated — full semantic analysis requires this AI-powered skill.
+The CLI implements checks 1, 3, 5–16 automatically (bash + git). Check 2 (discoverable content) and check 4 (bridge consistency) are partially automated — full semantic analysis requires this AI-powered skill.
 
 ## CI Integration
 

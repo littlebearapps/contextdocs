@@ -7,7 +7,7 @@
 #   ./bin/context-verify.sh --ci         # CI mode (exit 1 on score < 80)
 #   ./bin/context-verify.sh --ci --min-score 90  # Custom threshold
 #
-# Implements 10 of the 13 context-verify checks from ContextDocs.
+# Implements 13 of the 16 context-verify checks from ContextDocs.
 # Checks 2 (discoverable content) and 4 (AGENTS-to-bridge consistency)
 # are partially automated — full analysis requires the AI-powered skill.
 set -euo pipefail
@@ -680,9 +680,78 @@ fi
 info ""
 
 # ============================================================
-# CHECK 14: Freshness (stale >90 days) (part of freshness score)
+# CHECK 14: Modern Cursor Layout (part of path accuracy)
 # ============================================================
-info "--- Check 14: Freshness ---"
+info "--- Check 14: Cursor Layout ---"
+
+cursor_legacy=false
+cursor_modern=false
+[ -f ".cursorrules" ] && cursor_legacy=true
+if [ -d ".cursor/rules" ]; then
+  for f in .cursor/rules/*.mdc .cursor/rules/*.md; do
+    [ -f "$f" ] || continue
+    cursor_modern=true
+    break
+  done
+fi
+
+if [ "$cursor_legacy" = true ] && [ "$cursor_modern" = false ]; then
+  deduct 2 ".cursorrules: legacy single-file format; current Cursor versions ignore in Agent mode (migrate to .cursor/rules/agents.mdc)"
+  info "  WARN: Only .cursorrules present — current Cursor ignores this in Agent mode"
+elif [ "$cursor_legacy" = true ] && [ "$cursor_modern" = true ]; then
+  info "  INFO: Both .cursorrules and .cursor/rules/ present — legacy file is redundant"
+elif [ "$cursor_modern" = true ]; then
+  info "  OK: Modern .cursor/rules/ layout in use"
+else
+  info "  SKIP: No Cursor context files present"
+fi
+info ""
+
+# ============================================================
+# CHECK 15: Modern Cline Layout (part of path accuracy)
+# ============================================================
+info "--- Check 15: Cline Layout ---"
+
+if [ -d ".clinerules" ]; then
+  cline_dir_files=0
+  for f in .clinerules/*.md; do
+    [ -f "$f" ] || continue
+    cline_dir_files=$((cline_dir_files + 1))
+  done
+  if [ "$cline_dir_files" -gt 0 ]; then
+    info "  OK: .clinerules/ directory mode in use (${cline_dir_files} files)"
+  else
+    info "  WARN: .clinerules/ directory exists but is empty"
+  fi
+elif [ -f ".clinerules" ]; then
+  deduct 2 ".clinerules: flat-file format; consider migrating to .clinerules/ directory mode for path-scoped rules"
+  info "  WARN: Flat .clinerules file — directory mode supports path-scoped rules"
+else
+  info "  SKIP: No Cline context files present"
+fi
+info ""
+
+# ============================================================
+# CHECK 16: Copilot Bridge Optionality (advisory only, no deduction)
+# ============================================================
+info "--- Check 16: Copilot Bridge Optionality ---"
+
+if [ -f ".github/copilot-instructions.md" ] && [ -f "AGENTS.md" ]; then
+  copilot_lines=$(grep -cv '^[[:space:]]*$' .github/copilot-instructions.md 2>/dev/null || echo 0)
+  if [ "$copilot_lines" -lt 10 ]; then
+    info "  ADVISORY: .github/copilot-instructions.md is short — Copilot loads AGENTS.md natively (since Aug 2025); consider deleting if it duplicates AGENTS.md"
+  else
+    info "  OK: Copilot bridge has tool-specific content (${copilot_lines} non-blank lines)"
+  fi
+else
+  info "  SKIP: No Copilot bridge or no AGENTS.md"
+fi
+info ""
+
+# ============================================================
+# CHECK 17: Freshness (stale >90 days) (part of freshness score)
+# ============================================================
+info "--- Check 17: Freshness ---"
 stale_files=0
 
 for f in "${CONTEXT_FILES[@]}"; do
