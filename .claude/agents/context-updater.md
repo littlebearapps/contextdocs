@@ -1,6 +1,7 @@
 ---
 name: context-updater
-description: "Automatically updates stale AI context files with an AGENTS-first workflow. Update AGENTS.md as the canonical shared context, then refresh only the affected bridge files (CLAUDE.md, llms.txt, .cursorrules, etc.) after structural project changes. Launch when hooks detect context drift, when a commit guard blocks, or before session end."
+description: "Automatically updates stale AI context files with an AGENTS-first workflow. Update AGENTS.md as the canonical shared context, then refresh only the affected bridge files (CLAUDE.md, llms.txt, .cursorrules, .cursor/rules/*.mdc, .clinerules, etc.) after structural project changes. Launch when hooks detect context drift, when a commit guard blocks, or before session end."
+model: haiku
 tools:
   - Read
   - Glob
