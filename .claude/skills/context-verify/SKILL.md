@@ -1,6 +1,6 @@
 ---
 name: context-verify
-description: Validates AI context file quality with 13 checks and 0-100 health scoring. Use this skill when the user wants to check context file health, validate line budgets, detect stale paths, verify AGENTS-to-bridge consistency, run a context quality audit, score context files for CI, or check for discoverable content and MEMORY.md drift. Use proactively before releases or after structural changes.
+description: Validates AI context file quality with 13 checks and 0-100 health scoring. Works on any platform — also available as a standalone CLI script (bin/context-verify.sh). Use this skill when the user wants to check context file health, validate line budgets, detect stale paths, verify AGENTS-to-bridge consistency, run a context quality audit, score context files for CI, or check for discoverable content and MEMORY.md drift. Use proactively before releases or after structural changes.
 ---
 
 # Context Verifier
@@ -39,9 +39,9 @@ Treat `AGENTS.md` as the canonical shared context. Bridge files may subset or re
 
 If a project MEMORY.md exists, check for convention-like patterns ("Always", "Never", "Use") not yet promoted to CLAUDE.md.
 
-### 6. Context Guard Status
+### 6. Context Guard Status *(Claude Code, Gemini CLI, Copilot, Cursor)*
 
-Check for hook scripts in `.claude/hooks/context-*.sh` and entries in `.claude/settings.json`.
+Check for hook scripts and registration entries. In Claude Code: `.claude/hooks/context-*.sh` and `.claude/settings.json`. Other platforms use their own hook directories.
 
 ### 7. Context Load (Aggregate Token Estimate)
 
@@ -104,6 +104,18 @@ If `.claude-plugin/plugin.json` exists, verify required fields: `name`, `version
 
 Report includes per-dimension breakdown and specific actions to reach grade A.
 
+## Standalone CLI
+
+For platforms without skill support, or for CI pipelines, use the standalone script:
+
+```bash
+bin/context-verify.sh              # Interactive report
+bin/context-verify.sh --ci         # CI mode (exit 1 below threshold)
+bin/context-verify.sh --ci --min-score 90  # Custom threshold
+```
+
+The CLI implements checks 1, 3, 5–14 automatically (bash + git). Check 2 (discoverable content) and check 4 (bridge consistency) are partially automated — full semantic analysis requires this AI-powered skill.
+
 ## CI Integration
 
-With `ci` argument, output machine-readable format and exit code 1 on failures. Accept `--min-score N` to fail the CI job below a threshold.
+With `ci` argument (skill or CLI), output machine-readable format and exit code 1 on failures. Accept `--min-score N` to fail the CI job below a threshold.
