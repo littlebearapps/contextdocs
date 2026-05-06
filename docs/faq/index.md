@@ -5,8 +5,9 @@ description: "Common questions about ContextDocs: installation, supported AI too
 
 # Frequently Asked Questions
 
-> Quick answers to the questions users ask most often. Also surfaced at
-> <https://littlebearapps.com/help/contextdocs/faq/>.
+> Quick answers to the questions users ask most often. Once the marketing-site
+> sync ships, this article is also available at
+> `littlebearapps.com/help/contextdocs/faq/`.
 
 ## What is ContextDocs and why should I use it?
 
