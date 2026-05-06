@@ -90,3 +90,16 @@ Ran automated description optimisation via `skill-creator` plugin's `run_loop.py
 - `docs-ci.yml` updated with hook tests + banned phrases steps
 - `activation-evals.yml` created (manual dispatch)
 - `ANTHROPIC_API_KEY` secret configured
+
+## Phase 4: v1.6.0 Upstream Bug Verification (2026-05-06)
+
+Targeted manual checks against open Claude Code issues for v1.6.0 release.
+
+| Issue | Topic | ContextDocs Status | Evidence |
+|-------|-------|-------------------|----------|
+| [#44120](https://github.com/anthropics/claude-code/issues/44120) | Plugin skills not discovered when `.claude/` directory exists in plugin | **Caveat noted** | ContextDocs ships skills under `.claude/skills/` and agents under `.claude/agents/`. Direct invocation works in interactive mode (production-validated). Auto-invocation may be affected by upstream bug — same family as known issue [#32184](https://github.com/anthropics/claude-code/issues/32184) already documented. No new failure mode found in v1.6.0. |
+| [#46664](https://github.com/anthropics/claude-code/issues/46664) | `WorktreeCreate` hooks in plugin `hooks/hooks.json` never fire | **Not affected** | We do not register any `WorktreeCreate` hooks. `grep -r WorktreeCreate hooks/ .claude/settings.json` returns nothing in registration. (One reference exists in the `context-guard` companion event catalogue — documentation only.) |
+| [#49990](https://github.com/anthropics/claude-code/issues/49990) | Bare `{type, command}` hook entry silently breaks entire hooks config | **Not affected** | Every entry in `.claude/settings.json` and the documented install template wraps `{type, command}` inside a `hooks: [...]` array under a `{matcher: ...}` or `{if: ...}` or `{hooks: [...]}` object. No bare entries. |
+| [#54532](https://github.com/anthropics/claude-code/issues/54532) | SessionStart hook "ToolUseContext is required for prompt hooks" error | **Not affected** | All seven hooks use `type: "command"`, never `type: "prompt"`. `context-session-start.sh` is registered with `type: command` only. |
+
+All seven hook scripts pass `bash -n` syntax check.
