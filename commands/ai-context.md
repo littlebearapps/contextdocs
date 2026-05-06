@@ -1,6 +1,6 @@
 ---
 description: "Generate, update, or audit AI IDE context files with AGENTS.md as the canonical shared context and tool-specific bridge files. Signal Gate principle — only what agents cannot discover: $ARGUMENTS"
-argument-hint: "[claude|agents|cursor|copilot|windsurf|cline|gemini|all|init|update|promote|audit] or no args for all"
+argument-hint: "[claude|agents|cursor|copilot|windsurf|cline|gemini|all|init|update|promote|audit] [--scaffold=six-section]"
 allowed-tools:
   - Read
   - Glob
@@ -25,13 +25,13 @@ Generate lean context files that help AI coding assistants understand your proje
 ## Arguments
 
 ### Generate
-- **No arguments** / `all`: Generate `AGENTS.md` plus all applicable bridge files (`CLAUDE.md`, `.cursorrules`, `.github/copilot-instructions.md`, `.windsurfrules`, `.clinerules`, `GEMINI.md`)
+- **No arguments** / `all`: Generate `AGENTS.md` plus all applicable bridge files (`CLAUDE.md`, `.cursor/rules/agents.mdc`, `.windsurfrules`, `.clinerules/agents.md`, `GEMINI.md`). Copilot bridge is optional — only generated when project needs Copilot-specific scoping (Copilot loads AGENTS.md natively).
 - `claude`: Generate CLAUDE.md only
 - `agents`: Generate AGENTS.md only
-- `cursor`: Generate .cursorrules only
+- `cursor`: Generate `.cursor/rules/agents.mdc` (modern format). Legacy `.cursorrules` kept only if already present.
 - `copilot`: Generate .github/copilot-instructions.md only
 - `windsurf`: Generate .windsurfrules only
-- `cline`: Generate .clinerules only
+- `cline`: Generate `.clinerules/agents.md` (directory mode). Flat `.clinerules` kept only if already present.
 - `gemini`: Generate GEMINI.md only
 
 Single-tool generate modes leave `AGENTS.md` unchanged so targeted bridge refreshes stay predictable.
@@ -42,6 +42,9 @@ Single-tool generate modes leave `AGENTS.md` unchanged so targeted bridge refres
 - `promote`: Scan Claude Code's auto-memory (MEMORY.md) for stable patterns and assist promoting them to CLAUDE.md.
 - `audit`: Check existing context files for staleness, drift, discoverable content, and Context Guard status.
 
+### Flags
+- `--scaffold=six-section`: With `init`, generate AGENTS.md using the [GitHub Blog Apr 2026 six-section template](https://github.blog/ai-and-ml/github-copilot/how-to-write-a-great-agents-md-lessons-from-over-2500-repositories/) (commands · testing · project structure · code style · git workflow · boundaries) instead of the default scaffold. Existing AGENTS.md files are not migrated.
+
 ## Output
 
 Each generated file is written directly to disk. `AGENTS.md` holds the shared commands, conventions, hard constraints, and security rules. Bridge files should stay minimal and include only tool-specific material. Line counts should stay within the Signal Gate budgets (`AGENTS.md` <120, `CLAUDE.md` <80, other bridge files <60).
@@ -50,11 +53,11 @@ Each generated file is written directly to disk. `AGENTS.md` holds the shared co
 AI Context Files:
   ✓ AGENTS.md — generated canonical context (74 lines)
   ✓ CLAUDE.md — generated bridge (`@AGENTS.md` + Claude-specific notes, 14 lines)
-  ✓ .cursorrules — generated bridge (12 lines)
-  ✓ .github/copilot-instructions.md — generated bridge (11 lines)
+  ✓ .cursor/rules/agents.mdc — generated modern Cursor bridge (8 lines)
   ✓ .windsurfrules — generated compatibility bridge (10 lines)
-  ✓ .clinerules — generated bridge (15 lines)
+  ✓ .clinerules/agents.md — generated Cline directory bridge (15 lines)
   ✓ GEMINI.md — generated compatibility bridge (9 lines)
+  · .github/copilot-instructions.md — skipped (Copilot loads AGENTS.md natively; pass `copilot` to force)
 ```
 
 Audit mode:
@@ -62,7 +65,7 @@ Audit mode:
 AI Context Audit:
   ✓ AGENTS.md — up to date (74 lines, canonical shared context)
   ⚠ CLAUDE.md — bridge missing `@AGENTS.md` import
-  ✗ .cursorrules — contradicts AGENTS.md lint command (`npm run lint` vs `pnpm lint`)
+  ⚠ .cursorrules — legacy format; current Cursor versions ignore this in Agent mode (run with `cursor` to emit `.cursor/rules/agents.mdc`)
   · GEMINI.md — not present (optional compatibility bridge)
   ℹ MEMORY.md — contains 3 conventions that may belong in CLAUDE.md (run /contextdocs:ai-context promote)
 

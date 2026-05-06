@@ -95,10 +95,36 @@ ContextDocs now generates `AGENTS.md` as the canonical shared context. Put share
 Bridge files stay thin:
 
 - `CLAUDE.md`: `@AGENTS.md` plus Claude-specific rules, key files, and path-scoped guidance
-- `.cursorrules`, `.github/copilot-instructions.md`, `.clinerules`: only tool-specific scoping, workflow, or checklist additions
+- `.cursor/rules/agents.mdc` (modern Cursor) — frontmatter + `@AGENTS.md` body; legacy `.cursorrules` only kept when already present
+- `.clinerules/agents.md` (modern Cline directory mode) — supports `paths:` frontmatter for glob-scoped rules; flat `.clinerules` only kept when already present
+- `.github/copilot-instructions.md`: optional — Copilot loads AGENTS.md natively since Aug 2025; only emit when adding Copilot-specific PR or review scoping
 - `.windsurfrules` and `GEMINI.md`: compatibility bridges retained for now while upstream tools converge on `AGENTS.md`
 
 When updating or auditing generated files, edit `AGENTS.md` first and only touch bridge files when their imports, references, or tool-specific sections need changes.
+
+### Modern Cursor Frontmatter (.cursor/rules/*.mdc)
+
+```mdc
+---
+description: Imported from AGENTS.md — shared project context
+globs: ["**/*"]
+alwaysApply: true
+---
+
+@AGENTS.md
+```
+
+`description`, `globs`, and `alwaysApply` are all optional individually; together they determine when Cursor loads the rule. Use `alwaysApply: true` for the AGENTS.md import; use narrower `globs` for path-scoped supplements.
+
+### Modern Cline Directory Layout (.clinerules/)
+
+```
+.clinerules/
+├── agents.md            # Mirrors AGENTS.md shared context (always loaded)
+└── frontend.md          # Optional path-scoped supplement, frontmatter: paths: ["src/frontend/**"]
+```
+
+Each file in the directory is a separate rule. Optional `paths:` YAML frontmatter scopes a rule to a glob pattern.
 
 ## CLAUDE.md Advanced Features
 

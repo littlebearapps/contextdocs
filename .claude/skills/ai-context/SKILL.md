@@ -1,6 +1,23 @@
 ---
 name: ai-context
-description: Generates, updates, and maintains AGENTS-first AI IDE context files with AGENTS.md as canonical shared context and thin tool-specific bridges. Works across Claude Code, Codex CLI, Gemini CLI, OpenCode, Cursor, Copilot, Windsurf, and Cline. Use this skill when the user wants to create context files, generate AGENTS.md, set up CLAUDE.md or bridge files for a project, update or fix out-of-date context files, bootstrap context for a new repo, promote MEMORY.md patterns, audit context for drift, or generate cursorrules, copilot instructions, clinerules, windsurfrules, or GEMINI.md. This is the right skill for updating, regenerating, or fixing context files — not just checking them. Use proactively whenever context files may need attention, even if not explicitly requested.
+description: Generates, updates, and audits AGENTS-first AI IDE context files. Builds canonical AGENTS.md plus thin bridges for Claude Code, Cursor (modern .cursor/rules/*.mdc), Copilot, Cline (.clinerules/ directory), Windsurf, Gemini CLI, Codex CLI, and OpenCode. Use for creating, regenerating, fixing, or promoting context files — not just checking them.
+when_to_use: |
+  Trigger phrases:
+  - "create context files for this project" or "set up CLAUDE.md / AGENTS.md"
+  - "my .cursorrules / .clinerules / GEMINI.md is out of date"
+  - "add Cursor / Copilot / Cline / Gemini / Windsurf context"
+  - "bootstrap AGENTS.md" or "generate AI context for this repo"
+  - "promote MEMORY.md patterns to CLAUDE.md"
+  - "audit context for drift" or "are my context files stale?"
+  - "fix the context files" or "regenerate the context"
+  - "migrate .cursorrules to .cursor/rules/*.mdc"
+  - "switch .clinerules to directory mode"
+  Skip when:
+  - The user is debugging a runtime error unrelated to AI context
+  - They are asking what context files do, not how to create them
+  - The work is mid-flow on a non-context coding task
+  - They want to validate without regenerating (use context-verify)
+  - They want to install hooks (use context-guard instead)
 ---
 
 # AI Context File Generator
@@ -36,13 +53,17 @@ Describe the **end state** you want, not step-by-step instructions. Consider fix
 
 | File | Role | Purpose |
 |------|------|---------|
-| `AGENTS.md` | Canonical shared context | Shared identity, commands, conventions, constraints, security notes, and monorepo guidance |
-| `CLAUDE.md` | Thin bridge | Claude-specific rules, key files, and workflow notes (use `@AGENTS.md` import in Claude Code) |
-| `.cursorrules` | Thin bridge | Cursor-specific rule scoping or metadata only |
-| `.github/copilot-instructions.md` | Thin bridge | Copilot-specific review and PR guidance only |
-| `.windsurfrules` | Thin bridge | Windsurf-specific rule activation or metadata only |
-| `.clinerules` | Thin bridge | Cline-specific autonomy boundaries and commit checklist |
-| `GEMINI.md` | Thin bridge | Gemini-specific discovery or extension notes only |
+| `AGENTS.md` | Canonical | Shared identity, commands, conventions, constraints, security notes, monorepo guidance |
+| `CLAUDE.md` | Thin bridge | Claude-specific rules + `@AGENTS.md` import |
+| `.cursor/rules/agents.mdc` | Modern Cursor (default) | Frontmatter `description`, `globs`, `alwaysApply`; body imports AGENTS.md |
+| `.cursorrules` | Legacy Cursor | Only emitted if already present; ignored by current Cursor in Agent mode |
+| `.github/copilot-instructions.md` | Optional | Copilot loads AGENTS.md natively (Aug 2025); only emit for tool-specific scoping |
+| `.windsurfrules` | Compatibility | Windsurf rule activation/metadata only |
+| `.clinerules/agents.md` | Modern Cline (default) | Directory mode; supports `paths:` frontmatter for path-scoped rules |
+| `.clinerules` | Legacy Cline | Flat-file fallback when already present |
+| `GEMINI.md` | Compatibility | Gemini-specific discovery or extension notes only |
+
+Format details and frontmatter examples live in `SKILL-reference.md`.
 
 **Context file vs memory:** Context files contain instructions *for* the agent (shared via git). Memory files (MEMORY.md, agent-memory/) are notes *by* the agent (local only). Promote recurring memory insights to the appropriate context file.
 
@@ -50,22 +71,16 @@ Describe the **end state** you want, not step-by-step instructions. Consider fix
 
 1. **Detect project profile** — scan manifests for language, framework, test runner, linter, CI/CD
 2. **Extract non-discoverable conventions** — import order, naming patterns, commands, security rules, environment quirks
-3. **Generate `AGENTS.md` first** — put all shared commands, conventions, rules, and security notes in one canonical file
-4. **Generate bridge files** — apply the Signal Gate again so each tool-specific file stays thin and only adds tool-unique behaviour
-
-### Context File Structure
-
-**AGENTS.md** (~120 lines): Identity, commands, non-default conventions, hard constraints, security notes, monorepo guidance. Omit Project Structure, architecture, dependency dumps, and key file tables.
-
-**CLAUDE.md** (~10-20 lines, hard max 80): In Claude Code, use `@AGENTS.md` to import the canonical context, then add only Claude-specific additions (`.claude/rules/` references, key file pointers, path-scoped guidance). In other tools, CLAUDE.md is not used — AGENTS.md is loaded directly.
-
-**Other bridge files** (~10-20 lines each, hard max 60): reference or subset `AGENTS.md`, then add only tool-specific fields. Cline may add a `## Before Committing` checklist. `.windsurfrules` and `GEMINI.md` are compatibility bridges for now — keep them especially lean.
+3. **Generate `AGENTS.md` first** — all shared commands, conventions, rules, and security notes in one canonical file (~120 lines; omit Project Structure, architecture, dependency dumps, key-file tables)
+4. **Generate bridge files** — apply the Signal Gate again. CLAUDE.md uses `@AGENTS.md` plus Claude-specific additions (`.claude/rules/` references, key file pointers, path-scoped guidance). Other bridges reference or subset AGENTS.md and add only tool-specific fields. Cline may add a `## Before Committing` checklist. `.windsurfrules` and `GEMINI.md` are compatibility bridges — keep them especially lean.
 
 ## Modes
 
 ### `init` — Bootstrap new project
 
-Scan codebase, generate `AGENTS.md` plus all bridge files that don't already exist (CLAUDE.md, .cursorrules, copilot-instructions.md, .windsurfrules, .clinerules, GEMINI.md). Skip files that already exist. Offer Context Guard hooks (Claude Code only), run audit pass, report summary. Users can delete bridge files for tools they don't use after generation.
+Scan codebase, generate `AGENTS.md` plus bridges that don't already exist: `CLAUDE.md` (uses `@AGENTS.md`), `.cursor/rules/agents.mdc` (modern Cursor), `.windsurfrules`, `.clinerules/agents.md` (directory mode), `GEMINI.md`. Copilot bridge optional (Copilot loads AGENTS.md natively). Skip files that already exist. Offer Context Guard hooks (Claude Code only), run audit pass, report summary.
+
+**Optional flag — `--scaffold=six-section`:** Generate AGENTS.md using the GitHub Blog Apr 2026 six-section template (commands · testing · project structure · code style · git workflow · boundaries). Opt-in only — existing files are not migrated.
 
 ### `update` — Incremental drift patching
 
@@ -79,20 +94,15 @@ Check version accuracy, command accuracy, stale paths, bridge contradictions aga
 
 Find convention-like patterns in MEMORY.md ("Always", "Never", "Use", "Prefer"). Cross-reference against CLAUDE.md. Present candidates. Append promoted insights using Edit.
 
-## AGENTS.md Spec
+## AGENTS.md Spec & Anti-Patterns
 
-Tracks [agents.md spec](https://github.com/agentsmd/agents.md) v1.0 via `upstream-versions.json`. The `check-upstream` GitHub Action flags version drift. Do not implement draft v1.1 features until stable.
-
-## Anti-Patterns
-
-- Don't include discoverable content — directory trees, deps, architecture
-- Don't ship auto-generated files unedited — always curate
-- Don't repeat framework docs — agents know React, Express, Django
-- Don't include secrets or session-specific state
+Tracks [agents.md spec](https://github.com/agentsmd/agents.md) v1.0 via `upstream-versions.json`; `check-upstream` Action flags drift. Don't implement draft v1.1 until stable. Don't include discoverable content (trees, deps, architecture), framework docs, secrets, or session-specific state. Always curate auto-generated files.
 
 ## Platform Notes
 
 **AGENTS.md auto-load:** Codex CLI, OpenCode, Cursor, Windsurf, Cline, and Copilot load AGENTS.md natively. Claude Code requires `@AGENTS.md` in CLAUDE.md. Gemini CLI is configurable via `context.fileName` in settings.json.
+
+**Modern Cursor / Cline / Copilot (2026):** Cursor uses `.cursor/rules/*.mdc` with frontmatter; flat `.cursorrules` is ignored in Agent mode. Cline uses the `.clinerules/` directory with optional path-scoped frontmatter. Copilot's coding agent loads AGENTS.md natively (Aug 2025), so the Copilot bridge is optional. Format details and frontmatter examples live in `SKILL-reference.md`.
 
 **Hooks:** Context Guard hooks are available on Claude Code (12 events), Gemini CLI (11), Copilot (8, preview), Cursor (4+), Cline (3), and Codex CLI (2, experimental). See the context-guard skill for per-platform setup.
 
