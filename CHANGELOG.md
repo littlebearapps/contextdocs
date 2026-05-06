@@ -20,11 +20,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+* **Modern Cursor support** — `ai-context` now emits `.cursor/rules/agents.mdc` with `description` / `globs` / `alwaysApply` frontmatter so projects work in Cursor's Agent mode (legacy `.cursorrules` is no longer documented upstream and is ignored in Agent mode). Legacy file is preserved when already present.
+* **Modern Cline directory mode** — `ai-context` now defaults to `.clinerules/agents.md` directory layout with optional `paths:` per-file frontmatter for path-scoped rules. Flat `.clinerules` is preserved when already present.
+* **Six-section AGENTS.md scaffold** — opt-in `--scaffold=six-section` flag for `/ai-context init` generates the GitHub Blog Apr 2026 template (commands · testing · project structure · code style · git workflow · boundaries). Default scaffold unchanged for existing users.
+* **3 new context-verify checks (16 total)** — modern Cursor layout (deducts 2 if only `.cursorrules`), modern Cline layout (deducts 2 if flat `.clinerules`), and Copilot bridge optionality (advisory).
+* **Hook `if:` permission-rule matchers** — Tier 2 commit guard registration now uses `if: "Bash(git commit*)"` (Claude Code v2.1.85+) so hooks fire only on actual commit commands; older Claude Code versions fall back to in-script substring guards.
+* **Skill `when_to_use` frontmatter** — all three skills now split activation hints between `description` (key use case) and `when_to_use` (trigger phrases + skip-when negatives), matching the Claude Code v2.1.119 1,536-character combined cap for richer NL activation.
+
+### Changed
+
+* **Copilot bridge marked optional** in docs and skill output — Copilot's coding agent has supported AGENTS.md natively since Aug 2025; `.github/copilot-instructions.md` is only emitted when needed for tool-specific scoping. `context-verify` adds an advisory check.
+* **`context-updater` agent pinned to haiku** for cheap surgical edits; `disallowedTools: [WebSearch, WebFetch]` made explicit.
+
 ### Fixed
 
 * Context Guard hooks no longer flag infrastructure rule files as false positives ([#13](https://github.com/littlebearapps/contextdocs/issues/13))
 * ai-context skill triggers more reliably when you describe stale context or MEMORY.md promotion scenarios
 * SKILL.md and CLAUDE.md descriptions now match the canonical product definition across all tools
+
+### Verified Safe Against
+
+* [anthropics/claude-code#44120](https://github.com/anthropics/claude-code/issues/44120) — plugin skills not discovered when `.claude/` directory exists in plugin
+* [anthropics/claude-code#46664](https://github.com/anthropics/claude-code/issues/46664) — `WorktreeCreate` hooks in plugin `hooks/hooks.json` never fire (we don't use this event)
+* [anthropics/claude-code#49990](https://github.com/anthropics/claude-code/issues/49990) — bare `{type, command}` hook entry silently breaks entire hooks config
+* [anthropics/claude-code#54532](https://github.com/anthropics/claude-code/issues/54532) — SessionStart hook "ToolUseContext is required for prompt hooks" error
 
 ## [1.4.0](https://github.com/littlebearapps/contextdocs/compare/v1.3.0...v1.4.0) (2026-03-13)
 
