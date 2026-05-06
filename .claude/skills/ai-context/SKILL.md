@@ -1,6 +1,6 @@
 ---
 name: ai-context
-description: Generates, updates, and maintains AGENTS-first AI IDE context files with AGENTS.md as canonical shared context and thin tool-specific bridges. Use this skill when the user wants to create a CLAUDE.md, generate AGENTS.md, set up context files for a project, update or fix out-of-date context files, refresh stale CLAUDE.md or AGENTS.md, bootstrap context for a new repo, move or promote MEMORY.md patterns into CLAUDE.md, audit context for drift, or generate cursorrules, copilot instructions, clinerules, windsurfrules, or GEMINI.md. This is the right skill for updating, regenerating, or fixing context files — not just checking them. Use proactively whenever context files may need attention, even if not explicitly requested.
+description: Generates, updates, and maintains AGENTS-first AI IDE context files with AGENTS.md as canonical shared context and thin tool-specific bridges. Works across Claude Code, Codex CLI, Gemini CLI, OpenCode, Cursor, Copilot, Windsurf, and Cline. Use this skill when the user wants to create context files, generate AGENTS.md, set up CLAUDE.md or bridge files for a project, update or fix out-of-date context files, bootstrap context for a new repo, promote MEMORY.md patterns, audit context for drift, or generate cursorrules, copilot instructions, clinerules, windsurfrules, or GEMINI.md. This is the right skill for updating, regenerating, or fixing context files — not just checking them. Use proactively whenever context files may need attention, even if not explicitly requested.
 ---
 
 # AI Context File Generator
@@ -37,14 +37,14 @@ Describe the **end state** you want, not step-by-step instructions. Consider fix
 | File | Role | Purpose |
 |------|------|---------|
 | `AGENTS.md` | Canonical shared context | Shared identity, commands, conventions, constraints, security notes, and monorepo guidance |
-| `CLAUDE.md` | Thin bridge | `@AGENTS.md` import plus Claude-specific rules, key files, and workflow notes |
+| `CLAUDE.md` | Thin bridge | Claude-specific rules, key files, and workflow notes (use `@AGENTS.md` import in Claude Code) |
 | `.cursorrules` | Thin bridge | Cursor-specific rule scoping or metadata only |
 | `.github/copilot-instructions.md` | Thin bridge | Copilot-specific review and PR guidance only |
-| `.windsurfrules` | Compatibility bridge | Windsurf compatibility while AGENTS.md adoption continues |
+| `.windsurfrules` | Thin bridge | Windsurf-specific rule activation or metadata only |
 | `.clinerules` | Thin bridge | Cline-specific autonomy boundaries and commit checklist |
-| `GEMINI.md` | Compatibility bridge | Gemini-specific discovery shim while keeping AGENTS.md canonical |
+| `GEMINI.md` | Thin bridge | Gemini-specific discovery or extension notes only |
 
-**CLAUDE.md vs MEMORY.md:** CLAUDE.md contains instructions *for* Claude (shared via git). MEMORY.md contains notes *by* Claude (local only). Promote recurring MEMORY.md insights to CLAUDE.md.
+**Context file vs memory:** Context files contain instructions *for* the agent (shared via git). Memory files (MEMORY.md, agent-memory/) are notes *by* the agent (local only). Promote recurring memory insights to the appropriate context file.
 
 ## Generation Workflow
 
@@ -57,7 +57,7 @@ Describe the **end state** you want, not step-by-step instructions. Consider fix
 
 **AGENTS.md** (~120 lines): Identity, commands, non-default conventions, hard constraints, security notes, monorepo guidance. Omit Project Structure, architecture, dependency dumps, and key file tables.
 
-**CLAUDE.md** (~10-20 lines, hard max 80): `@AGENTS.md`, then only Claude-specific additions such as `.claude/rules/` references, key file pointers, or path-scoped guidance. Do not restate shared commands and conventions unless Claude-specific formatting requires it.
+**CLAUDE.md** (~10-20 lines, hard max 80): In Claude Code, use `@AGENTS.md` to import the canonical context, then add only Claude-specific additions (`.claude/rules/` references, key file pointers, path-scoped guidance). In other tools, CLAUDE.md is not used — AGENTS.md is loaded directly.
 
 **Other bridge files** (~10-20 lines each, hard max 60): reference or subset `AGENTS.md`, then add only tool-specific fields. Cline may add a `## Before Committing` checklist. `.windsurfrules` and `GEMINI.md` are compatibility bridges for now — keep them especially lean.
 
@@ -90,6 +90,14 @@ Tracks [agents.md spec](https://github.com/agentsmd/agents.md) v1.0 via `upstrea
 - Don't repeat framework docs — agents know React, Express, Django
 - Don't include secrets or session-specific state
 
-## Claude Code Reference
+## Platform Notes
 
-For advanced agent/skill frontmatter fields, variable substitution, dynamic context injection, bundled resource patterns, CLAUDE.md advanced features (@import, directory walking, claudeMdExcludes, managed policy), rules system (path-scoped rules, recursive discovery, user-level rules, symlinks), and plugin system (installation scopes, .lsp.json, output styles, plugin settings), load the companion reference: `SKILL-reference.md`
+**AGENTS.md auto-load:** Codex CLI, OpenCode, Cursor, Windsurf, Cline, and Copilot load AGENTS.md natively. Claude Code requires `@AGENTS.md` in CLAUDE.md. Gemini CLI is configurable via `context.fileName` in settings.json.
+
+**Hooks:** Context Guard hooks are available on Claude Code (12 events), Gemini CLI (11), Copilot (8, preview), Cursor (4+), Cline (3), and Codex CLI (2, experimental). See the context-guard skill for per-platform setup.
+
+**Standalone verification:** Run `bin/context-verify.sh` on any platform for 0-100 health scoring without a plugin system.
+
+## Advanced Reference (Claude Code)
+
+For agent/skill frontmatter fields, variable substitution, dynamic context injection, bundled resources, CLAUDE.md advanced features (@import, directory walking, claudeMdExcludes, managed policy), rules system (path-scoped rules, recursive discovery, symlinks), and plugin system (installation scopes, output styles, plugin settings), load the companion reference: `SKILL-reference.md`

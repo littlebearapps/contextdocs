@@ -1,6 +1,6 @@
 ---
 name: context-guard
-description: Installs opt-in Claude Code hooks with two-tier enforcement for AI context file freshness. Use this skill when the user wants to install context hooks, set up commit guards for context files, prevent stale CLAUDE.md or AGENTS.md from being committed, detect context drift, add content filter guards for OSS files, check context guard status, or uninstall context hooks. Covers install, install strict, uninstall, and status. Claude Code only — hooks do not work in OpenCode, Codex CLI, or other tools.
+description: Installs context freshness hooks with two-tier enforcement. Full automation on Claude Code (12 hook events). Gemini CLI (11 events), Copilot (8, preview), Cursor (4+), and Cline (3) support hooks with platform-specific setup. Use this skill when the user wants to install context hooks, set up commit guards for context files, prevent stale CLAUDE.md or AGENTS.md from being committed, detect context drift, add content filter guards, check context guard status, or uninstall context hooks. Covers install, install strict, uninstall, and status.
 ---
 
 # Context Guard
@@ -9,7 +9,7 @@ description: Installs opt-in Claude Code hooks with two-tier enforcement for AI 
 
 Hooks and a quality rule to keep AI context files in sync with the codebase. Prevents content filter errors on standard OSS files. Two-tier enforcement for context doc freshness.
 
-**Claude Code only.** OpenCode, Codex CLI, Cursor, Windsurf, Cline, and Gemini CLI do not support Claude Code hooks. Cross-tool features (skills, AGENTS.md) work without Context Guard.
+**Primary platform: Claude Code** (full automation, 12 hook events). Other platforms with hook support — Gemini CLI (11 events), Copilot (8, preview), Cursor (4+), Cline (3) — can use adapted hooks from `platforms/` packages (coming soon). For platforms without hooks (Codex CLI, OpenCode, Windsurf), use `bin/context-verify.sh` as a manual or CI-based alternative.
 
 ## Enforcement Tiers
 

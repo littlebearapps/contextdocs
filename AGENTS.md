@@ -19,9 +19,9 @@ Skills are loaded on-demand. Each lives at `.claude/skills/<name>/SKILL.md`. The
 
 | Skill | What It Provides |
 |-------|-----------------|
-| `ai-context` | AGENTS-first AI IDE context generation — builds canonical `AGENTS.md`, then emits thin bridges for Claude, Copilot, Cursor, Windsurf, Cline, and Gemini, with init/update/promote/audit lifecycle support |
-| `context-guard` | Context Guard hook installation — two-tier enforcement, SessionStart health check, settings.json configuration, companion reference for 17 hook events and 4 handler types, troubleshooting *(Claude Code only)* |
-| `context-verify` | Context file validation — line budgets, discoverable content detection, stale paths, @import validation, rule path-scope and symlink checks, .mcp.json validation, agent memory hygiene, plugin manifest completeness, AGENTS-to-bridge consistency, aggregate context load, and 0–100 health scoring with CI integration |
+| `ai-context` | AGENTS-first AI IDE context generation across 8 tools — builds canonical `AGENTS.md`, then emits thin bridges for Claude, Copilot, Cursor, Windsurf, Cline, and Gemini, with init/update/promote/audit lifecycle support |
+| `context-guard` | Context Guard hook installation — two-tier enforcement, SessionStart health check, settings.json configuration, companion reference for 17 hook events and 4 handler types, troubleshooting. Primary: Claude Code (12 events); cross-platform: Gemini CLI (11), Copilot (8), Cursor (4+), Cline (3) |
+| `context-verify` | Context file validation — line budgets, discoverable content detection, stale paths, @import validation, rule path-scope and symlink checks, .mcp.json validation, agent memory hygiene, plugin manifest completeness, AGENTS-to-bridge consistency, aggregate context load, and 0–100 health scoring with CI integration. Also available as standalone CLI (`bin/context-verify.sh`) |
 
 ## Workflow Commands
 
@@ -30,7 +30,7 @@ Invoke as `/contextdocs:command-name` in Claude Code, or as prompts in Codex CLI
 | Command | What It Does |
 |---------|-------------|
 | `ai-context` | Generate AGENTS-first AI context using Signal Gate — supports `all`, `claude`, `agents`, `cursor`, `copilot`, `windsurf`, `cline`, `gemini`, `init`, `update`, `promote`, `audit` |
-| `context-guard` | Install, uninstall, or check status of Context Guard hooks with tiered enforcement *(Claude Code only)* |
+| `context-guard` | Install, uninstall, or check status of Context Guard hooks with tiered enforcement — primarily Claude Code, with cross-platform hooks for Gemini CLI, Copilot, Cursor, and Cline |
 | `context-verify` | Validate context file quality — line budgets, stale paths, bridge consistency, health scoring, CI integration |
 
 ## Rules (Claude Code Only)
@@ -40,9 +40,9 @@ Invoke as `/contextdocs:command-name` in Claude Code, or as prompts in Codex CLI
 - `doc-standards.md` — documentation quality standards, 4-Question Test, Lobby Principle, banned phrases (auto-loaded, PitchDocs)
 - `docs-awareness.md` — documentation trigger map, suggests PitchDocs commands when docs-relevant work is detected (auto-loaded, PitchDocs)
 
-## Hooks (Claude Code Only)
+## Hooks
 
-7 opt-in hooks, installed via `/contextdocs:context-guard install`. Hooks reference the context-updater agent for autonomous action:
+7 opt-in hooks for Claude Code, installed via `/contextdocs:context-guard install`. Adapted hooks for Gemini CLI, Copilot, Cursor, and Cline via `platforms/` packages (coming soon). For platforms without hooks, use `bin/context-verify.sh` as a CI-based alternative.
 
 - `context-session-start.sh` — session-start context health check (advisory)
 - `context-forced-eval.sh` — keyword-gated skill evaluation on context-related prompts (advisory)

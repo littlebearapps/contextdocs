@@ -94,14 +94,40 @@ The `promote` command moves confirmed patterns from MEMORY.md into CLAUDE.md:
 
 ## Cross-Tool Compatibility
 
-| Feature | Claude Code | OpenCode | Codex CLI | Cursor | Windsurf | Cline | Gemini CLI |
-|---------|------------|----------|-----------|--------|----------|-------|------------|
-| Plugin install | Yes | Yes | No | No | No | No | No |
-| Context file generation | Yes | Yes | Manual | Manual | Manual | Manual | Manual |
-| Context Guard hooks | Yes | No | No | No | No | No | No |
-| Context verification | Yes | Yes | Manual | Manual | Manual | Manual | Manual |
+The AI coding tool landscape has converged around shared primitives. Most tools now support AGENTS.md, skills (SKILL.md), and hooks — not just static context files.
 
-For tools without plugin support, copy the relevant context file into your project manually. The generated files (.cursorrules, .windsurfrules, etc.) work with their respective tools automatically.
+### Platform Support Matrix (March 2026)
+
+| Feature | Claude Code | Gemini CLI | Copilot | Cursor | Codex CLI | OpenCode | Cline | Windsurf |
+|---------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| AGENTS.md auto-load | via @import | configurable | yes | yes | native | native | fallback | yes |
+| Skills (SKILL.md) | yes | yes | yes | yes | yes | yes | merged | yes |
+| Hooks | 12 events | 11 events | 8 (preview) | 4+ events | 2 (exp) | partial | 3 events | enterprise |
+| Custom agents | yes | yes (exp) | yes | yes | yes | yes | read-only | limited |
+| Rules directory | yes | via ext | yes | yes | no | partial | yes | yes |
+| Plugin/extension model | plugin.json | extension | .github/ | marketplace | skills pkg | config | MCP | MCP |
+
+### What ContextDocs Delivers Per Platform
+
+| Tier | Platforms | Experience |
+|------|----------|------------|
+| **Full** | Claude Code | Skills + hooks + agents + rules + autonomous maintenance |
+| **Tier 1** | Gemini CLI, Cursor, Copilot | Skills + hooks + agents (near-parity, coming soon) |
+| **Tier 2** | Codex CLI, OpenCode, Cline | Skills + agents, manual verification |
+| **Tier 3** | Windsurf | Skills + rules, no automated hooks |
+| **Tier 4** | Aider | Context files only (`--read AGENTS.md`) |
+
+### Getting Started by Platform
+
+**Claude Code / OpenCode**: Install as a plugin — `/install github:littlebearapps/contextdocs`
+
+**Codex CLI / Gemini CLI**: AGENTS.md is auto-loaded natively. Skills work if placed in the standard skills directory.
+
+**Cursor / Copilot / Windsurf / Cline**: Run `/contextdocs:ai-context init` in Claude Code to generate all bridge files, or manually create the relevant context file (`.cursorrules`, `.github/copilot-instructions.md`, `.windsurfrules`, `.clinerules`).
+
+**All platforms**: Run `bin/context-verify.sh` for 0-100 health scoring — no plugin system required.
+
+See `docs/references/platform-capabilities.md` for detailed per-tool capability documentation.
 
 ---
 
