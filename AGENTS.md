@@ -4,7 +4,7 @@
 
 ContextDocs is a Claude Code plugin for generating, maintaining, and auditing AI IDE context files. Pure Markdown, zero runtime dependencies. Applies the Signal Gate principle — only includes what agents cannot discover on their own.
 
-Generated project context follows an AGENTS-first model: `AGENTS.md` carries the shared conventions, commands, and constraints, while `CLAUDE.md`, `.cursorrules`, Copilot instructions, `.clinerules`, `.windsurfrules`, and `GEMINI.md` stay thin bridges. For Claude Code, `CLAUDE.md` is auto-loaded every session and uses `@AGENTS.md` to import the canonical shared context. Other tools (Codex CLI, Gemini CLI, OpenCode) load `AGENTS.md` directly at startup.
+Generated project context follows an AGENTS-first model: `AGENTS.md` carries the shared conventions, commands, and constraints, while `CLAUDE.md`, `.cursor/rules/agents.mdc`, optional Copilot instructions, `.clinerules/agents.md`, `.windsurfrules`, and `GEMINI.md` stay thin bridges. For Claude Code, `CLAUDE.md` is auto-loaded every session and uses `@AGENTS.md` to import the canonical shared context. Other tools (Codex CLI, Gemini CLI, OpenCode, Copilot's coding agent) load `AGENTS.md` directly at startup. Modern Cursor uses the `.cursor/rules/*.mdc` directory format with frontmatter; modern Cline uses the `.clinerules/` directory mode with optional path-scoped frontmatter. Legacy `.cursorrules` and flat `.clinerules` are preserved only when already present.
 
 ## Agent
 
@@ -19,9 +19,9 @@ Skills are loaded on-demand. Each lives at `.claude/skills/<name>/SKILL.md`. The
 
 | Skill | What It Provides |
 |-------|-----------------|
-| `ai-context` | AGENTS-first AI IDE context generation across 8 tools — builds canonical `AGENTS.md`, then emits thin bridges for Claude, Copilot, Cursor, Windsurf, Cline, and Gemini, with init/update/promote/audit lifecycle support |
-| `context-guard` | Context Guard hook installation — two-tier enforcement, SessionStart health check, settings.json configuration, companion reference for 17 hook events and 4 handler types, troubleshooting. Primary: Claude Code (12 events); cross-platform: Gemini CLI (11), Copilot (8), Cursor (4+), Cline (3) |
-| `context-verify` | Context file validation — line budgets, discoverable content detection, stale paths, @import validation, rule path-scope and symlink checks, .mcp.json validation, agent memory hygiene, plugin manifest completeness, AGENTS-to-bridge consistency, aggregate context load, and 0–100 health scoring with CI integration. Also available as standalone CLI (`bin/context-verify.sh`) |
+| `ai-context` | AGENTS-first AI IDE context generation across 8 tools — builds canonical `AGENTS.md`, then emits thin bridges for Claude, Copilot (optional), Cursor (`.cursor/rules/*.mdc`), Windsurf, Cline (`.clinerules/` directory), and Gemini, with init/update/promote/audit lifecycle support and an opt-in six-section AGENTS.md scaffold |
+| `context-guard` | Context Guard hook installation — two-tier enforcement, SessionStart health check, settings.json configuration with `if:` permission-rule matchers (v2.1.85+), companion reference for 17 hook events and 4 handler types, troubleshooting. Primary: Claude Code (12 events); cross-platform: Gemini CLI (11), Copilot (8), Cursor (4+), Cline (3) |
+| `context-verify` | Context file validation — line budgets, discoverable content detection, stale paths, @import validation, rule path-scope and symlink checks, .mcp.json validation, agent memory hygiene, plugin manifest completeness, AGENTS-to-bridge consistency, aggregate context load, modern Cursor/Cline layout checks, Copilot bridge optionality, and 0–100 health scoring with CI integration across 16 checks. Also available as standalone CLI (`bin/context-verify.sh`) |
 
 ## Workflow Commands
 
@@ -29,9 +29,9 @@ Invoke as `/contextdocs:command-name` in Claude Code, or as prompts in Codex CLI
 
 | Command | What It Does |
 |---------|-------------|
-| `ai-context` | Generate AGENTS-first AI context using Signal Gate — supports `all`, `claude`, `agents`, `cursor`, `copilot`, `windsurf`, `cline`, `gemini`, `init`, `update`, `promote`, `audit` |
-| `context-guard` | Install, uninstall, or check status of Context Guard hooks with tiered enforcement — primarily Claude Code, with cross-platform hooks for Gemini CLI, Copilot, Cursor, and Cline |
-| `context-verify` | Validate context file quality — line budgets, stale paths, bridge consistency, health scoring, CI integration |
+| `ai-context` | Generate AGENTS-first AI context using Signal Gate — supports `all`, `claude`, `agents`, `cursor`, `copilot`, `windsurf`, `cline`, `gemini`, `init`, `update`, `promote`, `audit`. Supports `--scaffold=six-section` flag on `init` for the GitHub Blog Apr 2026 six-section template (commands · testing · project structure · code style · git workflow · boundaries) |
+| `context-guard` | Install, uninstall, or check status of Context Guard hooks with tiered enforcement — primarily Claude Code, with cross-platform hooks for Gemini CLI, Copilot, Cursor, and Cline. Uses `if: "Bash(git commit*)"` permission-rule matcher on commit-related hooks (v2.1.85+) |
+| `context-verify` | Validate context file quality — 16 checks covering line budgets, stale paths, bridge consistency, modern Cursor/Cline/Copilot layouts, health scoring, CI integration |
 
 ## Rules (Claude Code Only)
 

@@ -21,7 +21,9 @@ Pure Markdown Claude Code plugin — no JavaScript, no Python, no build step, no
 ## Architecture
 
 - **AGENTS-first generation**: `AGENTS.md` is the canonical shared context for commands, conventions, constraints, and security notes
-- **Thin bridges**: `CLAUDE.md`, `.cursorrules`, Copilot instructions, `.clinerules`, `.windsurfrules`, and `GEMINI.md` should add only tool-specific behaviour
+- **Thin bridges**: `CLAUDE.md`, `.cursor/rules/agents.mdc`, optional Copilot instructions, `.clinerules/agents.md`, `.windsurfrules`, and `GEMINI.md` should add only tool-specific behaviour
+- **Modern formats**: Modern Cursor uses `.cursor/rules/*.mdc` with frontmatter (description / globs / alwaysApply); modern Cline uses the `.clinerules/` directory with optional `paths:` per-file frontmatter. Legacy `.cursorrules` and flat `.clinerules` are preserved only when already present
+- **Optional bridges**: `.github/copilot-instructions.md` is optional — Copilot's coding agent loads AGENTS.md natively (since Aug 2025); only emit when adding tool-specific scoping
 - **Compatibility bridges**: `.windsurfrules` and `GEMINI.md` remain generated for now for tool compatibility
 
 ## When Modifying

@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  Give your AI one canonical `AGENTS.md` plus thin bridge files for every major AI coding tool — `CLAUDE.md`, `.cursorrules`, `.github/copilot-instructions.md`, `.windsurfrules`, `.clinerules`, and `GEMINI.md` — from a single codebase scan. Signal Gate filtering strips out what agents already discover on their own. Context Guard hooks enforce freshness. Health scoring catches drift before it costs you tokens. 100% Markdown, zero runtime dependencies.
+  Give your AI one canonical `AGENTS.md` plus thin bridge files for every major AI coding tool — `CLAUDE.md`, `.cursor/rules/agents.mdc` (modern Cursor), `.clinerules/agents.md` (modern Cline directory mode), `.windsurfrules`, `GEMINI.md`, and an optional `.github/copilot-instructions.md` (Copilot loads AGENTS.md natively) — from a single codebase scan. Signal Gate filtering strips out what agents already discover on their own. Context Guard hooks enforce freshness. Health scoring catches drift before it costs you tokens. 100% Markdown, zero runtime dependencies.
 </p>
 
 <p align="center">
@@ -78,9 +78,9 @@ Then it keeps them fresh: `update` patches drift incrementally, `promote` moves 
 ContextDocs generates AGENTS-first context for 8 AI coding tools from a single codebase scan, applies Signal Gate filtering to strip discoverable content, enforces line budgets (AGENTS.md <120, CLAUDE.md <80, other bridges <60), and scores health 0–100 across 6 dimensions with 13 verification checks. Context Guard hooks catch drift at session start, session end, and commit time.
 
 - 🧠 **Signal Gate filtering** — strips out discoverable content (directory listings, file trees, architecture overviews) so your context files contain only what actually helps AI tools, keeping them lean and under budget
-- 📋 **AGENTS-first generation + thin bridges** — shared conventions live once in `AGENTS.md`, while `CLAUDE.md`, Copilot instructions, Cursor rules, Cline rules, and compatibility bridges stay minimal and tool-specific
+- 📋 **AGENTS-first generation + thin bridges** — shared conventions live once in `AGENTS.md`, while `CLAUDE.md`, `.cursor/rules/*.mdc`, `.clinerules/`, optional Copilot instructions, and compatibility bridges stay minimal and tool-specific
 - 🔄 **Full lifecycle, not just generation** — `init` bootstraps, `update` patches only what drifted, `promote` graduates MEMORY.md patterns to CLAUDE.md, `audit` flags staleness — so context files stay accurate as your project evolves
-- ✅ **Health scoring (0–100)** — grades context files across line budget, signal quality, path accuracy, AGENTS-to-bridge consistency, freshness, and aggregate context load — export to CI with `--min-score` so drift never reaches your team
+- ✅ **Health scoring (0–100)** — grades context files across line budget, signal quality, path accuracy, AGENTS-to-bridge consistency, freshness, aggregate context load, and modern Cursor/Cline/Copilot layouts (16 checks total) — export to CI with `--min-score` so drift never reaches your team
 - 🔒 **Context Guard enforcement** — SessionStart health check validates on entry, Tier 1 nudges at session end, Tier 2 blocks commits when context files are stale, so drift gets caught at every stage *(Claude Code only)*
 - 🤖 **Autonomous context updates** — the context-updater agent is launched automatically by hooks to update stale files without user intervention, closing the loop from detection to action *(Claude Code only)*
 - 🛡️ **Content filter protection** — guards against Claude Code's API filter (HTTP 400) for CODE_OF_CONDUCT, LICENSE, and SECURITY files, so hook installation never gets blocked *(Claude Code only)*
@@ -137,12 +137,14 @@ ContextDocs works natively with [Claude Code](https://code.claude.com/) and [Ope
 
 | File | Role | Tool | How It's Loaded |
 |------|------|------|-----------------|
-| AGENTS.md | Canonical shared context | Codex CLI, OpenCode, Gemini CLI | Auto-loaded at startup; Claude Code loads via `@AGENTS.md` import in CLAUDE.md |
+| AGENTS.md | Canonical shared context | Codex CLI, OpenCode, Gemini CLI, Copilot coding agent | Auto-loaded at startup; Claude Code loads via `@AGENTS.md` import in CLAUDE.md |
 | CLAUDE.md | Claude Code bridge | Claude Code, OpenCode | Auto-loaded every session; starts with `@AGENTS.md` to import shared context |
-| .cursorrules | Thin bridge | Cursor | Yes — project root convention |
-| .github/copilot-instructions.md | Thin bridge | GitHub Copilot | Yes — GitHub convention |
+| .cursor/rules/agents.mdc | Modern Cursor bridge | Cursor | Loaded when frontmatter (description / globs / alwaysApply) matches; default since 2026 |
+| .cursorrules | Legacy Cursor bridge | Cursor | Only emitted when already present; current Cursor versions ignore in Agent mode |
+| .github/copilot-instructions.md | Optional Copilot bridge | GitHub Copilot | Optional — Copilot's coding agent loads AGENTS.md natively (since Aug 2025); only emit when adding tool-specific scoping |
 | .windsurfrules | Compatibility bridge | Windsurf | Yes — project root convention |
-| .clinerules | Thin bridge | Cline | Yes — project root convention |
+| .clinerules/agents.md | Modern Cline bridge (directory) | Cline | Default for new projects; supports `paths:` frontmatter for path-scoped rules |
+| .clinerules | Legacy Cline bridge (flat) | Cline | Only emitted when already present |
 | GEMINI.md | Compatibility bridge | Gemini CLI | Yes — loaded on startup |
 
 Context Guard hooks are Claude Code only. All other features (generation, update, verify) work wherever the plugin runs.
