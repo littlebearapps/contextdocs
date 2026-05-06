@@ -15,18 +15,18 @@ last_verified: "1.5.0" # x-release-please-version
 
 | Capability | Claude Code | Gemini CLI | Copilot | Cursor | Codex CLI | OpenCode | Cline | Windsurf | Aider |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Context files** |
+| **Context files** | | | | | | | | | |
 | AGENTS.md auto-load | via @import | configurable | yes | yes | native | native | fallback | yes | no |
 | Context file | CLAUDE.md | GEMINI.md | copilot-instructions.md | .cursor/rules/ | AGENTS.md | AGENTS.md | .clinerules/ | .windsurf/rules/ | CONVENTIONS.md |
 | @import syntax | yes | yes | no | no | no | no | no | no | no |
-| **Extensibility** |
+| **Extensibility** | | | | | | | | | |
 | Skills (SKILL.md) | yes | yes | yes | yes | yes | yes | merged w/cmds | yes | no |
 | Custom agents | yes | yes (exp) | yes | yes (v2.4) | yes | yes | read-only | limited | no |
 | Rules directory | .claude/rules/ | via extensions | .github/instructions/ | .cursor/rules/ | no | partial | .clinerules/ | .windsurf/rules/ | no |
 | Plugin/extension model | plugin.json | gemini-extension.json | .github/ plugins | marketplace | skills pkg | config | MCP self-install | MCP marketplace | no |
 | MCP servers | yes | yes | yes | yes | yes | yes | yes | yes | no |
 | Slash commands | yes | yes | via .prompt.md | via skills | yes (25+) | yes | merged w/skills | via workflows | yes (15+) |
-| **Hooks** |
+| **Hooks** | | | | | | | | | |
 | Session start | yes | yes | yes (preview) | no | yes (exp) | no | no | no | no |
 | Pre-tool use | yes | yes (BeforeTool) | yes (preview) | yes | no | no | yes | enterprise | no |
 | Post-tool use | yes | yes (AfterTool) | yes (preview) | yes | no | no | yes | enterprise | no |
