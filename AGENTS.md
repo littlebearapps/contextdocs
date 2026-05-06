@@ -51,3 +51,9 @@ Invoke as `/contextdocs:command-name` in Claude Code, or as prompts in Codex CLI
 - `content-filter-guard.sh` — Write guard for high-risk OSS files
 - `context-guard-stop.sh` — session-end context doc nudge (Tier 1)
 - `context-commit-guard.sh` — pre-commit context doc enforcement (Tier 2)
+
+## Synced Documentation Paths
+
+These paths are consumed by external sync pipelines. Treat as protected — the upstream build fails if they go missing.
+
+- `docs/faq/index.md` — FAQ scaffold for the help-centre FAQPage schema (issue #25). Synced to `littlebearapps.com/help/contextdocs/faq/` by the marketing-site `scripts/docs-sync.config.ts` mapping under `contextdocs`. **Do not delete or move.** **Update only when** an answer goes stale (new install path, retired feature, top support driver becomes a new question) — not on every release. Keep the question set lean: each H2 must end with `?`, every answer must be complete (no placeholders), and Australian English / banned-phrase rules from `.claude/rules/doc-standards.md` apply.
