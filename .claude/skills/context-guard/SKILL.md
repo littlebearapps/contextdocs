@@ -1,6 +1,22 @@
 ---
 name: context-guard
-description: Installs context freshness hooks with two-tier enforcement. Full automation on Claude Code (12 hook events). Gemini CLI (11 events), Copilot (8, preview), Cursor (4+), and Cline (3) support hooks with platform-specific setup. Use this skill when the user wants to install context hooks, set up commit guards for context files, prevent stale CLAUDE.md or AGENTS.md from being committed, detect context drift, add content filter guards, check context guard status, or uninstall context hooks. Covers install, install strict, uninstall, and status.
+description: Installs Claude Code hooks that keep AI context files fresh. Two-tier enforcement — Tier 1 nudges at session end, Tier 2 blocks commits when structural files are staged without context updates. Includes content filter, drift check, structural change reminder, SessionStart health check, and the context-updater agent.
+when_to_use: |
+  Trigger phrases:
+  - "install context guard hooks" or "install context-guard"
+  - "set up commit guards for context files"
+  - "prevent stale CLAUDE.md / AGENTS.md from being committed"
+  - "block commits when context files are out of date"
+  - "detect context drift after commits"
+  - "add content filter guards" or "stop content filter errors on LICENSE / SECURITY / CODE_OF_CONDUCT"
+  - "check context guard status" or "is context guard installed?"
+  - "uninstall context guard" or "remove context hooks"
+  - "install strict" / "tier 2" / "enforce context updates"
+  Skip when:
+  - The user is on a non-Claude Code platform (skill is Claude Code only)
+  - They want to generate context files (use ai-context)
+  - They want to validate health without installing hooks (use context-verify)
+  - The work is unrelated to context file freshness or hook installation
 ---
 
 # Context Guard
@@ -75,10 +91,10 @@ Autonomous agent (`.claude/agents/context-updater.md`) launched by Claude in res
   "hooks": {
     "PreToolUse": [
       { "matcher": "Write", "hooks": [{ "type": "command", "command": ".claude/hooks/content-filter-guard.sh" }] },
-      { "matcher": "Bash", "hooks": [{ "type": "command", "command": ".claude/hooks/context-commit-guard.sh" }] }
+      { "if": "Bash(git commit*)", "hooks": [{ "type": "command", "command": ".claude/hooks/context-commit-guard.sh" }] }
     ],
     "PostToolUse": [
-      { "matcher": "Bash", "hooks": [{ "type": "command", "command": ".claude/hooks/context-drift-check.sh" }] },
+      { "if": "Bash(git commit*)", "hooks": [{ "type": "command", "command": ".claude/hooks/context-drift-check.sh" }] },
       { "matcher": "Write|Edit", "hooks": [{ "type": "command", "command": ".claude/hooks/context-structural-change.sh" }] }
     ],
     "SessionStart": [
@@ -94,7 +110,9 @@ Autonomous agent (`.claude/agents/context-updater.md`) launched by Claude in res
 }
 ```
 
-The PreToolUse Bash entry for `context-commit-guard.sh` is only added with `install strict` (Tier 2).
+The PreToolUse `if: Bash(git commit*)` entry for `context-commit-guard.sh` is only added with `install strict` (Tier 2).
+
+**`if:` vs `matcher:`** — Claude Code v2.1.85 added `if:` (permission-rule syntax, e.g. `Bash(git commit*)`) so hooks fire only on matching bash commands. Older versions ignore unknown `if:` — the in-script substring guards keep both safe. Use `matcher: "Bash"` when the hook needs every Bash invocation.
 
 ## Uninstallation
 

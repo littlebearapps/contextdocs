@@ -32,14 +32,14 @@ Context Guard has two enforcement tiers:
   3. Make the scripts executable (`chmod +x`)
   4. Create `.claude/agents/` directory if it does not exist
   5. Copy `context-updater.md` from the plugin's `.claude/agents/` directory to `.claude/agents/context-updater.md`
-  6. Merge PreToolUse, PostToolUse, SessionStart, UserPromptSubmit, and Stop hook entries into `.claude/settings.json` (create the file if needed; if entries already exist, append without overwriting)
+  6. Merge PreToolUse, PostToolUse, SessionStart, UserPromptSubmit, and Stop hook entries into `.claude/settings.json` (create the file if needed; if entries already exist, append without overwriting). Use `if: "Bash(git commit*)"` for `context-drift-check.sh` so it only fires after `git commit` (Claude Code v2.1.85+); older versions fall back to the in-script substring guard.
   7. Copy `context-quality.md` to `.claude/rules/context-quality.md` (create directory if needed)
   8. Report what was installed
 
 - **`install strict`**: Install Context Guard (Tier 1 + Tier 2) into the current project:
   1. Perform all steps from `install` above
   2. Additionally copy `context-commit-guard.sh` from the plugin's `hooks/` directory to `.claude/hooks/`
-  3. Add a PreToolUse Bash hook entry for `context-commit-guard.sh` to `.claude/settings.json`
+  3. Add a PreToolUse hook entry for `context-commit-guard.sh` to `.claude/settings.json` using `if: "Bash(git commit*)"` so it only fires on `git commit` (v2.1.85+); older Claude Code versions fall back to the in-script guard
   4. Report what was installed, noting Tier 2 is active
 
 - **`uninstall`**: Remove all Context Guard hooks from the current project:
