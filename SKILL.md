@@ -1,7 +1,7 @@
 ---
 name: contextdocs
 description: Your AI agent maintains its own context files — a Claude Code plugin with an AGENTS-first model that covers Codex, Copilot, Cursor, Gemini, and 3 more tools. Signal Gate filtering, Context Guard hooks, health scoring, and MEMORY.md promotion.
-version: "1.4.0"
+version: "1.5.0" # x-release-please-version
 author: Little Bear Apps
 tags:
   - ai-context
