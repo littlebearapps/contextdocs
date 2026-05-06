@@ -45,6 +45,7 @@ Pure Markdown Claude Code plugin — no JavaScript, no Python, no build step, no
 | `.claude/agents/docs-freshness.md` | Read-only agent — checks documentation freshness, suggests PitchDocs commands *(PitchDocs)* |
 | `.claude/rules/doc-standards.md` | Auto-loaded quality rule — 4-Question Test, Lobby Principle, banned phrases *(PitchDocs)* |
 | `.claude/rules/docs-awareness.md` | Auto-loaded trigger map — suggests PitchDocs commands when docs-relevant work is detected *(PitchDocs)* |
+| `docs/faq/index.md` | Synced FAQ — emits Schema.org `FAQPage` JSON-LD on `littlebearapps.com/help/contextdocs/faq/` via the marketing-site sync (issue #25). **Do not delete or move** — upstream build hard-fails. **Update only when** an answer goes stale, not on every release |
 
 ## Known Limitations
 
