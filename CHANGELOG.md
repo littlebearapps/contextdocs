@@ -28,11 +28,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * **3 new context-verify checks (16 total)** — modern Cursor layout (deducts 2 if only `.cursorrules`), modern Cline layout (deducts 2 if flat `.clinerules`), and Copilot bridge optionality (advisory).
 * **Hook `if:` permission-rule matchers** — Tier 2 commit guard registration now uses `if: "Bash(git commit*)"` (Claude Code v2.1.85+) so hooks fire only on actual commit commands; older Claude Code versions fall back to in-script substring guards.
 * **Skill `when_to_use` frontmatter** — all three skills now split activation hints between `description` (key use case) and `when_to_use` (trigger phrases + skip-when negatives), matching the Claude Code v2.1.119 1,536-character combined cap for richer NL activation.
+* **Plugin `$schema` field** — `.claude-plugin/plugin.json` now declares `"$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json"` for editor autocomplete and `claude plugin validate` validation. Claude Code ignores this field at load time.
 
 ### Changed
 
 * **Copilot bridge marked optional** in docs and skill output — Copilot's coding agent has supported AGENTS.md natively since Aug 2025; `.github/copilot-instructions.md` is only emitted when needed for tool-specific scoping. `context-verify` adds an advisory check.
 * **`context-updater` agent pinned to haiku** for cheap surgical edits; `disallowedTools: [WebSearch, WebFetch]` made explicit.
+* **FAQ filename renamed** `docs/faq/index.md` → `docs/faq/faq.md` ([#29](https://github.com/littlebearapps/contextdocs/issues/29)) for cleaner help-centre URL `/help/contextdocs/faq/` (was `/help/contextdocs/index/`). Pure file rename — no content change. Marketing-site 301 redirect handled separately.
 
 ### Fixed
 
