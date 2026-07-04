@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+* Context Guard drift check no longer reports false positives for backtick references to generated-bridge files (e.g. `GEMINI.md`), historical rename mentions ("renamed from `index.md`"), or paths in other repos ("marketing-site `scripts/docs-sync.config.ts`") ([#31](https://github.com/littlebearapps/contextdocs/issues/31))
 * Context Guard hooks no longer flag infrastructure rule files as false positives ([#13](https://github.com/littlebearapps/contextdocs/issues/13))
 * ai-context skill triggers more reliably when you describe stale context or MEMORY.md promotion scenarios
 * SKILL.md and CLAUDE.md descriptions now match the canonical product definition across all tools

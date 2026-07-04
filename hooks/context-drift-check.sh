@@ -38,6 +38,18 @@ fi
 CONTEXT_FILES=("CLAUDE.md" "AGENTS.md" "GEMINI.md" ".cursorrules"
                ".github/copilot-instructions.md" "llms.txt" ".windsurfrules" ".clinerules")
 
+# Generated-bridge filenames the plugin emits into *other* projects. A context
+# file may list these as outputs without them existing in this repo, so a
+# missing local copy is not drift. (Basename match.)
+GENERATED_BRIDGES=("GEMINI.md" "AGENTS.md" "CLAUDE.md" "llms.txt" "llms-full.txt"
+                   ".windsurfrules" ".cursorrules" ".clinerules"
+                   "copilot-instructions.md" "agents.mdc" "agents.md")
+
+# Same-line cue words that mark a reference as descriptive rather than a live
+# local path: rename history ("renamed from `index.md`") or a file in another
+# repo ("the marketing-site `scripts/docs-sync.config.ts` mapping").
+DESCRIPTIVE_CUE='renamed|formerly|previously|used to be|marketing[- ]site|external repo|upstream repo|other repo'
+
 STALE=()
 BROKEN_PATHS=()
 
@@ -63,9 +75,23 @@ for CTX in "${CONTEXT_FILES[@]}"; do
   # Quick broken-path check: extract backtick-quoted file references
   while IFS= read -r REF_PATH; do
     if [ -n "$REF_PATH" ] && [ ! -e "$REF_PATH" ]; then
-      # Fallback: check if basename exists anywhere in repo (tracked or untracked)
       BASENAME=$(basename "$REF_PATH")
-      if ! git ls-files "*/$BASENAME" "$BASENAME" 2>/dev/null | grep -q . \
+
+      # Skip generated-bridge filenames — plugin output, not a local file.
+      SKIP_REF=false
+      for BRIDGE in "${GENERATED_BRIDGES[@]}"; do
+        if [ "$BASENAME" = "$BRIDGE" ]; then SKIP_REF=true; break; fi
+      done
+
+      # Skip references marked descriptive by a same-line cue word (rename
+      # history or a path that lives in another repo).
+      if ! $SKIP_REF && grep -F -- "$REF_PATH" "$CTX" 2>/dev/null | grep -qiE "$DESCRIPTIVE_CUE"; then
+        SKIP_REF=true
+      fi
+
+      # Fallback: check if basename exists anywhere in repo (tracked or untracked)
+      if ! $SKIP_REF \
+        && ! git ls-files "*/$BASENAME" "$BASENAME" 2>/dev/null | grep -q . \
         && ! find . -name "$BASENAME" -not -path './.git/*' -print -quit 2>/dev/null | grep -q .; then
         BROKEN_PATHS+=("$CTX references \`$REF_PATH\` (not found)")
       fi
