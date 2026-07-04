@@ -5,6 +5,29 @@ All notable changes to ContextDocs will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0](https://github.com/littlebearapps/contextdocs/compare/v1.5.0...v1.6.0) (2026-07-04)
+
+
+### Added
+
+* **ai-context:** emit modern Cursor (.cursor/rules/*.mdc) and Cline (.clinerules/) layouts ([8d72344](https://github.com/littlebearapps/contextdocs/commit/8d72344d8c6f766d95025e11297be519a77d52d5))
+* cross-platform context drift cleanup + standalone verify CLI ([#28](https://github.com/littlebearapps/contextdocs/issues/28)) ([1527dbe](https://github.com/littlebearapps/contextdocs/commit/1527dbe974397c4652fb8f64d8052d0e9f097332))
+* **verify:** add Cursor/Cline/Copilot layout checks (16 checks total) ([decac12](https://github.com/littlebearapps/contextdocs/commit/decac12b223b9f950f2f8bbcf71f5801fe5f9003))
+
+
+### Changed
+
+* **hooks:** adopt if: permission-rule syntax for commit-related hooks ([cb9f160](https://github.com/littlebearapps/contextdocs/commit/cb9f160f49a63ad1b3d1a88d61abfff7c4f311a7))
+
+
+### Documentation
+
+* add docs/faq/index.md for help-centre FAQPage schema ([#26](https://github.com/littlebearapps/contextdocs/issues/26)) ([130e103](https://github.com/littlebearapps/contextdocs/commit/130e1035f7785fc757f6f6f0082b99b204d67a21))
+* AGENTS-first refresh for v1.6.0 + Copilot bridge marked optional ([510720f](https://github.com/littlebearapps/contextdocs/commit/510720f16d61cdc8e9e06b128668afd5d488418a))
+* **changelog:** document v1.6.0 unreleased changes ([bfd03c3](https://github.com/littlebearapps/contextdocs/commit/bfd03c3883dce76896f0d6340e4010100304a780))
+* **llms:** include $schema in llms.txt plugin manifest entry ([05050ba](https://github.com/littlebearapps/contextdocs/commit/05050bae75107b26ccb7b034070d7ec5a10a69ae))
+* protect synced FAQ path in AGENTS.md and CLAUDE.md ([#27](https://github.com/littlebearapps/contextdocs/issues/27)) ([d48b09c](https://github.com/littlebearapps/contextdocs/commit/d48b09cafb536a7f14d4b053f061fb79d1d65982))
+
 ## [1.5.0](https://github.com/littlebearapps/contextdocs/compare/v1.4.0...v1.5.0) (2026-03-15)
 
 
