@@ -430,6 +430,41 @@ run_test "Stale llms.txt → drift detected" "$HOOK" \
 teardown_git_repo
 
 echo ""
+echo "--- Broken-path false-positive suppression (issue #31) ---"
+
+# Generated-bridge filename referenced but absent locally → not drift
+setup_git_repo
+printf '%s\n' 'Thin bridges include `GEMINI.md` for Gemini CLI.' > "$TEMP_REPO/CLAUDE.md"
+git add CLAUDE.md && git commit -q -m "add context"
+run_test "Generated-bridge ref (GEMINI.md) → not flagged" "$HOOK" \
+  '{"tool_name":"Bash","tool_input":{"command":"git commit -m test"}}' 0 "{}"
+teardown_git_repo
+
+# Rename-history mention on the same line → not drift
+setup_git_repo
+printf '%s\n' 'The FAQ was renamed from `index.md` to faq.md.' > "$TEMP_REPO/CLAUDE.md"
+git add CLAUDE.md && git commit -q -m "add context"
+run_test "Rename mention (index.md) → not flagged" "$HOOK" \
+  '{"tool_name":"Bash","tool_input":{"command":"git commit -m test"}}' 0 "{}"
+teardown_git_repo
+
+# External-repo path flagged by cue word → not drift
+setup_git_repo
+printf '%s\n' 'Synced by the marketing-site `scripts/build.ts` mapping.' > "$TEMP_REPO/CLAUDE.md"
+git add CLAUDE.md && git commit -q -m "add context"
+run_test "External-repo path (marketing-site) → not flagged" "$HOOK" \
+  '{"tool_name":"Bash","tool_input":{"command":"git commit -m test"}}' 0 "{}"
+teardown_git_repo
+
+# Regression guard: a genuinely missing repo-local path is still flagged
+setup_git_repo
+printf '%s\n' 'See `src/missing.ts` for the handler.' > "$TEMP_REPO/CLAUDE.md"
+git add CLAUDE.md && git commit -q -m "add context"
+run_test "Genuinely broken ref (src/missing.ts) → still flagged" "$HOOK" \
+  '{"tool_name":"Bash","tool_input":{"command":"git commit -m test"}}' 0 "not found"
+teardown_git_repo
+
+echo ""
 
 ########################################################################
 # SECTION 5: context-guard-stop.sh
